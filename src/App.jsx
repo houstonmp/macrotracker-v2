@@ -2,9 +2,11 @@ import { useState } from "react";
 import Modal from './components/UI/Modal'
 import RootLayout from "./pages/RootLayout";
 import Home from './pages/Home';
-import Chart from './pages/Chart';
+import Workout from './pages/Workout';
 import Entry from './pages/Entry';
 import Waves from "./assets/Waves";
+import Calendar from "./pages/Calendar";
+import Insights from "./pages/Insights";
 
 // import MainNav from './components/MainNav'
 import { createBrowserRouter, Router, RouterProvider } from "react-router-dom";
@@ -28,12 +30,20 @@ function App() {
         element: <Home showModal={showModal} onOpenModal={showModalHandler} onCloseModal={closeModalHandler}></Home>,
       },
       {
-        path: 'chart',
-        element: <Chart></Chart>,
+        path: 'workout',
+        element: <Workout></Workout>,
       },
       {
-        path: 'entry',
+        path: 'food',
         element: <Entry></Entry>,
+      },
+      {
+        path: 'insights',
+        element: <Insights></Insights>,
+      },
+      {
+        path: 'calendar',
+        element: <Calendar></Calendar>,
       }
     ]
   }])

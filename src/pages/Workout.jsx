@@ -1,7 +1,7 @@
 import PageContent from "../components/PageContent"
 
-const Chart = () => {
+const Workout = () => {
     return <PageContent title="Chart">Welcome to Chart</PageContent>
 }
 
-export default Chart;
+export default Workout;

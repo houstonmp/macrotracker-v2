@@ -57,6 +57,8 @@
     --primary-teal-00:
     --primary-teal-00: */
 
+  --primary-gold-500: #F8F32B;
+
 }
 
 .card {
@@ -92,7 +94,7 @@ main {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  /* text-align: center; */
+
 }
 
 /* a {

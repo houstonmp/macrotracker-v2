@@ -1,7 +1,6 @@
 .header {
   display: flex;
   justify-content: space-between;
-
   background-color: var(--dark-green-400);
 }
 
@@ -12,13 +11,20 @@
   flex-wrap: nowrap;
 }
 
-.list a {
+.list :nth-child(4) {
+  margin-top: auto;
+}
+
+.list a,
+.list button {
   padding: 1rem;
   display: flex;
   text-decoration: none;
+  cursor: pointer;
 }
 
-.list a * {
+.list a *,
+.list button * {
   width: 1.5rem;
   /* width: 20px; */
 }
@@ -26,12 +32,22 @@
 .list a:hover,
 .list a.active {
   transition: all .6s;
-  /* text-decoration: overline; */
+  text-decoration: overline;
   background-color: var(--dark-green);
+
 }
 
 .list a:hover *,
 .list a.active * {
-  transition: all .6s;
-  fill: var(--dark-green-400);
+  transition: all .2s;
+  fill: var(--dark-green-500);
+}
+
+.list button {
+  background-color: var(--dark-green-500);
+  fill: var(--primary-gold-500);
+}
+
+.list button * {
+  fill: var(--color-gold-500);
 }

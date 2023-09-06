@@ -1,54 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap');
+
 * {
   border: 0;
   box-sizing: border-box;
- }
+}
 
 :root {
 
-    --backdrop-green: #5bcc2688;
-    
-    --dark-green: #E6E9E9;
-    --dark-green-100: #BFC9C9;
-    --dark-green-200: #8C9D9D;
-    --dark-green-300: #597272;
-    --dark-green-400: #264747;
-    --dark-green-500: #002222;
-    --dark-green-600: #001B1B;
-    --dark-green-700: #001313;
-    --dark-green-800: #000B0B;
-    --dark-green-900: #000404;
-  
-    --light-green: #ECF9E6; 
-    --light-green-100: #CFF0BF; 
-    --light-green-200: #A8E48C;
-    --light-green-300: #82D859;
-    --light-green-400: #5BCC26;
-    --light-green-500: #38B000;
-    --light-green-600: #2B8900;
-    --light-green-700: #1F6200;
-    --light-green-800: #061300;
-    --light-green-900: #061300;
-  
-    --primary-blue: #E6F1F8; 
-    --primary-blue-100: #BFDCEE; 
-    --primary-blue-200: #8CC0E0; 
-    --primary-blue-300: #59A3D3; 
-    --primary-blue-400: #2687C5; 
-    --primary-blue-500: #0067A8;
-    --primary-blue-600: #005083; 
-    --primary-blue-700: #00395E; 
-    --primary-blue-800: #002238; 
-    --primary-blue-900: #000B13; 
+  /* Color Inspiration */
+  /* Celestial Blue: 1E91D6 */
+  /* 0072BB */
+  /* 3EC300 */
+  /* 002626 */
+  --backdrop-green: #00e0a440;
+
+  --dark-green: #E6E9E9;
+  --dark-green-100: #BFC9C9;
+  --dark-green-200: #8C9D9D;
+  --dark-green-300: #597272;
+  --dark-green-400: #264747;
+  --dark-green-500: #002222;
+  --dark-green-600: #001B1B;
+  --dark-green-700: #001313;
+  --dark-green-800: #000B0B;
+  --dark-green-900: #000404;
+
+  --light-green: #ECF9E6;
+  --light-green-100: #CFF0BF;
+  --light-green-200: #A8E48C;
+  --light-green-300: #82D859;
+  --light-green-400: #5BCC26;
+  --light-green-500: #38B000;
+  --light-green-600: #2B8900;
+  --light-green-700: #1F6200;
+  --light-green-800: #061300;
+  --light-green-900: #061300;
+
+  --primary-blue: #E6F1F8;
+  --primary-blue-100: #BFDCEE;
+  --primary-blue-200: #8CC0E0;
+  --primary-blue-300: #59A3D3;
+  --primary-blue-400: #2687C5;
+  --primary-blue-500: #0067A8;
+  --primary-blue-600: #005083;
+  --primary-blue-700: #00395E;
+  --primary-blue-800: #002238;
+  --primary-blue-900: #000B13;
+
+  --primary-teal: #FFFFFF;
+  --primary-teal-100: #D6FFF4;
+  --primary-teal-200: #99FFE4;
+  --primary-teal-300: #5CFFD3;
+  --primary-teal-400: #1FFFC3;
+  --primary-teal-500: #00E0A5;
+  /* --primary-teal-00:
+    --primary-teal-00:
+    --primary-teal-00: */
+
 }
 
 .card {
   padding: 2em;
+  border: 2px solid var(--light-green-300);
 }
 
 body {
-  background-color: var(--primary-blue);
+  border-top: 2vh solid var(--primary-blue-500);
+  background: linear-gradient(var(--primary-teal), var(--primary-teal-400));
+  background-repeat: no-repeat;
   color: var(--dark-green-800);
   margin: 0;
+  font-family: 'Gloria Hallelujah', cursive;
+  min-height: 100vh;
+}
+
+.root {
+  display: flex;
+  flex-direction: row;
+  height: 98vh;
 }
 
 ul {
@@ -59,17 +88,21 @@ ul {
 
 main {
   margin: 2rem auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   /* text-align: center; */
 }
 
-a {
+/* a {
   color: rgb(196, 128, 102);
 }
 
 a:hover,
 a:active {
   color:rgb(108, 190, 208);
-}
+} */
 
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

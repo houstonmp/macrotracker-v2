@@ -4,6 +4,7 @@ import RootLayout from "./pages/RootLayout";
 import Home from './pages/Home';
 import Chart from './pages/Chart';
 import Entry from './pages/Entry';
+import Waves from "./assets/Waves";
 
 // import MainNav from './components/MainNav'
 import { createBrowserRouter, Router, RouterProvider } from "react-router-dom";
@@ -37,20 +38,13 @@ function App() {
     ]
   }])
 
-  let modalContent = (
-    <>
-      <h1>Modal</h1>
-      <section>
-        <p>This is some content.</p>
-      </section>
-    </>
-  )
 
   return (
     <>
       {/* <Home></Home> */}
       <div router={router}>
-        <RouterProvider router={router}/>
+        <RouterProvider router={router} />
+        <Waves />
       </div>
 
 

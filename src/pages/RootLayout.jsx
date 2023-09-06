@@ -1,12 +1,16 @@
 import { Outlet } from "react-router-dom"
 import MainNav from "../components/MainNav"
+import Waves from "../assets/Waves"
+// import { HomeIcon } from "../assets/Icons"
 
 const RootLayout = () => {
     return <>
-        <MainNav></MainNav>
-        <main>
-            <Outlet/>
-        </main>
+        <div className="root">
+            <MainNav></MainNav>
+            <main>
+                <Outlet />
+            </main>
+        </div>
     </>
 }
 

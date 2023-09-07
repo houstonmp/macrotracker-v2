@@ -85,17 +85,6 @@
   --color-alpha-800: #000B0B;
   --color-alpha-900: #000404;
 
-  /* --light-green: #ECF9E6;
-  --light-green-100: #CFF0BF;
-  --light-green-200: #A8E48C;
-  --light-green-300: #82D859;
-  --light-green-400: #5BCC26;
-  --light-green-500: #38B000;
-  --light-green-600: #2B8900;
-  --light-green-700: #1F6200;
-  --light-green-800: #061300;
-  --light-green-900: #061300; */
-
   --color-beta: #E6F1F8;
   --color-beta-100: #3D3A41;
   --color-beta-200: #312E34;
@@ -110,18 +99,44 @@
   --color-beta-800: #002238;
   --color-beta-900: #000B13;
 
-  --color-gamma: #D4C7E6;
+  --color-gamma: var(--color-beta);
+  --color-gamma-100: var(--color-beta-100);
+  --color-gamma-200: var(--color-beta-200);
+  --color-gamma-300: var(--color-beta-300);
+  --color-gamma-400: var(--color-beta-400);
+  --color-gamma-500: var(--color-beta-500);
+
+
+  /* Purple Theme */
+  /* --color-gamma: #D4C7E6;
   --color-gamma-100: #BEABD9;
   --color-gamma-200: #A88ECC;
   --color-gamma-300: #9372C0;
   --color-gamma-400: #7D56B3;
-  --color-gamma-500: #69469B;
+  --color-gamma-500: #69469B; */
+
+  /* Blue Theme */
+  /* --color-gamma: #E6F1F8;
+  --color-gamma-100: #2687C5;
+  --color-gamma-200: #0067A8;
+  --color-gamma-300: #005083;
+  --color-gamma-400: #00395E;
+  --color-gamma-500: #002238; */
+
+
+  /* Yellow Theme */
+  /* --color-gamma: #D4C7E6;
+  --color-gamma-100: #F8F32B;
+  --color-gamma-200: #F8F412;
+  --color-gamma-300: #DAD607;
+  --color-gamma-400: #B2AF06;
+  --color-gamma-500: #8A8805; */
 
   /* --color-gamma-00:
     --color-gamma-00:
     --color-gamma-00: */
-
   --primary-gold-500: #F8F32B;
+  --primary-teal-500: #5CFFD3;
 }
 
 .card {
@@ -132,16 +147,24 @@
 body {
   border-top: 2vh solid var(--color-beta-500);
   background: linear-gradient(var(--color-gamma), var(--color-gamma-500));
+  /* background: linear-gradient(var(--primary-gold-500), var(--color-gamma-100)); */
   background-repeat: no-repeat;
   color: var(--color-alpha-800);
   margin: 0;
   font-family: 'Rubik', sans-serif;
   min-height: 100vh;
+  -webkit-transition: background-color 1000ms linear;
+  -ms-transition: background-color 1000ms linear;
+  transition: background-color 1000ms linear;
 
 }
 
 .dark {
   color: white;
+}
+
+path {
+  filter: drop-shadow(0 -1px 10px var(--primary-teal-500));
 }
 
 .dark {

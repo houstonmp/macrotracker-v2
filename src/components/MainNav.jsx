@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import styles from './MainNav.module.css'
 
-
 import {
     HomeIcon,
     DumbbellIcon,
@@ -12,9 +11,6 @@ import {
     SunIcon,
     MoonIcon
 } from '../assets/Icons';
-import { useState } from 'react';
-import useThemeDetector from '../hooks/use-theme';
-// import HomeIcon from '../assets/Icons';
 
 
 

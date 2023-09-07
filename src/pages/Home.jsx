@@ -18,8 +18,8 @@ const Home = (props) => {
   )
 
   return <PageContent title="Home">
-    <Button onClick={props.onOpenModal}>Toggle</Button>
-    {props.showModal && <Modal onClose={props.onCloseModal}>{modalContent}</Modal>}
+    {/* <Button onClick={props.onOpenModal}>Toggle</Button>
+    {props.showModal && <Modal onClose={props.onCloseModal}>{modalContent}</Modal>} */}
   </PageContent>
 }
 

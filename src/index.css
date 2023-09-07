@@ -184,12 +184,14 @@ ul {
 }
 
 main {
-  margin: 2rem auto;
+  margin: 2rem 3rem;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-
+  flex-grow: 2;
+  flex-direction: column;
+  justify-content: flex-start;
+  /* flex-wrap: wrap; */
+  /* justify-content: center;
+  align-items: center; */
 }
 
 /* a {

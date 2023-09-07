@@ -53,7 +53,7 @@ function App() {
       },
       {
         path: 'food',
-        element: <Entry></Entry>,
+        element: <Entry showModal={showModal} onOpenModal={showModalHandler} onCloseModal={closeModalHandler}></Entry>,
       },
       {
         path: 'insights',

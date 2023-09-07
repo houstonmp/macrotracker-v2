@@ -59,6 +59,7 @@
     --color-gamma-00: */
 
   --primary-gold-500: #F8F32B;
+  color: black;
 }
 
 /* Dark Color Scheme */
@@ -131,12 +132,16 @@
 body {
   border-top: 2vh solid var(--color-beta-500);
   background: linear-gradient(var(--color-gamma), var(--color-gamma-500));
-
   background-repeat: no-repeat;
   color: var(--color-alpha-800);
   margin: 0;
   font-family: 'Rubik', sans-serif;
   min-height: 100vh;
+
+}
+
+.dark {
+  color: white;
 }
 
 .dark {

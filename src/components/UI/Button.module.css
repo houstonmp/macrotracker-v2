@@ -2,7 +2,7 @@
     background-color: var(--color-beta-100);
     padding: .5rem 1rem;
     border-radius: 3px;
-    color: white;
+    color: inherit
 }
 
 .button:hover {

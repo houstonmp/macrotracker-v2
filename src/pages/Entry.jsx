@@ -17,6 +17,8 @@ const Entry = (props) => {
     )
 
     return <>
+        <PageContent title="Entry">
+        </PageContent>
         <div classes={classes.check}>
             <EntryCard onModal={props.onOpenModal} />
             <Card classes='.checkData'>
@@ -28,7 +30,7 @@ const Entry = (props) => {
         </Card>
         {props.showModal && <Modal onClose={props.onCloseModal}>{modalContent}</Modal>}
     </>
-    // <PageContent title="Entry">
+    // 
 
     // <Button onClick={props.onOpenModal}>Toggle</Button>
 

@@ -3,7 +3,10 @@ import classes from "./Settings.module.css"
 
 const Settings = props => {
     return <>
-        <h1 className={classes.header}>Settings</h1>
+        <div className={classes.settings}>
+            <PageContent title="Settings" classes={classes.settings}>
+            </PageContent>
+        </div>
     </>
 }
 

@@ -1,3 +1,10 @@
 .button {
-    background-color: var(--primary-teal-500);
+    background-color: var(--color-beta-100);
+    padding: .5rem 1rem;
+    border-radius: 3px;
+    color: white;
+}
+
+.button:hover {
+    background-color: var(--color-beta-500);
 }

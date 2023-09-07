@@ -5,15 +5,15 @@ import Card from './Card';
 const Backdrop = props => {
     return <div onClick={props.onClose} className={styles.backdrop}>
 
-           </div>
+    </div>
 }
 
 const ModalOverlay = props => {
-    return  <div className={styles.modal}>
-                <div className={styles.content}>
-                    {props.children}
-                </div>
-            </div>
+    return <Card classes={styles.modal}>
+        <div className={styles.content}>
+            {props.children}
+        </div>
+    </Card>
 }
 
 const portalElement = document.getElementById('overlays');

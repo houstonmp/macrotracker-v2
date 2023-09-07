@@ -7,12 +7,30 @@ import Entry from './pages/Entry';
 import Waves from "./assets/Waves";
 import Calendar from "./pages/Calendar";
 import Insights from "./pages/Insights";
+import Settings from "./pages/settings/Settings"
+import { useEffect } from 'react'
+import useThemeDetector from "./hooks/use-theme";
 
 // import MainNav from './components/MainNav'
 import { createBrowserRouter, Router, RouterProvider } from "react-router-dom";
 
+
+
 function App() {
   const [showModal, setModal] = useState(false);
+  const [isDarkTheme, toggleTheme] = useThemeDetector();
+
+  useEffect(() => {
+    console.log('Entered')
+    const body = document.querySelector('body');
+    if (isDarkTheme) {
+      console.log('Entered dark')
+      body.classList = 'dark';
+    } else {
+      console.log('Entered light')
+      body.classList = 'light';
+    }
+  }, [isDarkTheme])
 
   const showModalHandler = () => {
     setModal(true);
@@ -23,7 +41,7 @@ function App() {
 
   const router = createBrowserRouter([{
     path: '/',
-    element: <RootLayout></RootLayout>,
+    element: <RootLayout onTheme={toggleTheme} isDark={isDarkTheme}></RootLayout>,
     children: [
       {
         index: true,
@@ -46,7 +64,22 @@ function App() {
         element: <Calendar></Calendar>,
       }
     ]
-  }])
+  },
+
+  {
+    path: '/settings',
+    element: <RootLayout onTheme={toggleTheme} isDark={isDarkTheme} classes="settings" />,
+    children: [
+      {
+        index: true,
+        element: <Settings />
+      },
+    ]
+  }
+
+
+
+  ])
 
 
   return (
@@ -55,7 +88,7 @@ function App() {
       <div router={router}>
         <RouterProvider router={router} />
         <Waves />
-      </div>
+      </div >
 
 
     </>

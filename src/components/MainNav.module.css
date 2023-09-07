@@ -1,7 +1,7 @@
 .header {
   display: flex;
   justify-content: space-between;
-  background-color: var(--dark-green-400);
+  background-color: var(--color-alpha-400);
 }
 
 .list {
@@ -11,7 +11,7 @@
   flex-wrap: nowrap;
 }
 
-.list :nth-last-child(1) {
+.list :nth-last-child(2) {
   margin-top: auto;
 }
 
@@ -33,18 +33,18 @@
 .list a.active {
   transition: all .6s;
   text-decoration: overline;
-  background-color: var(--dark-green);
+  background-color: var(--color-alpha);
 
 }
 
 .list a:hover *,
 .list a.active * {
   transition: all .2s;
-  fill: var(--dark-green-500);
+  fill: var(--color-alpha-500);
 }
 
 .list button {
-  background-color: var(--dark-green-500);
+  background-color: var(--color-alpha-500);
   fill: var(--primary-gold-500);
 }
 

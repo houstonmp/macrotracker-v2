@@ -163,8 +163,10 @@ body {
   color: white;
 }
 
-path {
-  filter: drop-shadow(0 -1px 10px var(--primary-teal-500));
+.dark .waves path {
+  filter: none;
+  transition: filter 3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  filter: drop-shadow(0 -3px 4px var(--primary-teal-500));
 }
 
 .dark {

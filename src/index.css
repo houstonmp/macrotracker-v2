@@ -27,16 +27,16 @@
   --color-blue-gray-800: #000B0B;
   --color-blue-gray-900: #000404;
 
-  --light-green: #ECF9E6;
-  --light-green-100: #CFF0BF;
-  --light-green-200: #A8E48C;
-  --light-green-300: #82D859;
-  --light-green-400: #5BCC26;
-  --light-green-500: #38B000;
-  --light-green-600: #2B8900;
-  --light-green-700: #1F6200;
-  --light-green-800: #061300;
-  --light-green-900: #061300;
+  --color-light-green: #ECF9E6;
+  --color-light-green-100: #CFF0BF;
+  --color-light-green-200: #A8E48C;
+  --color-light-green-300: #82D859;
+  --color-light-green-400: #5BCC26;
+  --color-light-green-500: #38B000;
+  --color-light-green-600: #2B8900;
+  --color-light-green-700: #1F6200;
+  --color-light-green-800: #061300;
+  --color-light-green-900: #061300;
 
   --color-primary-blue: #E6F1F8;
   --color-primary-blue-100: #BFDCEE;
@@ -148,6 +148,15 @@
   --color-gamma-500: var(--color-light-yellow-500);
 }
 
+.light.green {
+  --color-gamma: var(--color-light-green);
+  --color-gamma-100: var(--color-light-green-100);
+  --color-gamma-200: var(--color-light-green-200);
+  --color-gamma-300: var(--color-light-green-300);
+  --color-gamma-400: var(--color-light-green-400);
+  --color-gamma-500: var(--color-light-green-500);
+}
+
 .dark {
   --backdrop-color: #889ca740;
 
@@ -185,6 +194,10 @@
 
 .dark.yellow {
   --glow-color: var(--color-light-yellow-100);
+}
+
+.dark.green {
+  --glow-color: var(--color-light-green-300);
 }
 
 

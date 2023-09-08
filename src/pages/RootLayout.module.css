@@ -3,14 +3,3 @@
     flex-direction: row;
     height: 98vh;
 }
-
-.settings {
-    transition: background .9s;
-    background-color: var(--color-beta-100);
-    flex-basis: 1rem;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin: 0;
-    flex: 2;
-    color: inherit;
-}

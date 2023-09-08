@@ -21,7 +21,7 @@ const SettingsContent = (props) => {
         <h1>Themes</h1>
         <ul>
             <li>
-                <a id='default' className={classes['theme-select']} onClick={onThemeChangeHandler}>default</a>
+                <a id='teal' className={classes['theme-select']} onClick={onThemeChangeHandler}>teal</a>
             </li>
             <li>
                 <a id='purple' className={classes['theme-select']} onClick={onThemeChangeHandler}>purple</a>
@@ -31,6 +31,9 @@ const SettingsContent = (props) => {
             </li>
             <li>
                 <a id='green' className={classes['theme-select']} onClick={onThemeChangeHandler}>green</a>
+            </li>
+            <li>
+                <a id='blue' className={classes['theme-select']} onClick={onThemeChangeHandler}>blue</a>
             </li>
 
         </ul>

@@ -75,12 +75,12 @@
   --color-light-purple-500: #69469B;
 
   /* Blue Theme */
-  /* --color-gamma: #E6F1F8;
-      --color-gamma-100: #2687C5;
-      --color-gamma-200: #0067A8;
-      --color-gamma-300: #005083;
-      --color-gamma-400: #00395E;
-      --color-gamma-500: #002238; */
+  --color-blue: #E6F1F8;
+  --color-blue-100: #2687C5;
+  --color-blue-200: #0067A8;
+  --color-blue-300: #005083;
+  --color-blue-400: #00395E;
+  --color-blue-500: #002238;
 
 
   /* Yellow Theme */
@@ -90,11 +90,6 @@
   --color-light-yellow-300: #DAD607;
   --color-light-yellow-400: #B2AF06;
   --color-light-yellow-500: #8A8805;
-
-  /* --color-gamma-00:
-        --color-gamma-00:
-        --color-gamma-00: */
-
 }
 
 /* Dark Color Scheme */
@@ -157,6 +152,15 @@
   --color-gamma-500: var(--color-light-green-500);
 }
 
+.light.blue {
+  --color-gamma: var(--color-blue);
+  --color-gamma-100: var(--color-blue-100);
+  --color-gamma-200: var(--color-blue-200);
+  --color-gamma-300: var(--color-blue-300);
+  --color-gamma-400: var(--color-blue-400);
+  --color-gamma-500: var(--color-blue-500);
+}
+
 .dark {
   --backdrop-color: #889ca740;
 
@@ -198,6 +202,10 @@
 
 .dark.green {
   --glow-color: var(--color-light-green-300);
+}
+
+.dark.blue {
+  --glow-color: var(--color-blue-100);
 }
 
 

@@ -21,16 +21,12 @@ import { useSelector } from 'react-redux'
 
 function App() {
   const isModal = useSelector(state => state.ui.modal.modalIsVisible);
-  const isDark = useSelector(state => state.ui.theme.isDark)
+  const { lightMode, themeName } = useSelector(state => { return state.ui.theme });
 
   useEffect(() => {
     const body = document.querySelector('body');
-    if (isDark) {
-      body.classList = 'dark';
-    } else {
-      body.classList = 'light';
-    }
-  }, [isDark])
+    body.classList = `${lightMode} ${themeName}`
+  }, [lightMode, themeName])
 
   const router = createBrowserRouter([{
     path: '/',

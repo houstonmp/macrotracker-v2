@@ -20,7 +20,7 @@ const setThemeDetector = () => {
     }, []);
 
 
-    dispatch(uiActions.setIsDark(isDarkTheme));
+    dispatch(uiActions.setLightMode(isDarkTheme));
 }
 
 export default setThemeDetector;

@@ -18,10 +18,15 @@ import { uiActions } from './store/ui-slice';
 
 const MainNav = (props) => {
     const dispatch = useDispatch();
-    const isDark = useSelector(state => state.ui.theme.isDark);
+    const lightMode = useSelector(state => state.ui.theme.lightMode);
 
     const onToggleHandler = () => {
-        dispatch(uiActions.setIsDark(!isDark))
+        if (lightMode === 'light') {
+            dispatch(uiActions.setLightMode('dark'));
+        }
+        else if (lightMode === 'dark') {
+            dispatch(uiActions.setLightMode('light'));
+        }
     }
 
     return <section className={styles.header}>
@@ -53,8 +58,8 @@ const MainNav = (props) => {
             </li>
             <li>
                 <button onClick={onToggleHandler}>
-                    {!isDark && <SunIcon applyFill="var(--color-alpha)"></SunIcon>}
-                    {isDark && <MoonIcon applyFill="var(--color-alpha"></MoonIcon>}
+                    {!lightMode && <SunIcon applyFill="var(--color-alpha)"></SunIcon>}
+                    {lightMode && <MoonIcon applyFill="var(--color-alpha"></MoonIcon>}
                 </button>
             </li>
             <li>

@@ -9,8 +9,8 @@ const uiSlice = createSlice({
         },
         theme: {
             themeName: 'default',
-            isDark: false
-            // isDark: setThemeDetector()
+            lightMode: 'light'
+            // lightMode: setThemeDetector()
         }
     },
     reducers: {
@@ -26,8 +26,8 @@ const uiSlice = createSlice({
             state.modal.modalIsVisible = false;
             state.modal.modalInformation = null;
         },
-        setIsDark(state, action) {
-            state.theme.isDark = action.payload;
+        setLightMode(state, action) {
+            state.theme.lightMode = action.payload;
         },
         setTheme(state, action) {
             state.theme.themeName = action.payload;

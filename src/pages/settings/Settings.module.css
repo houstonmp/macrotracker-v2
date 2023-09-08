@@ -1,3 +1,11 @@
 .settings {
     margin: 2rem 3rem;
 }
+
+.theme-select {
+    cursor: pointer;
+}
+
+.theme-select:hover {
+    color: white;
+}

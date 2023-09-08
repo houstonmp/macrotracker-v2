@@ -35,6 +35,9 @@ const SettingsContent = (props) => {
             <li>
                 <a id='blue' className={classes['theme-select']} onClick={onThemeChangeHandler}>blue</a>
             </li>
+            <li>
+                <a id='red' className={classes['theme-select']} onClick={onThemeChangeHandler}>red</a>
+            </li>
 
         </ul>
     </PageContent>

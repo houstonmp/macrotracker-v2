@@ -8,7 +8,7 @@ const uiSlice = createSlice({
             modalInformation: null,
         },
         theme: {
-            themeName: 'default',
+            themeName: 'teal',
             lightMode: 'light'
             // lightMode: setThemeDetector()
         },

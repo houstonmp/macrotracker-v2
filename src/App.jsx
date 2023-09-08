@@ -12,40 +12,33 @@ import { useEffect } from 'react'
 import useThemeDetector from "./hooks/use-theme";
 
 // import MainNav from './components/MainNav'
-import { createBrowserRouter, Router, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import { useSelector } from 'react-redux'
+
 
 
 
 function App() {
-  const [showModal, setModal] = useState(false);
-  const [isDarkTheme, toggleTheme] = useThemeDetector();
+  const isModal = useSelector(state => state.ui.modal.modalIsVisible);
+  const isDark = useSelector(state => state.ui.theme.isDark)
 
   useEffect(() => {
-    console.log('Entered')
     const body = document.querySelector('body');
-    if (isDarkTheme) {
-      console.log('Entered dark')
+    if (isDark) {
       body.classList = 'dark';
     } else {
-      console.log('Entered light')
       body.classList = 'light';
     }
-  }, [isDarkTheme])
-
-  const showModalHandler = () => {
-    setModal(true);
-  }
-  const closeModalHandler = () => {
-    setModal(false);
-  }
+  }, [isDark])
 
   const router = createBrowserRouter([{
     path: '/',
-    element: <RootLayout onTheme={toggleTheme} isDark={isDarkTheme}></RootLayout>,
+    element: <RootLayout></RootLayout>,
     children: [
       {
         index: true,
-        element: <Home showModal={showModal} onOpenModal={showModalHandler} onCloseModal={closeModalHandler}></Home>,
+        element: <Home></Home>,
       },
       {
         path: 'workout',
@@ -53,7 +46,7 @@ function App() {
       },
       {
         path: 'food',
-        element: <Entry showModal={showModal} onOpenModal={showModalHandler} onCloseModal={closeModalHandler}></Entry>,
+        element: <Entry></Entry>,
       },
       {
         path: 'insights',
@@ -68,7 +61,7 @@ function App() {
 
   {
     path: '/settings',
-    element: <RootLayout onTheme={toggleTheme} isDark={isDarkTheme} classes="settings" />,
+    element: <RootLayout classes="settings" />,
     children: [
       {
         index: true,
@@ -84,13 +77,11 @@ function App() {
 
   return (
     <>
-      {/* <Home></Home> */}
       <div router={router}>
         <RouterProvider router={router} />
         <Waves />
-      </div >
-
-
+        {isModal && <Modal></Modal>}
+      </div>
     </>
   );
 }

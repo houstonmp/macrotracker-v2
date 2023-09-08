@@ -11,12 +11,17 @@ import {
     SunIcon,
     MoonIcon
 } from '../assets/Icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { uiActions } from './store/ui-slice';
 
 
 
 const MainNav = (props) => {
+    const dispatch = useDispatch();
+    const isDark = useSelector(state => state.ui.theme.isDark);
+
     const onToggleHandler = () => {
-        props.onTheme(!props.isDark);
+        dispatch(uiActions.setIsDark(!isDark))
     }
 
     return <section className={styles.header}>
@@ -48,8 +53,8 @@ const MainNav = (props) => {
             </li>
             <li>
                 <button onClick={onToggleHandler}>
-                    {!props.isDark && <SunIcon applyFill="var(--color-alpha)"></SunIcon>}
-                    {props.isDark && <MoonIcon applyFill="var(--color-alpha"></MoonIcon>}
+                    {!isDark && <SunIcon applyFill="var(--color-alpha)"></SunIcon>}
+                    {isDark && <MoonIcon applyFill="var(--color-alpha"></MoonIcon>}
                 </button>
             </li>
             <li>

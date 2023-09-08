@@ -1,26 +1,29 @@
 import PageContent from "../components/PageContent"
-import Button from '../components/UI/Button'
-import Modal from "../components/UI/Modal"
 import Card from "../components/UI/Card"
 import EntryCard from "../components/EntryCard"
 import classes from "./Entry.module.css"
 
-const Entry = (props) => {
 
-    let modalContent = (
-        <>
-            <h1>Modal</h1>
-            <section>
-                <p>This is some content.</p>
-            </section>
-        </>
-    )
+import { useDispatch, useSelector } from 'react-redux'
+import { uiActions } from "../components/store/ui-slice";
+
+const Entry = (props) => {
+    const dispatch = useDispatch();
+
+    const showModalHandler = (e) => {
+        dispatch(uiActions.showModal({
+            title: 'Entry',
+            message: null,
+            componentName: e.target.name
+        })
+        )
+    }
 
     return <>
         <PageContent title="Entry">
         </PageContent>
         <div classes={classes.check}>
-            <EntryCard onModal={props.onOpenModal} />
+            <EntryCard onModal={showModalHandler} />
             <Card classes='.checkData'>
 
             </Card>
@@ -28,13 +31,8 @@ const Entry = (props) => {
         <Card classes={classes.calorieTracker}>
 
         </Card>
-        {props.showModal && <Modal onClose={props.onCloseModal}>{modalContent}</Modal>}
+
     </>
-    // 
-
-    // <Button onClick={props.onOpenModal}>Toggle</Button>
-
-    // </PageContent>
 }
 
 export default Entry;

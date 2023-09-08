@@ -6,8 +6,8 @@ const EntryCard = (props) => {
         <h3>Recipes</h3>
         <h3>Items</h3>
         <h3>Today's Mealplan</h3>
-        <Button onClick={props.onModal}>+ Add</Button>
-        <Button onClick={props.onModal}>+ Search</Button>
+        <Button name='recipe' onClick={props.onModal}>+ Add</Button>
+        <Button name='item' onClick={props.onModal}>+ Search</Button>
     </Card >
 }
 

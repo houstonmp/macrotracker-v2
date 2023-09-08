@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-between;
   background-color: var(--color-alpha-400);
+  position: relative;
 }
 
 .list {
@@ -30,7 +31,9 @@
 }
 
 .list a:hover,
-.list a.active {
+.list a.active,
+.list button:hover,
+.list button.active {
   transition: all .6s;
   text-decoration: overline;
   background-color: var(--color-alpha);
@@ -38,16 +41,17 @@
 }
 
 .list a:hover *,
-.list a.active * {
+.list a.active *,
+.list button:hover *,
+.list button.active * {
   transition: all .2s;
   fill: var(--color-alpha-500);
 }
 
 .list button {
   background-color: var(--color-alpha-500);
-  fill: var(--primary-gold-500);
 }
 
-.list button * {
-  fill: var(--color-gold-500);
+.list button.active {
+  fill: var(--color-alpha-500);
 }

@@ -11,6 +11,9 @@ const uiSlice = createSlice({
             themeName: 'default',
             lightMode: 'light'
             // lightMode: setThemeDetector()
+        },
+        settings: {
+            settingsIsVisible: false
         }
     },
     reducers: {
@@ -31,6 +34,9 @@ const uiSlice = createSlice({
         },
         setTheme(state, action) {
             state.theme.themeName = action.payload;
+        },
+        toggleSettings(state, action) {
+            state.settings.settingsIsVisible = !state.settings.settingsIsVisible;
         }
     }
 })

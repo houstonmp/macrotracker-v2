@@ -17,8 +17,8 @@ const DUMMY_ARRAY = [
         name: 'Eggs',
         calories: 72,
         tFat: 13,
-        protein: 30,
-        carbs: 25
+        tProtein: 30,
+        tCarbs: 25
         // fiber: 
     },
     {
@@ -26,8 +26,8 @@ const DUMMY_ARRAY = [
         name: 'Pancakes',
         calories: 132,
         tFat: 5,
-        protein: 10,
-        carbs: 15
+        tProtein: 10,
+        tCarbs: 15
         // fiber: 
     },
     {
@@ -35,8 +35,8 @@ const DUMMY_ARRAY = [
         name: 'Cereal',
         calories: 150,
         tFat: 4,
-        protein: 50,
-        carbs: 65
+        tProtein: 50,
+        tCarbs: 65
         // fiber: 
     },
 ]

@@ -81,10 +81,10 @@ const EntryCard = (props) => {
                             {item.calories}
                         </td>
                         <td key={`protein-${item.name}`}>
-                            {item.protein}
+                            {item.tProtein}
                         </td>
                         <td key={`carbs-${item.name}`}>
-                            {item.carbs}
+                            {item.tCarbs}
                         </td>
                         <td key={`fat-${item.name}`}>
                             {item.tFat}

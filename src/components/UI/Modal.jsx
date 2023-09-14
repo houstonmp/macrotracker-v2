@@ -38,6 +38,17 @@ const ModalOverlay = () => {
                 </li>
             </Form>);
             break;
+        case 'workout':
+            modalData = (<Form>
+                <li>
+                    <label htmlFor="w1" />
+                    <input type="text" required />
+                    <label htmlFor="kg" />
+                    <input type="radio" name="kg" require />
+                    <label htmlFor="kg" />
+                    <input type="radio" name="lbs" require />
+                </li>
+            </Form>)
         default:
             modalData = <p>Sorry nothing to show at this time...</p>
     }

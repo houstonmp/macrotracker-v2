@@ -22,14 +22,25 @@ const Workout = () => {
         }
     }
 
-    const onAddWeightHandler = () => {
+    // const onAddWeightHandler = () => {
 
-        dispatch(weightActions.updateWeight());
+    //     dispatch(weightActions.updateWeight());
+    // }
+
+    const dispatch = useDispatch();
+
+    const showModalHandler = (e) => {
+        dispatch(uiActions.showModal({
+            title: 'Entry',
+            message: null,
+            componentName: e.target.name
+        })
+        )
     }
 
 
     return <PageContent title="Chart">
-        <WeightEntry onAddWeight={onAddWeightHandler} />
+        <WeightEntry onModal={showModalHandler} />
         <Card>
 
         </Card>

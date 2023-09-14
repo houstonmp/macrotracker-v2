@@ -261,6 +261,7 @@ body {
   display: flex;
   flex-direction: row;
   height: 98vh;
+
 }
 
 ul {
@@ -275,9 +276,16 @@ main {
   flex-grow: 2;
   flex-direction: column;
   justify-content: flex-start;
+  overflow: none auto;
   /* flex-wrap: wrap; */
   /* justify-content: center;
   align-items: center; */
+}
+
+@media only screen and (max-width: 768px) {
+  .root {
+    flex-direction: column;
+  }
 }
 
 /* a {

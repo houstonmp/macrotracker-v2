@@ -1,0 +1,30 @@
+.table {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.table .thead,
+.table .tbody,
+.table tr {
+    display: contents;
+}
+
+.table td,
+.table tr {
+    text-align: center;
+}
+
+/* .table .thead,
+.table .tbody,
+.table tr {
+    display: flex;
+    flex-grow: 1;
+    min-width: 100%;
+    flex-wrap: wrap;
+}
+
+.table td,
+.table th,
+.table tr {
+    flex-grow: 1;
+} */

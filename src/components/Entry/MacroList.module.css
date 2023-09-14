@@ -1,0 +1,13 @@
+.macros {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.macros div {
+    flex-grow: 1;
+}
+
+.macros div>h1 {
+    margin-bottom: .5rem;
+}

@@ -5,7 +5,7 @@ function PageContent({ title, children }) {
   return (
     <>
       <h1>{title}</h1>
-      <div>
+      <div className={classes.container}>
         {children}
       </div>
 

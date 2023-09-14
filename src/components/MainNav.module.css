@@ -55,3 +55,18 @@
 .list button.active {
   fill: var(--color-alpha-500);
 }
+
+@media only screen and (max-width: 768px) {
+  .list {
+    flex-direction: row-reverse;
+    align-items: flex-start;
+  }
+
+  .list * {
+    flex-grow: 1;
+  }
+
+  /* .header {
+    display: block;
+  } */
+}

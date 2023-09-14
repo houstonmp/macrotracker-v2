@@ -1,6 +1,7 @@
 .button {
     background-color: var(--color-beta-100);
     padding: .5rem 1rem;
+    margin: .5rem;
     border-radius: 3px;
     color: inherit
 }

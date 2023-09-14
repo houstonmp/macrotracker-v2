@@ -11,7 +11,7 @@ const weightSlice = createSlice({
         },
         srchDate(state, action) {
             return state.weightObj.findIndex((el) => {
-                return el.date === action.date;
+                return el.date.toJSON().slice(0, 10) === action.date.toJSON().slice(0, 10);
             })
         },
         updateWeight(state, action) {

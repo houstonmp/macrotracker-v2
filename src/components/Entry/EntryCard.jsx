@@ -3,6 +3,8 @@ import Button from '../UI/Button';
 import classes from './EntryCard.module.css'
 import Form from '../Form/Form'
 import Table from "../UI/Table";
+import { useDispatch } from 'react-redux';
+import { foodDiaryActions } from '../store/food-diary-slice';
 
 
 export const RecipeForm = () => {
@@ -31,6 +33,18 @@ export const RecipeForm = () => {
 }
 
 const EntryCard = (props) => {
+    const dispatch = useDispatch();
+
+    const onClickHandler = (e) => {
+        const index = e.currentTarget.id;
+        dispatch(foodDiaryActions.updateDiary({
+            type: "UPDATE",
+            date: new Date().toJSON().slice(0, 10),
+            data: props.foodItems[index]
+        })
+        )
+    }
+
     return <Card classes={classes.recipe} >
         <header className={classes.header}>
             <h3>Recipes</h3>
@@ -57,21 +71,22 @@ const EntryCard = (props) => {
                     </th>
                 </tr>
             }>
-                {props.foodItems.map(item => {
-                    return (<tr>
-                        <td>
+                {props.foodItems.map((item, index) => {
+                    const identifier = Math.floor(Math.random * 10000);
+                    return (<tr key={`${item.name}-${index}`} id={index} onClick={onClickHandler}>
+                        <td key={`name-${item.name}`}>
                             {item.name}
                         </td>
-                        <td>
+                        <td key={`cal-${item.name}`}>
                             {item.calories}
                         </td>
-                        <td>
+                        <td key={`protein-${item.name}`}>
                             {item.protein}
                         </td>
-                        <td>
+                        <td key={`carbs-${item.name}`}>
                             {item.carbs}
                         </td>
-                        <td>
+                        <td key={`fat-${item.name}`}>
                             {item.tFat}
                         </td>
                     </tr>)
@@ -83,7 +98,7 @@ const EntryCard = (props) => {
 
         </article>
         <footer className={classes.footer}>
-            <Button name='recipe' onClick={props.onModal}>+ Add</Button>
+            <Button name='recipe' onClick={props.onModal}>+ Create Item</Button>
             <Button name='item' onClick={props.onModal}>+ Search</Button>
         </footer>
     </Card >

@@ -6,8 +6,10 @@
 
 .macros div {
     flex-grow: 1;
+    margin-bottom: 1rem;
 }
 
 .macros div>h1 {
     margin-bottom: .5rem;
+    font-size: 2rem;
 }

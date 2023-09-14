@@ -13,6 +13,7 @@ import useThemeDetector from "./hooks/use-theme";
 
 // import MainNav from './components/MainNav'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// import { AnimatedSwitch } from "react-router-transition";
 
 import { useSelector } from 'react-redux'
 
@@ -73,9 +74,17 @@ function App() {
   return (
     <>
       <div router={router}>
+
         <RouterProvider router={router} />
+        {/* <AnimatedSwitch
+          atEnter={{ opacity: 0 }}
+          atLeave={{ opacity: 0 }}
+          atActive={{ opacity: 1 }}
+          className="switch-wrapper"
+        > */}
         <Waves />
         {isModal && <Modal></Modal>}
+        {/* </AnimatedSwitch> */}
       </div>
     </>
   );

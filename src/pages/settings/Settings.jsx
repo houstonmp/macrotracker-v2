@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import PageContent from "../../components/PageContent";
 import classes from "./Settings.module.css"
 import { uiActions } from "../../components/store/ui-slice";
+import Card from "../../components/UI/Card"
 
 const Background = (props) => {
     return <main className="settings">
@@ -18,28 +19,31 @@ const SettingsContent = (props) => {
         dispatch(uiActions.setTheme(e.target.id));
     }
     return <PageContent title="Settings" classes={classes.settings}>
-        <h1>Themes</h1>
-        <ul>
-            <li>
-                <a id='teal' className={classes['theme-select']} onClick={onThemeChangeHandler}>teal</a>
-            </li>
-            <li>
-                <a id='purple' className={classes['theme-select']} onClick={onThemeChangeHandler}>purple</a>
-            </li>
-            <li>
-                <a id='yellow' className={classes['theme-select']} onClick={onThemeChangeHandler}>yellow</a>
-            </li>
-            <li>
-                <a id='green' className={classes['theme-select']} onClick={onThemeChangeHandler}>green</a>
-            </li>
-            <li>
-                <a id='blue' className={classes['theme-select']} onClick={onThemeChangeHandler}>blue</a>
-            </li>
-            <li>
-                <a id='red' className={classes['theme-select']} onClick={onThemeChangeHandler}>red</a>
-            </li>
+        <Card>
+            <h1>Themes</h1>
+            <ul>
+                <li>
+                    <a id='teal' className={classes['theme-select']} onClick={onThemeChangeHandler}>teal</a>
+                </li>
+                <li>
+                    <a id='purple' className={classes['theme-select']} onClick={onThemeChangeHandler}>purple</a>
+                </li>
+                <li>
+                    <a id='yellow' className={classes['theme-select']} onClick={onThemeChangeHandler}>yellow</a>
+                </li>
+                <li>
+                    <a id='green' className={classes['theme-select']} onClick={onThemeChangeHandler}>green</a>
+                </li>
+                <li>
+                    <a id='blue' className={classes['theme-select']} onClick={onThemeChangeHandler}>blue</a>
+                </li>
+                <li>
+                    <a id='red' className={classes['theme-select']} onClick={onThemeChangeHandler}>red</a>
+                </li>
 
-        </ul>
+            </ul>
+        </Card>
+
     </PageContent>
 }
 

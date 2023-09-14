@@ -41,27 +41,27 @@ const MainNav = (props) => {
 
         <ul className={styles.list}>
             <li>
-                <NavLink to="/" alt="home" className={({ isActive }) => (isActive ? styles.active : '')} end>
+                <NavLink to="/" title="Home" className={({ isActive }) => (isActive ? styles.active : '')} end>
                     <HomeIcon applyFill="var(--color-alpha)"></HomeIcon>
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/workout" alt="workout" className={({ isActive }) => (isActive ? styles.active : '')}>
+                <NavLink to="/workout" title="Workout" className={({ isActive }) => (isActive ? styles.active : '')}>
                     <DumbbellIcon applyFill="var(--color-alpha)"></DumbbellIcon>
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/food" alt="home" className={({ isActive }) => (isActive ? styles.active : '')}>
+                <NavLink to="/food" title="Food" className={({ isActive }) => (isActive ? styles.active : '')}>
                     <UtensilsIcon applyFill="var(--color-alpha)"></UtensilsIcon>
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/insights" alt="insights" className={({ isActive }) => (isActive ? styles.active : '')}>
+                <NavLink to="/insights" title="Insights" className={({ isActive }) => (isActive ? styles.active : '')}>
                     <ChartIcon applyFill="var(--color-alpha)"></ChartIcon>
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/calendar" alt="calendar" className={({ isActive }) => (isActive ? styles.active : '')}>
+                <NavLink to="/calendar" title="Calendar" className={({ isActive }) => (isActive ? styles.active : '')}>
                     <CalendarIcon applyFill="var(--color-alpha)"></CalendarIcon>
                 </NavLink>
             </li>

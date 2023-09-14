@@ -232,6 +232,8 @@
 
 body {
   border-top: 2vh solid var(--color-beta-500);
+  background: linear-gradient(white, white);
+  transition: background 3s;
   background: linear-gradient(var(--color-gamma), var(--color-gamma-500));
   /* background: linear-gradient(var(--primary-gold-500), var(--color-gamma-100)); */
   background-repeat: no-repeat;
@@ -239,10 +241,6 @@ body {
   margin: 0;
   font-family: 'Rubik', sans-serif;
   min-height: 100vh;
-  -webkit-transition: background-color 1000ms linear;
-  -ms-transition: background-color 1000ms linear;
-  transition: background-color 1000ms linear;
-
 }
 
 .dark {

@@ -1,0 +1,32 @@
+.form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.form ul,
+.form ul li,
+.form ul li * {
+    display: flex;
+    flex-direction: row;
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    margin: 10px;
+}
+
+.form ul li {
+    margin: .4rem;
+}
+
+.form ul li input {
+    height: 1.5rem;
+    border-radius: 3px;
+}
+
+.form button {
+    align-self: flex-end;
+}
+
+/* {
+    flex-basis: 100%;
+} */

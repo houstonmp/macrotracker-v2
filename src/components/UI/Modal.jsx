@@ -6,6 +6,9 @@ import Form from '../Form/Form'
 import { useDispatch, useSelector } from 'react-redux'
 import { uiActions } from '../store/ui-slice';
 
+//Form Components
+import { RecipeForm } from '../Entry/EntryCard';
+
 const Backdrop = props => {
     const dispatch = useDispatch();
 
@@ -19,16 +22,21 @@ const Backdrop = props => {
 }
 
 const ModalOverlay = () => {
-    const modalObj = useSelector(state => state.ui.modal.modalInformation)
+    const modalObj = useSelector(state => state.ui.modal.modalInformation);
 
     let modalData = null;
 
     switch (modalObj.componentName) {
         case 'recipe':
-            modalData = <Form></Form>;
+            modalData = <RecipeForm></RecipeForm>;
             break;
         case 'item':
-            modalData = <p>Please enter an item</p>
+            modalData = (<Form>
+                <li>
+                    <label htmlFor="i1" />
+                    <input type="text" required />
+                </li>
+            </Form>);
             break;
         default:
             modalData = <p>Sorry nothing to show at this time...</p>

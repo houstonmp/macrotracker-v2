@@ -3,14 +3,13 @@
     flex-direction: row;
     justify-content: space-around;
     flex-wrap: nowrap;
+    flex-grow: 1;
 }
 
 .checkData {
     flex-basis: 1;
-    flex-shrink: 1;
 }
 
 .calorieTracker {
-    flex-basis: 1;
     flex-grow: 2;
 }

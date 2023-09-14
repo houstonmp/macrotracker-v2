@@ -1,0 +1,24 @@
+.recipe {
+    display: flex;
+    flex: column;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    flex-grow: 1;
+}
+
+.recipe :is(article, header, footer) {
+    min-width: 100%;
+    margin: 10px auto
+}
+
+header,
+footer {
+    display: flex;
+    justify-content: space-around;
+}
+
+article {}
+
+footer>button {
+    margin: 10px
+}

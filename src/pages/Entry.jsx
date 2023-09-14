@@ -1,13 +1,24 @@
 import PageContent from "../components/PageContent"
 import Card from "../components/UI/Card"
-import EntryCard from "../components/EntryCard"
+import EntryCard from "../components/Entry/EntryCard"
 import classes from "./Entry.module.css"
 
 
 import { useDispatch, useSelector } from 'react-redux'
 import { uiActions } from "../components/store/ui-slice";
+import { weightActions } from "../components/store/weight-slice"
+
+const DUMMY_ARRAY = {
+    name: 'Eggs',
+    calories: 72,
+    tFat: 5,
+    // protein: 10, 
+    // fiber:
+}
 
 const Entry = (props) => {
+    // useSelector(state => state.weight.)
+
     const dispatch = useDispatch();
 
     const showModalHandler = (e) => {
@@ -19,19 +30,17 @@ const Entry = (props) => {
         )
     }
 
+
     return <>
         <PageContent title="Entry">
-        </PageContent>
-        <div classes={classes.check}>
-            <EntryCard onModal={showModalHandler} />
-            <Card classes='.checkData'>
+            <EntryCard classes={classes.check} onModal={showModalHandler} />
+            <Card classes={classes.check}>
 
             </Card>
-        </div>
-        <Card classes={classes.calorieTracker}>
+            <Card classes={classes.check}>
 
-        </Card>
-
+            </Card>
+        </PageContent>
     </>
 }
 

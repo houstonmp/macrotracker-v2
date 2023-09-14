@@ -1,23 +1,30 @@
 import { useDispatch } from "react-redux";
 import Button from "../UI/Button";
 import { uiActions } from "../store/ui-slice";
+import classes from './Form.module.css'
 
 const Form = props => {
     const dispatch = useDispatch();
 
     const formHandler = (e) => {
         e.preventDefault();
+        console.log(e.target);
+        props.onFormSubmit();
         dispatch(uiActions.closeModal());
     }
 
-    return <form onSubmit={formHandler}>
+    const onCancelHandler = (e) => {
+        e.preventDefault();
+        dispatch(uiActions.closeModal());
+    }
+
+    return <form onSubmit={formHandler} className={classes.form}>
         <ul>
-            <li>
-                <label htmlFor="i1" />
-                <input type="text" required />
-            </li>
+            {props.children}
+            <Button onClick={onCancelHandler}>Cancel</Button>
+            <Button type='submit'>Submit</Button>
         </ul>
-        <Button type='submit'>Submit</Button>
+
     </form>
 
 }

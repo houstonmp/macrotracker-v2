@@ -50,8 +50,11 @@ const FoodDiary = () => {
                 </tr>)
             })}
 
+
         </Table>
-    </Card>
+        {!foodDiary && <p style={{ 'text-align': 'center' }}>Add a recipe to get started</p>
+        }
+    </Card >
 }
 
 export default FoodDiary;

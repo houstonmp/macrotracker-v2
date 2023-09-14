@@ -61,12 +61,4 @@
     flex-direction: row-reverse;
     align-items: flex-start;
   }
-
-  .list * {
-    flex-grow: 1;
-  }
-
-  /* .header {
-    display: block;
-  } */
 }

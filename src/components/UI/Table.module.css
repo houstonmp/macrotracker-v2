@@ -14,10 +14,15 @@
     text-align: center;
 }
 
+.table tr:nth-child(2n) td {
+    background-color: var(--color-gamma-300);
+}
+
 .table tr:hover td {
-    background-color: var(--color-alpha-100);
+    background-color: var(--color-gamma-500);
     cursor: pointer;
 }
+
 
 /* .table .thead,
 .table .tbody,

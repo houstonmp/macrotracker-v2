@@ -197,7 +197,7 @@
   --color-gamma-400: var(--color-beta-400);
   --color-gamma-500: var(--color-beta-500);
 
-
+  --scroll-gamma: gray;
 }
 
 .dark.teal {
@@ -228,6 +228,28 @@
 .card {
   padding: 2em;
   border: 2px solid var(--light-green-300);
+}
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: var(--color-alpha-500) #ffffff;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: none;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-alpha-300);
+  border-radius: 12px;
+  border: 1px solid var(--scroll-gamma);
 }
 
 body {
@@ -262,8 +284,7 @@ body {
   display: flex;
   flex-direction: row;
   height: 98vh;
-  overflow-x: hidden;
-  overflow-y: scroll;
+
 }
 
 ul {
@@ -273,15 +294,13 @@ ul {
 }
 
 main {
-  margin: 2rem 3rem;
+  padding: 2rem 3rem;
   display: flex;
   flex-grow: 2;
   flex-direction: column;
   justify-content: flex-start;
-
-  /* flex-wrap: wrap; */
-  /* justify-content: center;
-  align-items: center; */
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 @media only screen and (max-width: 768px) {

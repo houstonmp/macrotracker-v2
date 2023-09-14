@@ -54,7 +54,6 @@ function App() {
       }
     ]
   },
-
   {
     path: '/settings',
     element: <RootLayout classes="settings" />,

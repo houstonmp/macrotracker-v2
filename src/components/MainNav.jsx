@@ -1,4 +1,5 @@
-import { NavLink } from 'react-router-dom';
+import { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './MainNav.module.css'
 
 import {
@@ -20,6 +21,7 @@ const MainNav = (props) => {
     const dispatch = useDispatch();
     const lightMode = useSelector(state => state.ui.theme.lightMode);
     const settingsIsVisible = useSelector(state => state.ui.settings.settingsIsVisible);
+    let settingsHREF = settingsIsVisible ? 'settings' : '/';
 
     const onToggleHandler = () => {
         if (lightMode === 'light') {
@@ -30,16 +32,19 @@ const MainNav = (props) => {
         }
     }
     const onToggleSettingsHandler = () => {
-        console.log(settingsIsVisible)
         dispatch(uiActions.toggleSettings());
     }
 
-    let settingsHREF = settingsIsVisible ? '/settings' : '..';
-    console.log(settingsHREF);
+
 
     return <section className={styles.header}>
 
         <ul className={styles.list}>
+            <li>
+                <NavLink to="/settings" title="Settings" onClick={onToggleSettingsHandler} alt="settings" className={({ isActive }) => (isActive ? styles.active : '')} end>
+                    <SettingIcon applyFill="var(--color-alpha)"></SettingIcon>
+                </NavLink>
+            </li>
             <li>
                 <NavLink to="/" title="Home" className={({ isActive }) => (isActive ? styles.active : '')} end>
                     <HomeIcon applyFill="var(--color-alpha)"></HomeIcon>
@@ -72,9 +77,9 @@ const MainNav = (props) => {
                 </button>
             </li>
             <li>
-                <button onClick={onToggleSettingsHandler} className={`settings ${settingsIsVisible && styles['active']}`}>
+                {/* <button onClick={onToggleSettingsHandler} className={`settings ${settingsIsVisible && styles['active']}`}>
                     <SettingIcon applyFill="var(--color-alpha)"></SettingIcon>
-                </button>
+                </button> */}
                 {/* <NavLink to={settingsHREF} onClick={onToggleSettingsHandler} alt="settings" className={({ isActive }) => (isActive ? styles.active : '')}>
                     <SettingIcon applyFill="var(--color-alpha)"></SettingIcon>
                 </NavLink> */}

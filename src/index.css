@@ -241,6 +241,7 @@ body {
   margin: 0;
   font-family: 'Rubik', sans-serif;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 .dark {
@@ -261,7 +262,8 @@ body {
   display: flex;
   flex-direction: row;
   height: 98vh;
-
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 ul {
@@ -276,7 +278,7 @@ main {
   flex-grow: 2;
   flex-direction: column;
   justify-content: flex-start;
-  overflow: none auto;
+
   /* flex-wrap: wrap; */
   /* justify-content: center;
   align-items: center; */

@@ -13,3 +13,9 @@
     margin-bottom: .5rem;
     font-size: 2rem;
 }
+
+@media only screen and (max-width: 768px) {
+    .macros div>h1 {
+        font-size: 1.25rem;
+    }
+}

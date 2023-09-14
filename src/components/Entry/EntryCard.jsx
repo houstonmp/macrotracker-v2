@@ -99,7 +99,7 @@ const EntryCard = (props) => {
         </article>
         <footer className={classes.footer}>
             <Button name='recipe' onClick={props.onModal}>+ Create Item</Button>
-            <Button name='item' onClick={props.onModal}>+ Search</Button>
+            {/* <Button name='item' onClick={props.onModal}>+ Search</Button> */}
         </footer>
     </Card >
 }

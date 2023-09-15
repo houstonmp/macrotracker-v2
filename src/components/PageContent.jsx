@@ -4,7 +4,7 @@ import Card from './UI/Card';
 function PageContent({ title, children }) {
   return (
     <>
-      <h1>{title}</h1>
+      <h1 className={classes.header}>{title}</h1>
       <div className={classes.container}>
         {children}
       </div>

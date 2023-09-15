@@ -259,7 +259,8 @@ body {
   background: linear-gradient(var(--color-gamma), var(--color-gamma-500));
   /* background: linear-gradient(var(--primary-gold-500), var(--color-gamma-100)); */
   background-repeat: no-repeat;
-  color: var(--color-alpha-800);
+  /* color: var(--color-alpha-800); */
+  color: var(--color-alpha-500);
   margin: 0;
   font-family: 'Rubik', sans-serif;
   min-height: 100vh;

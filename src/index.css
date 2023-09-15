@@ -268,7 +268,7 @@ body {
   color: var(--color-alpha-500);
   margin: 0;
   font-family: 'Rubik', sans-serif;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   overflow: scroll;
 }

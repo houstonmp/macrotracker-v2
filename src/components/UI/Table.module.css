@@ -1,7 +1,10 @@
 .table {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+    max-height: 15rem;
+    overflow-y: auto;
 }
+
 
 .table .thead,
 .table .tbody,

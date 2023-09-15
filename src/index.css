@@ -307,6 +307,11 @@ main {
   .root {
     flex-direction: column;
   }
+
+  main {
+    padding: 0;
+    margin: 0;
+  }
 }
 
 /* a {

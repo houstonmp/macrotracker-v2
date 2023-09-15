@@ -16,8 +16,6 @@ const MacroList = (props) => {
             return false;
         }
     })
-
-    console.log(foodDiary.macros);
     return <Card>
         <div className={classes.macros}>
             <div><h1>{foodDiary ? foodDiary.macros.calories : 0}</h1><span>kCal</span></div>

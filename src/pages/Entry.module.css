@@ -1,9 +1,5 @@
 .check {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    flex-wrap: nowrap;
-    flex-grow: 1;
+    max-height: 60%;
 }
 
 .checkData {

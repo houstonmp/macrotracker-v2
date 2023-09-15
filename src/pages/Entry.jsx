@@ -64,16 +64,10 @@ const Entry = (props) => {
         })
         )
     }
-
-    useEffect(() => {
-        console.log(DUMMY_CAL);
-    }, [DUMMY_CAL])
-
-
     return <>
         <PageContent title="Entry">
             <EntryCard classes={classes.check} onModal={showModalHandler} foodItems={DUMMY_ARRAY} />
-            <FoodDiary />
+            <FoodDiary classes={classes.check} />
             <MacroList macroList={DUMMY_CAL} />
         </PageContent >
     </>

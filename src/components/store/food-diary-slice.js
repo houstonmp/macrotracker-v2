@@ -10,13 +10,11 @@ const foodDiarySlice = createSlice({
             state.diaryObj = action.payload
         },
         srchDate(state, action) {
-            console.log("Reading Date", action)
             return state.diaryObj.findIndex(el => {
                 return el.date === action.payload.date;
             })
         },
         updateDiary(state, action) {
-            console.log(action);
             if (!state.diaryObj) {
                 state.diaryObj.push({
                     date: action.payload.date,
@@ -32,9 +30,7 @@ const foodDiarySlice = createSlice({
             let dateExists = state.diaryObj.findIndex(el => {
                 return el.date === action.payload.date;
             })
-            console.log(dateExists, "action.payload:", action.payload.data);
             if (dateExists > -1) {
-                console.log("dateExists:", dateExists, action.payload)
                 state.diaryObj[dateExists].food.push(action.payload.data);
                 state.diaryObj[dateExists].macros.calories += action.payload.data.calories;
                 state.diaryObj[dateExists].macros.tCarbs += action.payload.data.tCarbs;

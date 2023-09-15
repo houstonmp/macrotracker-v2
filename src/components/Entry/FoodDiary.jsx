@@ -52,7 +52,7 @@ const FoodDiary = () => {
 
 
         </Table>
-        {!foodDiary && <p style={{ 'text-align': 'center' }}>Add a recipe to get started</p>
+        {!foodDiary && <p style={{ textAlign: 'center' }}>Add a recipe to get started</p>
         }
     </Card >
 }

@@ -18,4 +18,8 @@
     .macros div>h1 {
         font-size: 1.25rem;
     }
+
+    .macros {
+        flex-wrap: wrap;
+    }
 }

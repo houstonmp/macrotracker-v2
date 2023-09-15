@@ -3,7 +3,14 @@
   border-radius: 6px;
   background-color: var(--color-gamma-100);
   padding: 1rem;
-  min-width: 25rem;
+  /* min-width: 25rem; */
   flex-basis: 40%;
   flex-grow: 1;
+}
+
+@media only screen and (max-width: 768px) {
+  .card {
+    width: 100%;
+    /* font-size: .5rem; */
+  }
 }

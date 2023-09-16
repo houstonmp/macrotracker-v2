@@ -44,11 +44,11 @@ html {
   --color-light-green-900: #061300;
 
   --color-light-red: #FFDAD6;
-  --color-light-red-100: #FF8370;
-  --color-light-red-200: #FF6047;
-  --color-light-red-300: #FF3D1F;
-  --color-light-red-400: #F52100;
-  --color-light-red-500: #CC1B00;
+  --color-light-red-100: #FFCAC2;
+  --color-light-red-200: #FFA799;
+  --color-light-red-300: #FF8370;
+  --color-light-red-400: #FF6047;
+  --color-light-red-500: #FF3D1F;
 
   --color-primary-blue: #E6F1F8;
   --color-primary-blue-100: #BFDCEE;
@@ -80,11 +80,11 @@ html {
 
   /* Purple Theme */
   --color-light-purple: #D4C7E6;
-  --color-light-purple-100: #BEABD9;
-  --color-light-purple-200: #A88ECC;
-  --color-light-purple-300: #9372C0;
-  --color-light-purple-400: #7D56B3;
-  --color-light-purple-500: #69469B;
+  --color-light-purple-100: #ded2f0;
+  --color-light-purple-200: #b79eda;
+  --color-light-purple-300: #ab89d9;
+  --color-light-purple-400: #a27dd7;
+  --color-light-purple-500: #8768b2;
 
   /* Blue Theme */
   --color-blue: #E6F1F8;
@@ -97,11 +97,11 @@ html {
 
   /* Yellow Theme */
   --color-light-yellow: #FFFDEB;
-  --color-light-yellow-100: #F8F32B;
-  --color-light-yellow-200: #F8F412;
-  --color-light-yellow-300: #DAD607;
-  --color-light-yellow-400: #B2AF06;
-  --color-light-yellow-500: #8A8805;
+  --color-light-yellow-100: #faf9b5;
+  --color-light-yellow-200: #fcfa6d;
+  --color-light-yellow-300: #e1de2c;
+  --color-light-yellow-400: #bebb19;
+  --color-light-yellow-500: #9f9d10;
 }
 
 .light {
@@ -162,11 +162,11 @@ html {
 
 .light.blue {
   --color-gamma: var(--color-blue);
-  --color-gamma-100: var(--color-blue-100);
-  --color-gamma-200: var(--color-blue-200);
-  --color-gamma-300: var(--color-blue-300);
-  --color-gamma-400: var(--color-blue-400);
-  --color-gamma-500: var(--color-blue-500);
+  --color-gamma-100: var(--color-primary-blue-100);
+  --color-gamma-200: var(--color-primary-blue-200);
+  --color-gamma-300: var(--color-primary-blue-300);
+  --color-gamma-400: var(--color-primary-blue-400);
+  --color-gamma-500: var(--color-primary-blue-500);
 }
 
 .light.red {

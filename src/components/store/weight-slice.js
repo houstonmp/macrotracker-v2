@@ -14,6 +14,11 @@ const weightSlice = createSlice({
                 return el.date === action.payload.date;
             })
         },
+        sortDates(state) {
+            state = state.weightObj.sort(function (a, b) {
+                return new Date(a.date) - new Date(b.date);
+            });
+        },
         updateWeight(state, action) {
             const switchWeightUnit = () => {
                 if (action.payload.unit === "kgs") {

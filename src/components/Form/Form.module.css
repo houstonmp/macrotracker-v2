@@ -32,10 +32,7 @@
     align-self: flex-end;
 }
 
-.form ul li .radio {
-    /* flex-basis: 10%; */
-    flex-wrap: nowrap
-}
+
 
 /* {
     flex-basis: 100%;

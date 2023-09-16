@@ -68,7 +68,7 @@ const Entry = (props) => {
         <PageContent title="Entry">
             <EntryCard classes={classes.check} onModal={showModalHandler} foodItems={DUMMY_ARRAY} />
             <FoodDiary classes={classes.check} />
-            <MacroList macroList={DUMMY_CAL} />
+            <MacroList />
         </PageContent >
     </>
 }

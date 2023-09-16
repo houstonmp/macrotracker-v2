@@ -1,12 +1,14 @@
 .macros {
     display: flex;
     justify-content: space-around;
+
     text-align: center;
 }
 
 .macros div {
     flex-grow: 1;
     margin-bottom: 1rem;
+    align-items: center;
 }
 
 .macros div>h1 {

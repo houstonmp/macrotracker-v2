@@ -11,18 +11,46 @@ const weightSlice = createSlice({
         },
         srchDate(state, action) {
             return state.weightObj.findIndex((el) => {
-                return el.date.toJSON().slice(0, 10) === action.date.toJSON().slice(0, 10);
+                return el.date === action.payload.date;
             })
         },
         updateWeight(state, action) {
-            if (state.weightObj) {
-                state.weightObj.push(action.payload)
+            const switchWeightUnit = () => {
+                if (action.payload.unit === "kgs") {
+                    let wght = action.payload.value;
+                    let kgs = wght;
+                    let lbs = Number((wght * 2.2).toFixed(2));
+                    return { kgs, lbs };
+                }
+                else if (action.payload.unit === "lbs") {
+                    let wght = action.payload.value;
+                    let kgs = Number((wght / 2.2).toFixed(2));
+                    let lbs = wght;
+                    return { kgs, lbs };
+                }
             }
-            let dateExists = state.reducers.srchDate(action.date);
-            if (dateExists) {
-                state.weightObj[dateExists] = action.payload;
-            } else if (!dateExists) {
-                state.weightObj.push(action.payload);
+
+            const weight = switchWeightUnit();
+
+            if (!state.weightObj) {
+                state.weightObj.push({
+                    date: action.payload.date,
+                    kgs: weight.kgs,
+                    lbs: weight.lbs
+                })
+            }
+            let dateExists = state.weightObj.findIndex(el => {
+                return el.date === action.payload.date;
+            })
+            if (dateExists > -1) {
+                state.weightObj[dateExists].kgs = weight.kgs;
+                state.weightObj[dateExists].lbs = weight.lbs;
+            } else {
+                state.weightObj.push({
+                    date: action.payload.date,
+                    kgs: weight.kgs,
+                    lbs: weight.lbs
+                })
             }
         }
     }

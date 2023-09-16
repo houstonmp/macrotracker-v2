@@ -1,5 +1,3 @@
-.workout {}
-
 .workout-table {
     grid-template-columns: repeat(3, 1fr);
 }
@@ -14,8 +12,6 @@ footer {
     justify-content: flex-end;
 }
 
-article {}
-
 .radio {
     flex-wrap: nowrap;
     justify-content: center;
@@ -25,7 +21,3 @@ article {}
 .radio input[type="radio"] {
     flex-basis: 10%;
 }
-
-/* footer>button {
-    margin: 10px
-} */

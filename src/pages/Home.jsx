@@ -4,6 +4,9 @@ import WeightEntry from "../components/Weight/WeightEntry";
 import { useDispatch } from "react-redux";
 import { uiActions } from "../components/store/ui-slice";
 import FoodDiary from "../components/Entry/FoodDiary";
+import WeightChart from "../components/Weight/WeightChart";
+import classes from './Home.module.css';
+
 const Home = (props) => {
 
   const dispatch = useDispatch();
@@ -22,7 +25,9 @@ const Home = (props) => {
     <MacroList></MacroList>
     <WeightEntry
       onModal={showModalHandler} ></WeightEntry>
+    <WeightChart classes={classes.chart} />
     <FoodDiary></FoodDiary>
+
   </PageContent>
 }
 

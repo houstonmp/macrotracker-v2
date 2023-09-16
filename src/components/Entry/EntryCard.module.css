@@ -6,6 +6,10 @@
     flex-grow: 1;
 }
 
+.recipe-table {
+    grid-template-columns: repeat(5, 1fr);
+}
+
 .recipe :is(article, header, footer) {
     min-width: 100%;
     margin: 10px auto

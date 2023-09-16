@@ -1,0 +1,31 @@
+.workout {}
+
+.workout-table {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.workout :is(article, header, footer) {
+    min-width: 100%;
+    margin: 10px auto
+}
+
+footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+article {}
+
+.radio {
+    flex-wrap: nowrap;
+    justify-content: center;
+    padding: 10px;
+}
+
+.radio input[type="radio"] {
+    flex-basis: 10%;
+}
+
+/* footer>button {
+    margin: 10px
+} */

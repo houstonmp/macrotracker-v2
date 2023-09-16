@@ -6,25 +6,35 @@
 
 .form ul,
 .form ul li,
-.form ul li * {
+.form ul li input {
     display: flex;
     flex-direction: row;
     flex-basis: 100%;
     flex-wrap: wrap;
-    margin: 10px;
+}
+
+.form ul li,
+.form ul label {
+    margin-bottom: 10px;
 }
 
 .form ul li {
     margin: .4rem;
 }
 
-.form ul li input {
+.form input {
     height: 1.5rem;
     border-radius: 3px;
+    margin: 0;
 }
 
 .form button {
     align-self: flex-end;
+}
+
+.form ul li .radio {
+    /* flex-basis: 10%; */
+    flex-wrap: nowrap
 }
 
 /* {

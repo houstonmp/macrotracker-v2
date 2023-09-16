@@ -1,16 +1,20 @@
+import { useState } from "react"
 import { useDispatch } from "react-redux";
 import Button from "../UI/Button";
 import { uiActions } from "../store/ui-slice";
-import classes from './Form.module.css'
+import classes from './Form.module.css';
 
 const Form = props => {
     const dispatch = useDispatch();
 
+    // const [formIsValid, setFormIsValid] = useState(false);
+
     const formHandler = (e) => {
         e.preventDefault();
-        console.log(e.target);
         props.onFormSubmit();
-        dispatch(uiActions.closeModal());
+        if (props.formIsValid) {
+            dispatch(uiActions.closeModal());
+        }
     }
 
     const onCancelHandler = (e) => {
@@ -22,7 +26,7 @@ const Form = props => {
         <ul>
             {props.children}
             <Button onClick={onCancelHandler}>Cancel</Button>
-            <Button type='submit'>Submit</Button>
+            <Button type='submit' disable={!props.formIsValid}>Submit</Button>
         </ul>
 
     </form>

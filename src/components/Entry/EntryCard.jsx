@@ -5,30 +5,43 @@ import Form from '../Form/Form'
 import Table from "../UI/Table";
 import { useDispatch } from 'react-redux';
 import { foodDiaryActions } from '../store/food-diary-slice';
+import Input from '../UI/Input';
+import useInput from '../../hooks/use-input';
+import { useState, useEffect } from 'react';
 
 
 export const RecipeForm = () => {
+    const validateInput = (value) => value.trim() !== '';
+    // const dispatch = useDispatch();
+    let formIsValid = false;
+
+    const [nameState, setName] = useState({});
+    const [proteinState, setProtein] = useState({});
+    const [carbsState, setCarbs] = useState({});
+    const [fatState, setFat] = useState({});
+
+    const nameToForm = (inputObj) => setName(inputObj);
+    const proteinToForm = (inputObj) => setProtein(inputObj);
+    const carbsToForm = (inputObj) => setCarbs(inputObj);
+    const fatToForm = (inputObj) => setFat(inputObj);
+
+    if (nameState.isValid && proteinState.isValid && carbsState.isValid && fatState.isValid) {
+        formIsValid = true;
+    }
+
     const recipeFormHandler = () => {
-        return;
+        if (formIsValid) {
+            console.log("Form Submitted");
+            return true;
+        }
+        return false;
     };
 
-    return <Form onFormSubmit={recipeFormHandler}>
-        <li>
-            <label htmlFor="i1">Recipe Name </label>
-            <input type="text" required />
-        </li>
-        <li>
-            <label htmlFor="i2">Protein </label>
-            <input type="number" required />
-        </li>
-        <li>
-            <label htmlFor="i2">Carbs </label>
-            <input type="number" required />
-        </li>
-        <li>
-            <label htmlFor="i2">Fat </label>
-            <input type="number" required />
-        </li>
+    return <Form onFormSubmit={recipeFormHandler} formIsValid={formIsValid}>
+        <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={nameToForm} onValidate={validateInput} />
+        <Input id="pValue" key="pValue" name="proteinValue" type="number" label="Protein (g):" onPass={proteinToForm} onValidate={validateInput} />
+        <Input id="cValue" key="cValue" name="carbValue" type="number" label="Carbs (g):" onPass={carbsToForm} onValidate={validateInput} />
+        <Input id="fValue" key="fValue" name="fatValue" type="number" label="Fat (g):" onPass={fatToForm} onValidate={validateInput} />
     </Form>
 }
 
@@ -52,7 +65,7 @@ const EntryCard = (props) => {
             <h3>Today's Mealplan</h3>
         </header>
         <article className={classes.article}>
-            <Table header={
+            <Table tableClasses={classes['recipe-table']} header={
                 <tr>
                     <th>
                         Food Name

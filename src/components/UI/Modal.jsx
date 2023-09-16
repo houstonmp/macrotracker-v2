@@ -8,12 +8,15 @@ import { uiActions } from '../store/ui-slice';
 
 //Form Components
 import { RecipeForm } from '../Entry/EntryCard';
+import { WorkoutForm } from '../Weight/WeightEntry';
 
 const Backdrop = props => {
     const dispatch = useDispatch();
 
-    const closeModalHandler = () => {
-        dispatch(uiActions.closeModal())
+    const closeModalHandler = (e) => {
+        if (e.currentTarget === e.target) {
+            dispatch(uiActions.closeModal())
+        }
     }
 
     return <div onClick={closeModalHandler} className={styles.backdrop}>
@@ -39,16 +42,8 @@ const ModalOverlay = () => {
             </Form>);
             break;
         case 'workout':
-            modalData = (<Form>
-                <li>
-                    <label htmlFor="w1" />
-                    <input type="text" required />
-                    <label htmlFor="kg" />
-                    <input type="radio" name="kg" require />
-                    <label htmlFor="kg" />
-                    <input type="radio" name="lbs" require />
-                </li>
-            </Form>)
+            modalData = <WorkoutForm></WorkoutForm>
+            break;
         default:
             modalData = <p>Sorry nothing to show at this time...</p>
     }

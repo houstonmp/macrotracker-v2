@@ -1,6 +1,5 @@
 .table {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
     max-height: 15rem;
     max-width: 100%;
     overflow: auto;

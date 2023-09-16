@@ -7,6 +7,24 @@ import { weightActions } from "../components/store/weight-slice"
 
 import WeightEntry from "../components/Weight/WeightEntry";
 
+const DUMMY_ARRAY = [
+    {
+        date: new Date('2023-09-14').toJSON().slice(0, 10),
+        lbs: 150,
+        kgs: 68.18
+    },
+    {
+        date: new Date('2023-09-15').toJSON().slice(0, 10),
+        lbs: 200,
+        kgs: 90.91
+    },
+    {
+        date: new Date('2023-09-15').toJSON().slice(0, 10),
+        lbs: 170,
+        kgs: 77.27
+    }
+]
+
 const Workout = () => {
 
     const switchWeightUnit = (unit, value) => {
@@ -40,7 +58,7 @@ const Workout = () => {
 
 
     return <PageContent title="Chart">
-        <WeightEntry onModal={showModalHandler} />
+        <WeightEntry onModal={showModalHandler} weightObj={DUMMY_ARRAY} />
         <Card>
 
         </Card>

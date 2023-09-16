@@ -59,7 +59,9 @@ export const WorkoutForm = () => {
 
 const WeightEntry = (props) => {
     // const [date, setDate] = useState(new Date().toJSON().slice(0, 10));
-    const selectedDateObj = useSelector(state => state.weight.weightObj);
+    const weightObj = useSelector(state => state.weight.weightObj);
+    console.log('1', !weightObj);
+    console.log('2', !!weightObj);
 
     return <Card >
         <header className={classes.header}>
@@ -79,7 +81,7 @@ const WeightEntry = (props) => {
                     </th>
                 </tr>
             }>
-                {selectedDateObj && selectedDateObj.map((item, index) => {
+                {weightObj && weightObj.map((item, index) => {
                     return (<tr key={`${item.date}-${index}`} id={index}>
                         <td key={`date-${item.date}`}>
                             {item.date}
@@ -93,6 +95,7 @@ const WeightEntry = (props) => {
                     </tr>)
                 })}
             </Table>
+            {weightObj.length === 0 && <p style={{ textAlign: 'center' }}>Add an entry to get started</p>}
         </article>
         <footer className={classes.footer}>
             <Button name='workout' onClick={props.onModal}>+ Add</Button>

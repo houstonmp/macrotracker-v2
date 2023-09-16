@@ -16,7 +16,7 @@ const MacroList = (props) => {
             return false;
         }
     })
-    return <Card>
+    return <Card classes={classes.display}>
         <div className={classes.macros}>
             <div><h1>{foodDiary ? foodDiary.macros.calories : 0}</h1><span>kCal</span></div>
             <div><h1>{foodDiary ? foodDiary.macros.tProtein : 0}/20 </h1><span>(g) Protein</span></div>

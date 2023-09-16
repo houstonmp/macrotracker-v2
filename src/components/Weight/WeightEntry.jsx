@@ -60,8 +60,6 @@ export const WorkoutForm = () => {
 const WeightEntry = (props) => {
     // const [date, setDate] = useState(new Date().toJSON().slice(0, 10));
     const weightObj = useSelector(state => state.weight.weightObj);
-    console.log('1', !weightObj);
-    console.log('2', !!weightObj);
 
     return <Card >
         <header className={classes.header}>

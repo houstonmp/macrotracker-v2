@@ -6,6 +6,7 @@ import { uiActions } from "../components/store/ui-slice";
 import { weightActions } from "../components/store/weight-slice"
 
 import WeightEntry from "../components/Weight/WeightEntry";
+import WeightChart from "../components/Weight/WeightChart";
 
 const Workout = () => {
 
@@ -24,7 +25,7 @@ const Workout = () => {
     return <PageContent title="Chart">
         <WeightEntry onModal={showModalHandler} />
         <Card>
-
+            <WeightChart />
         </Card>
 
     </PageContent>

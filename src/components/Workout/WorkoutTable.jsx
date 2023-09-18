@@ -194,7 +194,7 @@ const DUMMY_DATA = [
         name: 'HIIT Bike',
         area: 'Cardio',
         wght: '40f/20s',
-        unit: 'seconds',
+        unit: '(s)',
         reps: '6',
         sets: ''
     },
@@ -202,7 +202,7 @@ const DUMMY_DATA = [
         name: 'HIIT BIKE',
         area: 'Cardio',
         wght: '20f/10s',
-        unit: 'seconds',
+        unit: '(s)',
         reps: '8',
         sets: ''
     },

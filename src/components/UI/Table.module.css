@@ -1,8 +1,8 @@
 .table {
     display: grid;
     max-height: 15rem;
-    max-width: 100%;
-    overflow: auto;
+    /* max-width: 100%; */
+    /* overflow: auto; */
 }
 
 

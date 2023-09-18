@@ -1,0 +1,30 @@
+.table-classes {
+    grid-template-columns: 12% 12% 12% 12% 5.7% 5.7% 5.7% 5.7% 5.7% 5.7% 5.7% 5.7%;
+    max-height: fit-content;
+    height: fit-content;
+    /* height: max-content; */
+    justify-content: center;
+}
+
+.cardFlex {
+    /* flex-basis: 100%; */
+    /* flex-grow: 1; */
+    height: fit-content;
+}
+
+.cardFlex td:nth-child(6n),
+.cardFlex td:nth-child(7n),
+.cardFlex td:nth-child(8n),
+.cardFlex td:nth-child(9n),
+.cardFlex td:nth-child(10n),
+.cardFlex td:nth-child(11n),
+.cardFlex td:nth-child(12n) {
+    border-left: 1px solid black;
+}
+
+@media only screen and (max-width: 768px) {
+    .cardFlex {
+        margin: 0;
+        padding: 0;
+    }
+}

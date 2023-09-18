@@ -1,0 +1,33 @@
+.workout {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    /* flex-basis: 100%;
+    flex-grow: 1; */
+    /* flex-shrink: 1;
+    max-width: 50%;
+    border-collapse: collapse; */
+}
+
+.workoutPage {
+    flex-basis: 50%;
+    flex-grow: 1;
+
+}
+
+.side-bar {
+    flex-basis: 50%;
+    flex-grow: 1;
+}
+
+@media only screen and (max-width: 768px) {
+    .workout {
+        font-size: 8px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .workoutPage {
+        margin: 0;
+    }
+}

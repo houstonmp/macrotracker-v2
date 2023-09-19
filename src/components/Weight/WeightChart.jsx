@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 const WeightChart = (props) => {
     const weightObj = useSelector(state => state.weight.weightObj);
-
+    console.log(weightObj);
 
     return <Card classes={props.classes}>
         <div>

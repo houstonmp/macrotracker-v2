@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const uiSlice = createSlice({
     name: 'ui',
     initialState: {
+        notification: null,
         modal: {
             modalIsVisible: false,
             modalInformation: null,
@@ -17,6 +18,13 @@ const uiSlice = createSlice({
         }
     },
     reducers: {
+        showNotification(state, action) {
+            state.notification = {
+                status: action.payload.status,
+                title: action.payload.title,
+                message: action.payload.message
+            }
+        },
         showModal(state, action) {
             state.modal.modalInformation = {
                 title: action.payload.title,

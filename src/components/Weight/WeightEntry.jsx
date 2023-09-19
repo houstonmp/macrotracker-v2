@@ -80,7 +80,7 @@ const WeightEntry = (props) => {
                     </th>
                 </tr>
             }>
-                {weightObj && weightObj.map((item, index) => {
+                {weightObj.length > -1 && weightObj.map((item, index) => {
                     return (<tr key={`${item.date}-${index}`} id={index}>
                         <td key={`date-${item.date}`}>
                             {item.date}

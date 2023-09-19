@@ -15,19 +15,42 @@ import useThemeDetector from "./hooks/use-theme";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import { AnimatedSwitch } from "react-router-transition";
 
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+// import { weightActions } from "./components/store/weight-slice";
+import { fetchSlice, fetchWeightData } from "./components/store/fetch-slice";
 
 
-
+let isInitial = true;
 
 function App() {
   const isModal = useSelector(state => state.ui.modal.modalIsVisible);
   const { lightMode, themeName } = useSelector(state => { return state.ui.theme });
+  const weightSelector = useSelector(state => state.weight);
+  const notification = useSelector(state => state.ui.notification);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const body = document.querySelector('body');
     body.classList = `${lightMode} ${themeName}`
   }, [lightMode, themeName])
+
+  useEffect(() => {
+    // let url = `https://health-app-c5571-default-rtdb.firebaseio.com/`;
+    if (isInitial) {
+      dispatch(fetchWeightData());
+      isInitial = false;
+      return;
+    }
+    // let header = {
+
+    // }
+    if (weightSelector.changed === true) {
+      // header.body = weightSelector.weightObj;
+      // header.method = 'POST';
+      dispatch(fetchSlice(weightSelector.weightObj));
+      console.log(notification);
+    }
+  }, [weightSelector.changed, dispatch]);
 
   const router = createBrowserRouter([{
     path: '/',

@@ -3,11 +3,12 @@ import { createSlice } from '@reduxjs/toolkit';
 const weightSlice = createSlice({
     name: 'weight',
     initialState: {
-        weightObj: []
+        weightObj: [],
+        changed: false
     },
     reducers: {
         replaceWeightObj(state, action) {
-            state.weightObj = action.payload;
+            state.weightObj = action.payload.weightObj;
         },
         srchDate(state, action) {
             return state.weightObj.findIndex((el) => {
@@ -57,6 +58,8 @@ const weightSlice = createSlice({
                     lbs: weight.lbs
                 })
             }
+            state.changed = true;
+
         }
     }
 })

@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const foodDiarySlice = createSlice({
     name: 'fDiary',
     initialState: {
-        diaryObj: []
+        diaryObj: [],
     },
     reducers: {
         replaceDiaryObj(state, action) {

@@ -42,15 +42,14 @@ function App() {
       return;
     }
     // let header = {
-
     // }
-    if (weightSelector.changed === true) {
+    if (weightSelector.changed) {
       // header.body = weightSelector.weightObj;
       // header.method = 'POST';
       dispatch(fetchSlice(weightSelector.weightObj));
       console.log(notification);
     }
-  }, [weightSelector.changed, dispatch]);
+  }, [weightSelector.weightObj, dispatch]);
 
   const router = createBrowserRouter([{
     path: '/',

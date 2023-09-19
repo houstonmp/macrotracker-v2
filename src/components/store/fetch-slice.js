@@ -66,14 +66,13 @@ export const fetchSlice = (weightObj) => {
         try {
             await sendRequest();
 
-            const data = await response.json();
+            await response.json();
 
             dispatch(uiActions.showNotification({
                 status: 'success',
                 title: 'Message sent',
                 message: 'Data upload was successful'
             }));
-            console.log(data)
         } catch (error) {
             console.log('Failed');
             dispatch(uiActions.showNotification({

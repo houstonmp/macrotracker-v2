@@ -1,32 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import formClasses from '../Form/Form.module.css'
+import inputClasses from '../UI/Input.module.css'
 
-import Form from "../Form/Form";
 import Input from "../UI/Input";
 
-const SearchInput = () => {
-    const validateInput = (value) => value.trim() !== '';
-    // const dispatch = useDispatch();
-    let formIsValid = false;
+const SearchInput = (props) => {
+    const [searchValue, setSearchValue] = useState('');
 
-    const [nameState, setName] = useState({});
-    const nameToForm = (inputObj) => setName(inputObj);
-
-    if (nameState.isValid) {
-        formIsValid = true;
+    const onChangeHandler = (e) => {
+        setSearchValue(e.target.value)
     }
-
-    const searchFormHandler = () => {
-        if (formIsValid) {
-            console.log("Form Submitted");
-            return true;
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            props.onSearch(searchValue);
+        }, 300);
+        return () => {
+            clearTimeout(timeout)
         }
-        return false;
-    };
+    }, [searchValue])
 
-
-    return <Form onFormSubmit={searchFormHandler} formIsValid={formIsValid} submitText="Search">
-        <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={nameToForm} onValidate={validateInput} />
-    </Form>
+    return <div className={formClasses.form}>
+        <ul>
+            <label htmlFor="search">{props.label}</label>
+            <input id="search" name="search" type="text" onChange={onChangeHandler} value={searchValue} />
+        </ul>
+    </div>
 }
 
 export default SearchInput;

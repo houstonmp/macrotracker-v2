@@ -4,7 +4,7 @@ import EntryCard from "../components/Entry/EntryCard"
 import classes from "./Entry.module.css"
 import MacroList from "../components/Entry/MacroList"
 
-
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { uiActions } from "../components/store/ui-slice";
 import { weightActions } from "../components/store/weight-slice"
@@ -39,6 +39,33 @@ const DUMMY_ARRAY = [
         tCarbs: 65
         // fiber: 
     },
+    {
+        id: 'i4',
+        name: 'Eggs 2',
+        calories: 150,
+        tFat: 4,
+        tProtein: 50,
+        tCarbs: 65
+        // fiber: 
+    },
+    {
+        id: 'i5',
+        name: 'PanEggscakes',
+        calories: 150,
+        tFat: 4,
+        tProtein: 50,
+        tCarbs: 65
+        // fiber: 
+    },
+    {
+        id: 'i5',
+        name: 'Paneggscakes',
+        calories: 150,
+        tFat: 4,
+        tProtein: 50,
+        tCarbs: 65
+        // fiber: 
+    },
 ]
 
 const DUMMY_CAL =
@@ -53,6 +80,7 @@ const DUMMY_CAL =
 
 const Entry = (props) => {
     // useSelector(state => state.weight.)
+    const [foodItems, setFoodItems] = useState(DUMMY_ARRAY);
 
     const dispatch = useDispatch();
 
@@ -64,9 +92,21 @@ const Entry = (props) => {
         })
         )
     }
+
+
+    const onFilterHandler = (value) => {
+        const filterValue = value.toLowerCase();
+
+        const newArray = DUMMY_ARRAY.filter((el) => {
+            return el.name.toLowerCase().includes(filterValue);
+        })
+
+        setFoodItems(newArray);
+    }
+
     return <>
         <PageContent title="Entry">
-            <EntryCard classes={classes.check} onModal={showModalHandler} foodItems={DUMMY_ARRAY} />
+            <EntryCard classes={classes.check} onModal={showModalHandler} foodItems={foodItems} onFilter={onFilterHandler} />
             <FoodDiary classes={classes.check} />
             <MacroList />
         </PageContent >

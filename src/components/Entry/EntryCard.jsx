@@ -37,6 +37,8 @@ export const RecipeForm = () => {
         dispatch(uiActions.closeModal());
     }
 
+
+
     const recipeFormHandler = () => {
         if (formIsValid) {
             console.log("Form Submitted");
@@ -74,7 +76,7 @@ const EntryCard = (props) => {
             <a ><h3>Mealplan</h3></a>
         </header>
         <article className={classes.article}>
-            <SearchInput />
+            <SearchInput onSearch={props.onFilter} label="Filter By Name:" />
             <Table tableClasses={classes['recipe-table']} header={
                 <tr>
                     <th>

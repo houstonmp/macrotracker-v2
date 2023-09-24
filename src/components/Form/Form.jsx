@@ -17,14 +17,18 @@ const Form = props => {
         }
     }
 
+    const onCloseHandler = (e) => {
+        e.preventDefault();
+        dispatch(uiActions.closeModal());
+    }
 
 
     return <form onSubmit={formHandler} className={classes.form}>
         <ul>
             {props.children}
-            <Button type='submit' disable={!props.formIsValid}>{props.submitText}</Button>
+            <Button type='button' onClick={onCloseHandler}>Close</Button>
+            <Button type='submit' disable={!props.formIsValid}>Submit</Button>
         </ul>
-
     </form>
 
 }

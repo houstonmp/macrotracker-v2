@@ -8,10 +8,13 @@ import { foodDiaryActions } from '../store/food-diary-slice';
 import Input from '../UI/Input';
 import useInput from '../../hooks/use-input';
 import { useState, useEffect } from 'react';
+import SearchInput from './SearchInput';
+import { uiActions } from '../store/ui-slice';
 
 
 export const RecipeForm = () => {
     const validateInput = (value) => value.trim() !== '';
+    const dispatch = useDispatch();
     // const dispatch = useDispatch();
     let formIsValid = false;
 
@@ -29,6 +32,11 @@ export const RecipeForm = () => {
         formIsValid = true;
     }
 
+    const onCancelHandler = (e) => {
+        e.preventDefault();
+        dispatch(uiActions.closeModal());
+    }
+
     const recipeFormHandler = () => {
         if (formIsValid) {
             console.log("Form Submitted");
@@ -37,11 +45,12 @@ export const RecipeForm = () => {
         return false;
     };
 
-    return <Form onFormSubmit={recipeFormHandler} formIsValid={formIsValid}>
+    return <Form onFormSubmit={recipeFormHandler} formIsValid={formIsValid} submitText="Submit">
         <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={nameToForm} onValidate={validateInput} />
         <Input id="pValue" key="pValue" name="proteinValue" type="number" label="Protein (g):" onPass={proteinToForm} onValidate={validateInput} />
         <Input id="cValue" key="cValue" name="carbValue" type="number" label="Carbs (g):" onPass={carbsToForm} onValidate={validateInput} />
         <Input id="fValue" key="fValue" name="fatValue" type="number" label="Fat (g):" onPass={fatToForm} onValidate={validateInput} />
+        <Button onClick={onCancelHandler}>Cancel</Button>
     </Form>
 }
 
@@ -60,11 +69,12 @@ const EntryCard = (props) => {
 
     return <Card classes={classes.recipe} >
         <header className={classes.header}>
-            <h3>Recipes</h3>
-            <h3>Items</h3>
-            <h3>Today's Mealplan</h3>
+            <a className={classes.active}><h3>Recipes</h3></a>
+            <a ><h3>Items</h3></a>
+            <a ><h3>Mealplan</h3></a>
         </header>
         <article className={classes.article}>
+            <SearchInput />
             <Table tableClasses={classes['recipe-table']} header={
                 <tr>
                     <th>
@@ -108,12 +118,12 @@ const EntryCard = (props) => {
 
 
 
-
+            <footer className={classes.footer}>
+                <Button name='recipe' onClick={props.onModal}>+ Create Item</Button>
+                {/* <Button name='item' onClick={props.onModal}>+ Search</Button> */}
+            </footer>
         </article>
-        <footer className={classes.footer}>
-            <Button name='recipe' onClick={props.onModal}>+ Create Item</Button>
-            {/* <Button name='item' onClick={props.onModal}>+ Search</Button> */}
-        </footer>
+
     </Card >
 }
 

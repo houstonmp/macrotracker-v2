@@ -17,16 +17,12 @@ const Form = props => {
         }
     }
 
-    const onCancelHandler = (e) => {
-        e.preventDefault();
-        dispatch(uiActions.closeModal());
-    }
+
 
     return <form onSubmit={formHandler} className={classes.form}>
         <ul>
             {props.children}
-            <Button onClick={onCancelHandler}>Cancel</Button>
-            <Button type='submit' disable={!props.formIsValid}>Submit</Button>
+            <Button type='submit' disable={!props.formIsValid}>{props.submitText}</Button>
         </ul>
 
     </form>

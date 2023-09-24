@@ -312,6 +312,10 @@ main {
   overflow-y: scroll; */
 }
 
+a {
+  cursor: pointer;
+}
+
 @media only screen and (max-width: 768px) {
   .root {
     flex-direction: column;

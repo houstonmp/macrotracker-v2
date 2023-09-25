@@ -58,6 +58,7 @@ export const RecipeForm = () => {
 
 const EntryCard = (props) => {
     const dispatch = useDispatch();
+    const [navState, setNavState] = useState('recipe');
 
     const onClickHandler = (e) => {
         const index = e.currentTarget.id;
@@ -69,16 +70,20 @@ const EntryCard = (props) => {
         )
     }
 
+    const onNavChangeHandler = (e) => {
+        console.log(e.currentTarget.id);
+        setNavState(e.currentTarget.id)
+    }
+
     return <Card classes={classes.recipe} >
         <header className={classes.header}>
-            <a className={classes.active}><h3>Recipes</h3></a>
-            <a ><h3>Items</h3></a>
-            <a ><h3>Mealplan</h3></a>
+            <a id="recipeCard" className={navState === 'recipeCard' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Recipes</h3></a>
+            <a id="itemCard" className={navState === 'itemCard' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Items</h3></a>
+            <a id="mealCard" className={navState === 'mealCard' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Mealplan</h3></a>
         </header>
         <article className={classes.article}>
             <SearchInput onSearch={props.onFilter} label="Filter Name" />
-            <SearchInput onSearch={props.onFilter} label="Filter Name" />
-            <SearchInput onSearch={props.onFilter} label="Filter Name" />
+
             <Table tableClasses={classes['recipe-table']} header={
                 <tr>
                     <th>

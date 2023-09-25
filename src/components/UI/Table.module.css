@@ -1,14 +1,10 @@
 .table {
     display: grid;
     max-height: 15rem;
-    /* max-width: 100%; */
-    /* overflow: auto; */
 }
 
 
-.table .thead,
-.table .tbody,
-.table tr {
+:is(.thead, .tbody, tr) {
     display: contents;
 }
 
@@ -25,19 +21,3 @@
     background-color: var(--color-gamma-500);
     cursor: pointer;
 }
-
-
-/* .table .thead,
-.table .tbody,
-.table tr {
-    display: flex;
-    flex-grow: 1;
-    min-width: 100%;
-    flex-wrap: wrap;
-}
-
-.table td,
-.table th,
-.table tr {
-    flex-grow: 1;
-} */

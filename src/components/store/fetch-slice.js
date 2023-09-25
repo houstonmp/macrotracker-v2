@@ -16,7 +16,6 @@ export const fetchWeightData = () => {
                 throw new Error('Error: Couldn\'t send request');
             }
             const data = await response.json();
-            console.log(data);
 
             return data;
         }
@@ -74,7 +73,6 @@ export const fetchSlice = (weightObj) => {
                 message: 'Data upload was successful'
             }));
         } catch (error) {
-            console.log('Failed');
             dispatch(uiActions.showNotification({
                 status: 'error',
                 title: 'Upload Failed',

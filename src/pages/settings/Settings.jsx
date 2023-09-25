@@ -23,7 +23,6 @@ const SettingsContent = (props) => {
     const dispatch = useDispatch();
     const onThemeChangeHandler = (e) => {
         e.preventDefault();
-        console.log(e.currentTarget.id);
         dispatch(uiActions.setTheme(e.currentTarget.id));
     }
     return <PageContent title="Settings" classes={classes.settings}>

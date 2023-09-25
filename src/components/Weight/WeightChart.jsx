@@ -15,8 +15,6 @@ function blendColors(colorA, colorB, amount) {
     return '#' + r + g + b;
 }
 
-console.log(blendColors('#00FF66', '#443456', 0.5));
-
 const WeightChart = (props) => {
     var style = getComputedStyle(document.body);
     const theme = useSelector(state => state.ui.theme.lightMode);
@@ -47,7 +45,6 @@ const WeightChart = (props) => {
     }
 
     const weightObj = useSelector(state => state.weight.weightObj);
-    console.log('Resetting Chart:', alphaColLight, alphaColDark, gammaCol, gammaCol1, gammaCol2);
 
     return <Card classes={props.classes}>
         <div>

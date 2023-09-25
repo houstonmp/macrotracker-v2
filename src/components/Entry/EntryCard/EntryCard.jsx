@@ -1,17 +1,20 @@
-import Card from '../UI/Card'
-import Button from '../UI/Button';
+import Card from '../../UI/Card'
+import Button from '../../UI/Button';
 import classes from './EntryCard.module.css'
-import Form from '../Form/Form'
-import Table from "../UI/Table";
+import Form from '../../Form/Form'
+import Table from "../../UI/Table";
 import { useDispatch } from 'react-redux';
-import { foodDiaryActions } from '../store/food-diary-slice';
-import Input from '../UI/Input';
-import useInput from '../../hooks/use-input';
+import { foodDiaryActions } from '../../store/food-diary-slice';
+import Input from '../../UI/Input';
+import useInput from '../../../hooks/use-input';
 import { useState, useEffect } from 'react';
-import SearchInput from './SearchInput';
-import { uiActions } from '../store/ui-slice';
+import SearchInput from '../../UI/SearchInput';
+import { uiActions } from '../../store/ui-slice';
+import MacroData from './MacroData';
+import IngredientData from './IngredientData'
 
 
+//Recipe Form - Passed to Modal as a Component
 export const RecipeForm = () => {
     const validateInput = (value) => value.trim() !== '';
     const dispatch = useDispatch();
@@ -52,13 +55,12 @@ export const RecipeForm = () => {
         <Input id="pValue" key="pValue" name="proteinValue" type="number" label="Protein (g):" onPass={proteinToForm} onValidate={validateInput} />
         <Input id="cValue" key="cValue" name="carbValue" type="number" label="Carbs (g):" onPass={carbsToForm} onValidate={validateInput} />
         <Input id="fValue" key="fValue" name="fatValue" type="number" label="Fat (g):" onPass={fatToForm} onValidate={validateInput} />
-        <Button onClick={onCancelHandler}>Cancel</Button>
     </Form>
 }
 
 const EntryCard = (props) => {
     const dispatch = useDispatch();
-    const [navState, setNavState] = useState('recipe');
+    const [navState, setNavState] = useState('recipeCard');
 
     const onClickHandler = (e) => {
         const index = e.currentTarget.id;
@@ -71,9 +73,9 @@ const EntryCard = (props) => {
     }
 
     const onNavChangeHandler = (e) => {
-        console.log(e.currentTarget.id);
         setNavState(e.currentTarget.id)
     }
+
 
     return <Card classes={classes.recipe} >
         <header className={classes.header}>
@@ -83,49 +85,9 @@ const EntryCard = (props) => {
         </header>
         <article className={classes.article}>
             <SearchInput onSearch={props.onFilter} label="Filter Name" />
-
-            <Table tableClasses={classes['recipe-table']} header={
-                <tr>
-                    <th>
-                        Food Name
-                    </th>
-                    <th>
-                        Total Calories
-                    </th>
-                    <th>
-                        Protein (g)
-                    </th>
-                    <th>
-                        Carbs (g)
-                    </th>
-                    <th>
-                        Fat (g)
-                    </th>
-                </tr>
-            }>
-                {props.foodItems.map((item, index) => {
-                    const identifier = Math.floor(Math.random * 10000);
-                    return (<tr key={`${item.name}-${index}`} id={index} onClick={onClickHandler}>
-                        <td key={`name-${item.name}`}>
-                            {item.name.substr(0, 10)}
-                        </td>
-                        <td key={`cal-${item.name}`}>
-                            {item.calories}
-                        </td>
-                        <td key={`protein-${item.name}`}>
-                            {item.tProtein}
-                        </td>
-                        <td key={`carbs-${item.name}`}>
-                            {item.tCarbs}
-                        </td>
-                        <td key={`fat-${item.name}`}>
-                            {item.tFat}
-                        </td>
-                    </tr>)
-                })}
-            </Table>
-
-
+            {/* <FilterInput /> */}
+            {/* <MacroData tableData={props.foodItems} onClickHandler={onClickHandler} /> */}
+            <IngredientData tableData={props.foodItems} onClickHandler={onClickHandler} />
 
             <footer className={classes.footer}>
                 <Button name='recipe' onClick={props.onModal}>+ Create Item</Button>

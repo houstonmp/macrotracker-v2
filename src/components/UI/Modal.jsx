@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { uiActions } from '../store/ui-slice';
 
 //Form Components
-import { RecipeForm } from '../Entry/EntryCard';
+import { RecipeForm } from '../Entry/EntryCard/EntryCard';
 import { WorkoutForm } from '../Weight/WeightEntry';
 
 const Backdrop = props => {

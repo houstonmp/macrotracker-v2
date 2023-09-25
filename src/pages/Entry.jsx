@@ -1,6 +1,6 @@
 import PageContent from "../components/PageContent"
 import Card from "../components/UI/Card"
-import EntryCard from "../components/Entry/EntryCard"
+import EntryCard from "../components/Entry/EntryCard/EntryCard"
 import classes from "./Entry.module.css"
 import MacroList from "../components/Entry/MacroList"
 
@@ -18,7 +18,8 @@ const DUMMY_ARRAY = [
         calories: 72,
         tFat: 13,
         tProtein: 30,
-        tCarbs: 25
+        tCarbs: 25,
+        ingredients: ['milk', 'eggs', 'bacon', 'pork', 'chops', 'burritos']
         // fiber: 
     },
     {
@@ -27,7 +28,8 @@ const DUMMY_ARRAY = [
         calories: 132,
         tFat: 5,
         tProtein: 10,
-        tCarbs: 15
+        tCarbs: 15,
+        ingredients: ['eggs', 'licorice', 'udon', 'hamburger buns']
         // fiber: 
     },
     {
@@ -36,7 +38,8 @@ const DUMMY_ARRAY = [
         calories: 150,
         tFat: 4,
         tProtein: 50,
-        tCarbs: 65
+        tCarbs: 65,
+        ingredients: ['frosting', 'tortillas', 'donuts', 'knife shavings', 'potatoes']
         // fiber: 
     },
     {
@@ -45,7 +48,8 @@ const DUMMY_ARRAY = [
         calories: 150,
         tFat: 4,
         tProtein: 50,
-        tCarbs: 65
+        tCarbs: 65,
+        ingredients: ['butter', 'orange juice', 'apples', 'cream', 'Dr Pepper']
         // fiber: 
     },
     {
@@ -54,7 +58,8 @@ const DUMMY_ARRAY = [
         calories: 150,
         tFat: 4,
         tProtein: 50,
-        tCarbs: 65
+        tCarbs: 65,
+        ingredients: ['vinegar', 'salt', 'potato chip', 'bagel bites']
         // fiber: 
     },
     {
@@ -63,7 +68,8 @@ const DUMMY_ARRAY = [
         calories: 150,
         tFat: 4,
         tProtein: 50,
-        tCarbs: 65
+        tCarbs: 65,
+        ingredients: ['yogurt', 'noodles', 'panko', 'water', 'spinach']
         // fiber: 
     },
 ]

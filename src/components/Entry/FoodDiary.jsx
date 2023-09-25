@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import Card from "../UI/Card"
 import Table from "../UI/Table";
-import classes from "./EntryCard.module.css"
+import classes from "./EntryCard/EntryCard.module.css"
 
 const FoodDiary = () => {
     const [date, setDate] = useState(new Date().toJSON().slice(0, 10));

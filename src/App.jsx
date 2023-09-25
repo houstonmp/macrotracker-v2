@@ -47,7 +47,6 @@ function App() {
       // header.body = weightSelector.weightObj;
       // header.method = 'POST';
       dispatch(fetchSlice(weightSelector.weightObj));
-      console.log(notification);
     }
   }, [weightSelector.weightObj, dispatch]);
 

@@ -38,7 +38,6 @@ export const WorkoutForm = () => {
                 unit: radioState
             }));
             dispatch(weightActions.sortDates());
-            console.log("Form Submitted");
             return true;
         }
         return false;

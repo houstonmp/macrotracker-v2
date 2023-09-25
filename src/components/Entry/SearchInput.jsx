@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import formClasses from '../Form/Form.module.css'
-import inputClasses from '../UI/Input.module.css'
+import inputClasses from './SearchInput.module.css'
 
 import Input from "../UI/Input";
 
@@ -20,12 +20,7 @@ const SearchInput = (props) => {
         }
     }, [searchValue])
 
-    return <div className={formClasses.form}>
-        <ul>
-            <label htmlFor="search">{props.label}</label>
-            <input id="search" name="search" type="text" onChange={onChangeHandler} value={searchValue} />
-        </ul>
-    </div>
+    return <input className={inputClasses.input} id="search" name="search" type="text" onChange={onChangeHandler} placeholder={props.label} value={searchValue} />
 }
 
 export default SearchInput;

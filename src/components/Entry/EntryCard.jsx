@@ -76,7 +76,9 @@ const EntryCard = (props) => {
             <a ><h3>Mealplan</h3></a>
         </header>
         <article className={classes.article}>
-            <SearchInput onSearch={props.onFilter} label="Filter By Name:" />
+            <SearchInput onSearch={props.onFilter} label="Filter Name" />
+            <SearchInput onSearch={props.onFilter} label="Filter Name" />
+            <SearchInput onSearch={props.onFilter} label="Filter Name" />
             <Table tableClasses={classes['recipe-table']} header={
                 <tr>
                     <th>
@@ -100,7 +102,7 @@ const EntryCard = (props) => {
                     const identifier = Math.floor(Math.random * 10000);
                     return (<tr key={`${item.name}-${index}`} id={index} onClick={onClickHandler}>
                         <td key={`name-${item.name}`}>
-                            {item.name}
+                            {item.name.substr(0, 10)}
                         </td>
                         <td key={`cal-${item.name}`}>
                             {item.calories}

@@ -11,13 +11,3 @@ footer {
     display: flex;
     justify-content: flex-end;
 }
-
-.radio {
-    flex-wrap: nowrap;
-    justify-content: center;
-    padding: 10px;
-}
-
-.radio input[type="radio"] {
-    flex-basis: 10%;
-}

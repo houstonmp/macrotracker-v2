@@ -8,21 +8,20 @@ import Form from '../Form/Form'
 import Input from "../UI/Input";
 import { useDispatch, useSelector } from "react-redux";
 import { weightActions } from "../store/weight-slice";
+import RadioInput from "../UI/RadioInput";
 
 export const WorkoutForm = () => {
 
 
     const dispatch = useDispatch();
     const validateInput = (value) => value.trim() !== '';
-    const [radioState, setRadio] = useState('lbs');
+
     const [dateState, setDate] = useState(new Date().toJSON().slice(0, 10));
-    // const dispatch = useDispatch();
     let formIsValid = false;
 
     const [weightState, setWeight] = useState({});
 
     const weightToForm = (inputObj) => setWeight(inputObj);
-    const onRadioChangeHandler = (e) => setRadio(e.target.value);
     const dateHandler = (e) => setDate(e.target.value);
 
     if (weightState.isValid) {
@@ -48,12 +47,7 @@ export const WorkoutForm = () => {
             <input type="date" name="date" onChange={dateHandler} value={dateState} />
         </li>
         <Input id="weightValue" key="weightValue" name="weightValue" type="number" label="Weight:" onPass={weightToForm} onValidate={validateInput} />
-        <li className={classes.radio}>
-            <label htmlFor="lbs">lbs:</label>
-            <input type="radio" name="lbsKgs" value="lbs" checked={radioState === 'lbs'} onChange={onRadioChangeHandler} />
-            <label htmlFor="kgs">kgs:</label>
-            <input type="radio" name="lbsKgs" value="kgs" checked={radioState === 'kgs'} onChange={onRadioChangeHandler} />
-        </li>
+        <RadioInput liClass={classes.radio} radioBtnArray={{ name: 'lbsKgs', value: ['lbs', 'kgs'] }} />
     </Form>);
 }
 

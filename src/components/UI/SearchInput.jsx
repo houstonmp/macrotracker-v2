@@ -20,7 +20,9 @@ const SearchInput = (props) => {
         }
     }, [searchValue])
 
-    return <input className={inputClasses.input} id="search" name="search" type="text" onChange={onChangeHandler} placeholder={props.label} value={searchValue} />
+    return <li>
+        <input className={inputClasses.input} id="search" name="search" type="text" onChange={onChangeHandler} placeholder={props.label} value={searchValue} />
+    </li>
 }
 
 export default SearchInput;

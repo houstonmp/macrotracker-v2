@@ -15,8 +15,8 @@ const IngredientData = (props) => {
                 </td>
                 <td key={`ingredients-${item.name}`}>
                     <ul>
-                        {item.ingredients.map((el) => {
-                            return <li>{`${el},`}</li>
+                        {item.ingredients.map((el, index) => {
+                            return <li key={`ing-${el}${index}`}>{`${el},`}</li>
                         })}
                     </ul>
                 </td>

@@ -8,3 +8,13 @@
     color: red;
     margin-top: 5px;
 }
+
+.radio {
+    flex-wrap: nowrap;
+    justify-content: center;
+    padding: 10px;
+}
+
+.radio input[type="radio"] {
+    flex-basis: 10%;
+}

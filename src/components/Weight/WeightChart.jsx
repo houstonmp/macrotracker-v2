@@ -1,19 +1,8 @@
 import 'chart.js/auto';
 import { Chart } from 'react-chartjs-2';
 import Card from '../UI/Card';
-import { useState } from 'react';
 
 import { useSelector } from "react-redux";
-
-// blend two hex colors together by an amount
-function blendColors(colorA, colorB, amount) {
-    const [rA, gA, bA] = colorA.match(/\w\w/g).map((c) => parseInt(c, 16));
-    const [rB, gB, bB] = colorB.match(/\w\w/g).map((c) => parseInt(c, 16));
-    const r = Math.round(rA + (rB - rA) * amount).toString(16).padStart(2, '0');
-    const g = Math.round(gA + (gB - gA) * amount).toString(16).padStart(2, '0');
-    const b = Math.round(bA + (bB - bA) * amount).toString(16).padStart(2, '0');
-    return '#' + r + g + b;
-}
 
 const WeightChart = (props) => {
     var style = getComputedStyle(document.body);

@@ -12,6 +12,8 @@ import SearchInput from '../../UI/SearchInput';
 import { uiActions } from '../../store/ui-slice';
 import MacroData from './MacroData';
 import IngredientData from './IngredientData'
+import RadioInput from '../../UI/RadioInput';
+import formClasses from "../../Form/Form.module.css"
 
 
 //Recipe Form - Passed to Modal as a Component
@@ -61,6 +63,7 @@ export const RecipeForm = () => {
 const EntryCard = (props) => {
     const dispatch = useDispatch();
     const [navState, setNavState] = useState('recipeCard');
+    const [filterState, setFilterState] = useState('macros');
 
     const onClickHandler = (e) => {
         const index = e.currentTarget.id;
@@ -76,6 +79,10 @@ const EntryCard = (props) => {
         setNavState(e.currentTarget.id)
     }
 
+    const switchRadioFilter = (target) => {
+        setFilterState(target.value);
+    }
+
 
     return <Card classes={classes.recipe} >
         <header className={classes.header}>
@@ -84,14 +91,19 @@ const EntryCard = (props) => {
             <a id="mealCard" className={navState === 'mealCard' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Mealplan</h3></a>
         </header>
         <article className={classes.article}>
-            <SearchInput onSearch={props.onFilter} label="Filter Name" />
+            <div className={formClasses.form}>
+                <ul>
+                    <SearchInput onSearch={props.onFilter} label="Filter Name" />
+                    <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'recipeRadioFilter', value: ['Macros', 'Ingredients'] }} />
+                </ul>
+            </div>
+
             {/* <FilterInput /> */}
-            {/* <MacroData tableData={props.foodItems} onClickHandler={onClickHandler} /> */}
-            <IngredientData tableData={props.foodItems} onClickHandler={onClickHandler} />
+            {filterState === 'Macros' && <MacroData tableData={props.foodItems} onClickHandler={onClickHandler} />}
+            {filterState === 'Ingredients' && <IngredientData tableData={props.foodItems} onClickHandler={onClickHandler} />}
 
             <footer className={classes.footer}>
                 <Button name='recipe' onClick={props.onModal}>+ Create Item</Button>
-                {/* <Button name='item' onClick={props.onModal}>+ Search</Button> */}
             </footer>
         </article>
 

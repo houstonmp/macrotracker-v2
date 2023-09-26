@@ -8,7 +8,7 @@ const IngredientData = (props) => {
             <th>Ingredients</th>
         </tr>
     }>
-        {props.tableData.map((item, index) => {
+        {props.tableData.length >= 0 && props.tableData.map((item, index) => {
             return (<tr key={`${item.name}-${index}`} id={index} onClick={props.onClickHandler}>
                 <td key={`name-${item.name}`}>
                     {item.name.substr(0, 10)}

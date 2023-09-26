@@ -8,7 +8,7 @@ import { uiActions } from '../store/ui-slice';
 
 //Form Components
 import { RecipeForm } from '../Entry/EntryCard/EntryCard';
-import { WorkoutForm } from '../Weight/WeightEntry';
+import { WeightForm } from '../Weight/WeightEntry';
 
 const Backdrop = props => {
     const dispatch = useDispatch();
@@ -34,15 +34,10 @@ const ModalOverlay = () => {
             modalData = <RecipeForm></RecipeForm>;
             break;
         case 'item':
-            modalData = (<Form>
-                <li>
-                    <label htmlFor="i1" />
-                    <input type="text" required />
-                </li>
-            </Form>);
+            modalData = <RecipeForm></RecipeForm>;
             break;
         case 'workout':
-            modalData = <WorkoutForm></WorkoutForm>
+            modalData = <WeightForm></WeightForm>
             break;
         default:
             modalData = <p>Sorry nothing to show at this time...</p>

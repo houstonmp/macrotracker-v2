@@ -2,25 +2,22 @@ import Card from '../../UI/Card'
 import Button from '../../UI/Button';
 import classes from './EntryCard.module.css'
 import Form from '../../Form/Form'
-import Table from "../../UI/Table";
 import { useDispatch } from 'react-redux';
 import { foodDiaryActions } from '../../store/food-diary-slice';
 import Input from '../../UI/Input';
-import useInput from '../../../hooks/use-input';
 import { useState, useEffect } from 'react';
 import SearchInput from '../../UI/SearchInput';
-import { uiActions } from '../../store/ui-slice';
 import MacroData from './MacroData';
 import IngredientData from './IngredientData'
 import RadioInput from '../../UI/RadioInput';
 import formClasses from "../../Form/Form.module.css"
+import { recipeListActions } from '../../store/recipe-list-slice';
 
 
 //Recipe Form - Passed to Modal as a Component
 export const RecipeForm = () => {
     const validateInput = (value) => value.trim() !== '';
     const dispatch = useDispatch();
-    // const dispatch = useDispatch();
     let formIsValid = false;
 
     const [nameState, setName] = useState({});
@@ -37,16 +34,17 @@ export const RecipeForm = () => {
         formIsValid = true;
     }
 
-    const onCancelHandler = (e) => {
-        e.preventDefault();
-        dispatch(uiActions.closeModal());
-    }
-
-
-
     const recipeFormHandler = () => {
         if (formIsValid) {
-            console.log("Form Submitted");
+            dispatch(recipeListActions.updateItem({
+                id: nameState.value,
+                name: nameState.value,
+                calories: 1234,
+                tCarbs: +carbsState.value,
+                tFat: +fatState.value,
+                tProtein: +proteinState.value,
+                ingredients: ['milk', 'eggs', 'bacon']
+            }));
             return true;
         }
         return false;
@@ -62,17 +60,35 @@ export const RecipeForm = () => {
 
 const EntryCard = (props) => {
     const dispatch = useDispatch();
-    const [navState, setNavState] = useState('recipeCard');
-    const [filterState, setFilterState] = useState('macros');
+    const [navState, setNavState] = useState('recipes');
+    const [filterState, setFilterState] = useState('Macros');
+    const [foodItems, setFoodItems] = useState(props.foodItems[navState]);
+    // console.log("Recipes", foodItems, props.foodItems)
+
+    useEffect(() => {
+        setFoodItems(props.foodItems[navState])
+    }, [navState, props.foodItems])
+
 
     const onClickHandler = (e) => {
         const index = e.currentTarget.id;
         dispatch(foodDiaryActions.updateDiary({
             type: "UPDATE",
             date: new Date().toJSON().slice(0, 10),
-            data: props.foodItems[index]
+            data: props.foodItems[navState][index]
         })
         )
+    }
+
+    const onFilterHandler = (value) => {
+        const filterValue = value.toLowerCase();
+
+        const newArray = props.foodItems[navState].filter((el) => {
+            console.log(filterValue, el);
+            return el.name.toLowerCase().includes(filterValue);
+        })
+
+        setFoodItems(newArray);
     }
 
     const onNavChangeHandler = (e) => {
@@ -83,24 +99,28 @@ const EntryCard = (props) => {
         setFilterState(target.value);
     }
 
-
     return <Card classes={classes.recipe} >
         <header className={classes.header}>
-            <a id="recipeCard" className={navState === 'recipeCard' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Recipes</h3></a>
-            <a id="itemCard" className={navState === 'itemCard' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Items</h3></a>
-            <a id="mealCard" className={navState === 'mealCard' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Mealplan</h3></a>
+            <a id="recipes" className={navState === 'recipes' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Recipes</h3></a>
+            <a id="items" className={navState === 'items' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Items</h3></a>
+            <a id="meals" className={navState === 'meals' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Mealplan</h3></a>
         </header>
         <article className={classes.article}>
+            {navState === 'recipes' && <i>Select or create a new recipe!</i>}
+            {navState === 'items' && <i>Select or add an individual item or ingredient!</i>}
+            {navState === 'meals' && <i>This weeks meals!</i>}
+
             <div className={formClasses.form}>
                 <ul>
-                    <SearchInput onSearch={props.onFilter} label="Filter Name" />
+                    <SearchInput onSearch={onFilterHandler} label="Filter Name" />
                     <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'recipeRadioFilter', value: ['Macros', 'Ingredients'] }} />
                 </ul>
             </div>
 
             {/* <FilterInput /> */}
-            {filterState === 'Macros' && <MacroData tableData={props.foodItems} onClickHandler={onClickHandler} />}
-            {filterState === 'Ingredients' && <IngredientData tableData={props.foodItems} onClickHandler={onClickHandler} />}
+            {filterState === 'Macros' && 0 < foodItems.length && <MacroData navName={navState} tableData={foodItems} onClickHandler={onClickHandler} />}
+            {filterState === 'Ingredients' && 0 < foodItems.length && <IngredientData navName={navState} tableData={foodItems} onClickHandler={onClickHandler} />}
+            {foodItems.length === 0 && <p>Click 'Create {navState}' to get started!</p>}
 
             <footer className={classes.footer}>
                 <Button name='recipe' onClick={props.onModal}>+ Create Item</Button>

@@ -67,6 +67,18 @@
     padding-bottom: 1rem;
 }
 
+.header i {
+    padding-left: .4rem;
+}
+
+.article :is(p, i) {
+    text-align: center;
+}
+
+i {
+    padding-left: 10px;
+}
+
 .footer>button {
     margin: 10px;
 }

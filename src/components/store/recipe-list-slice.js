@@ -1,10 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const recipeList = createSlice({
+const recipeListSlice = createSlice({
     name: 'recipes',
     initialState: {
-        recipeObj: [],
-        ingredients: [],
+        recipeObj: {
+            recipes: [],
+            items: [],
+            meals: []
+        }
     },
     reducers: {
         replaceRecipeObj(state, action) {
@@ -27,6 +30,24 @@ const recipeList = createSlice({
                     macros: [action.payload.data],
                 })
             }
+        },
+        updateItem(state, action) {
+            console.log(action)
+            if (!(state.recipeObj.items.length > 0)) {
+                state.recipeObj.items.push(action.payload)
+            }
+            // let itemExists = state.recipeObj.items.findIndex(el => {
+            //     return el.name === action.payload.name;
+            // })
+            // if (itemExists > -1) {
+            //     state.recipeObj.items[itemExists]
+            // }
+            else {
+                state.recipeObj.items.push(action.payload)
+            }
         }
     }
 })
+
+export const recipeListActions = recipeListSlice.actions;
+export default recipeListSlice;

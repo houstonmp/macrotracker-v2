@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { weightActions } from "../store/weight-slice";
 import RadioInput from "../UI/RadioInput";
 
-export const WorkoutForm = () => {
+export const WeightForm = () => {
 
 
     const dispatch = useDispatch();

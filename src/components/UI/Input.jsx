@@ -19,14 +19,14 @@ const Input = (props) => {
         })
     }, [isValid, hasError, value]);
 
-    let classList = `${hasError ? classes.error : ''}`;
+    let classList = `${!props.isOptional && hasError && classes.error}`;
 
     return <li>
         <label htmlFor={props.name}>{props.label}<div>{props.children}</div></label>
-        <input className={classList} id={props.id} type={props.type} name={props.name} value={value} onBlur={inputBlurHandler} onChange={inputChangeHandler}>
+        <input className={classList} id={props.id} type={props.type} name={props.name} value={value} placeholder={props.placeholder} onBlur={inputBlurHandler} onChange={inputChangeHandler}>
         </input>
 
-        {hasError && <p className={classes['error-text']}>
+        {!props.isOptional && hasError && <p className={classes['error-text']}>
             Please enter a valid {props.type === 'text' && 'text input'}
             {props.type === 'number' && 'number input'}!
         </p>}

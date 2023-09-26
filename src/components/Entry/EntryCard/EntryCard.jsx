@@ -24,11 +24,13 @@ export const RecipeForm = () => {
     const [proteinState, setProtein] = useState({});
     const [carbsState, setCarbs] = useState({});
     const [fatState, setFat] = useState({});
+    const [ingState, setIngredients] = useState({});
 
     const nameToForm = (inputObj) => setName(inputObj);
     const proteinToForm = (inputObj) => setProtein(inputObj);
     const carbsToForm = (inputObj) => setCarbs(inputObj);
     const fatToForm = (inputObj) => setFat(inputObj);
+    const ingToForm = (inputObj) => setIngredients(inputObj);
 
     if (nameState.isValid && proteinState.isValid && carbsState.isValid && fatState.isValid) {
         formIsValid = true;
@@ -39,11 +41,11 @@ export const RecipeForm = () => {
             dispatch(recipeListActions.updateItem({
                 id: nameState.value,
                 name: nameState.value,
-                calories: 1234,
+                calories: ((proteinState.value * 4) + (fatState.value * 9) + (carbsState.value * 4)),
                 tCarbs: +carbsState.value,
                 tFat: +fatState.value,
                 tProtein: +proteinState.value,
-                ingredients: ['milk', 'eggs', 'bacon']
+                ingredients: ingState.value.split(',')
             }));
             return true;
         }
@@ -51,10 +53,11 @@ export const RecipeForm = () => {
     };
 
     return <Form onFormSubmit={recipeFormHandler} formIsValid={formIsValid} submitText="Submit">
-        <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={nameToForm} onValidate={validateInput} />
-        <Input id="pValue" key="pValue" name="proteinValue" type="number" label="Protein (g):" onPass={proteinToForm} onValidate={validateInput} />
-        <Input id="cValue" key="cValue" name="carbValue" type="number" label="Carbs (g):" onPass={carbsToForm} onValidate={validateInput} />
-        <Input id="fValue" key="fValue" name="fatValue" type="number" label="Fat (g):" onPass={fatToForm} onValidate={validateInput} />
+        <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={nameToForm} onValidate={validateInput} isOptional={false} placeholder="Protein Bar" />
+        <Input id="pValue" key="pValue" name="proteinValue" type="number" label="Protein (g):" onPass={proteinToForm} onValidate={validateInput} isOptional={false} placeholder="(6)" />
+        <Input id="cValue" key="cValue" name="carbValue" type="number" label="Carbs (g):" onPass={carbsToForm} onValidate={validateInput} isOptional={false} placeholder="(15)" />
+        <Input id="fValue" key="fValue" name="fatValue" type="number" label="Fat (g):" onPass={fatToForm} onValidate={validateInput} isOptional={false} placeholder="(16)" />
+        <Input id="ingValue" key="ingValue" name="ingValue" type="text" label="Ingredients List: (Optional)" onPass={ingToForm} onValidate={validateInput} isOptional={true} placeholder="Almonds, Chicory, root fiber, honey, palm kernel oil, sugar, glucose syrup, rice flour... (Optional)" />
     </Form>
 }
 
@@ -63,7 +66,6 @@ const EntryCard = (props) => {
     const [navState, setNavState] = useState('recipes');
     const [filterState, setFilterState] = useState('Macros');
     const [foodItems, setFoodItems] = useState(props.foodItems[navState]);
-    // console.log("Recipes", foodItems, props.foodItems)
 
     useEffect(() => {
         setFoodItems(props.foodItems[navState])

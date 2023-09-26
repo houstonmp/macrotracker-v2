@@ -13,9 +13,113 @@ import RadioInput from '../../UI/RadioInput';
 import formClasses from "../../Form/Form.module.css"
 import { recipeListActions } from '../../store/recipe-list-slice';
 
+export const RecipeForm = () => {
+    const [nameState, setName] = useState({});
+    const dispatch = useDispatch();
+    const validateInput = (value) => value.trim() !== '';
+    let formIsValid = false;
+    const [foodList, setFoodList] = useState([]);
+
+    const nameToForm = (inputObj) => setName(inputObj);
+
+    if (nameState.isValid) {
+        formIsValid = true;
+    }
+
+    const itemFormHandler = (e) => {
+        e.preventDefault();
+        if (formIsValid) {
+            dispatch(recipeListActions.updateRecipe({
+                type: "RECIPE",
+                data: {
+                    id: nameState.value,
+                    name: nameState.value,
+                }
+            }));
+            return true;
+        }
+        return false;
+    };
+    let responseJSON = '';
+    const onFilterHandler = async (value) => {
+        let api_key = '';
+
+        if (value) {
+            console.log("fetching")
+            try {
+                console.log(value);
+                const response = await fetch(`https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${api_key}&query=` + value, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                if (!response.ok) {
+                    throw new ERROR('Could not connect to Server')
+                }
+                const data = await response.json();
+                responseJSON = data;
+                console.log(responseJSON);
+                responseJSON = responseJSON.foods.map(food => {
+                    return {
+                        fdcId: food.fdcId,
+                        description: food.description,
+                        gtinUPC: food.gtinUPC,
+                        foodNutrients: food.foodNutrients.slice(0, 3)
+                    }
+                })
+                setFoodList(responseJSON);
+
+                console.log(responseJSON);
+            } catch (error) {
+                console.log(error.message);
+                return
+            }
+        }
+
+    }
+
+    return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit">
+        <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={nameToForm} onValidate={validateInput} isOptional={false} placeholder="Roast Chicken" />
+        <SearchInput onSearch={onFilterHandler} label="Ingredients" />
+        <li className={formClasses.article}>
+            <ul>
+                {foodList && foodList.map(food => {
+                    return <li>
+                        <h4>{food.description}</h4>
+                        <div className="itemData">
+                            <div>FDC #:{food.fdcId}</div>
+                            <div>Barcode: {food.gtinUPC ? food.gtinUPC : 'N/A'}</div>
+                        </div>
+                        <div>
+                            {food.foodNutrients.map(nutrient => {
+                                return <>
+
+                                    <div>{nutrient.nutrientName}{nutrient.value}</div>
+                                </>
+                            })
+                            }
+                        </div>
+                    </li>
+                    {/* <ul>
+                        <li>{food.fdcId}</li>
+                        <li>{food.gtinUPC}</li>
+                        {food.foodNutrients.map(nutrient => {
+                            return <>
+                                <li>{nutrient.nutrientName}</li>
+                                <li>{nutrient.nutrientNumber}</li>
+                                <li>{nutrient.value}</li>
+                            </>
+                        })}
+                    </ul> */}
+                })}
+            </ul>
+        </li>
+    </Form>
+}
 
 //Recipe Form - Passed to Modal as a Component
-export const RecipeForm = () => {
+export const ItemForm = () => {
     const validateInput = (value) => value.trim() !== '';
     const dispatch = useDispatch();
     let formIsValid = false;
@@ -36,23 +140,27 @@ export const RecipeForm = () => {
         formIsValid = true;
     }
 
-    const recipeFormHandler = () => {
+    const itemFormHandler = () => {
         if (formIsValid) {
-            dispatch(recipeListActions.updateItem({
-                id: nameState.value,
-                name: nameState.value,
-                calories: ((proteinState.value * 4) + (fatState.value * 9) + (carbsState.value * 4)),
-                tCarbs: +carbsState.value,
-                tFat: +fatState.value,
-                tProtein: +proteinState.value,
-                ingredients: ingState.value.split(',')
-            }));
+            dispatch(recipeListActions.updateRecipe({
+                type: "ITEM",
+                data: {
+                    id: nameState.value,
+                    name: nameState.value,
+                    calories: ((proteinState.value * 4) + (fatState.value * 9) + (carbsState.value * 4)),
+                    tCarbs: +carbsState.value,
+                    tFat: +fatState.value,
+                    tProtein: +proteinState.value,
+                    ingredients: ingState.value.split(',')
+                }
+            }
+            ));
             return true;
         }
         return false;
     };
 
-    return <Form onFormSubmit={recipeFormHandler} formIsValid={formIsValid} submitText="Submit">
+    return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit">
         <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={nameToForm} onValidate={validateInput} isOptional={false} placeholder="Protein Bar" />
         <Input id="pValue" key="pValue" name="proteinValue" type="number" label="Protein (g):" onPass={proteinToForm} onValidate={validateInput} isOptional={false} placeholder="(6)" />
         <Input id="cValue" key="cValue" name="carbValue" type="number" label="Carbs (g):" onPass={carbsToForm} onValidate={validateInput} isOptional={false} placeholder="(15)" />
@@ -125,7 +233,8 @@ const EntryCard = (props) => {
             {foodItems.length === 0 && <p>Click 'Create {navState}' to get started!</p>}
 
             <footer className={classes.footer}>
-                <Button name='recipe' onClick={props.onModal}>+ Create Item</Button>
+                <Button name='recipe' onClick={props.onModal}>+ Create Recipe</Button>
+                <Button name='item' onClick={props.onModal}>+ Create Item</Button>
             </footer>
         </article>
 

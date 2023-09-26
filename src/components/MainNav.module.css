@@ -8,11 +8,14 @@
 }
 
 .list {
+  width: 100%;
   display: flex;
   flex-direction: column;
   /* gap: 1rem; */
   flex-wrap: nowrap;
 }
+
+
 
 .list :nth-last-child(2) {
   margin-top: auto;
@@ -62,10 +65,18 @@
   .list {
     flex-direction: row-reverse;
     align-items: flex-start;
+    justify-content: center;
   }
 
   .header {
     height: fit-content;
+  }
+
+  .list a,
+  .list button {
+    width: auto;
+    flex-grow: 1;
+    /* width: 20px; */
   }
 
   .header {

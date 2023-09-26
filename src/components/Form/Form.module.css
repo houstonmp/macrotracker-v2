@@ -32,7 +32,37 @@
     align-self: flex-end;
 }
 
+.article {
+    max-height: 35vh;
+    overflow: scroll;
+    background-color: var(--color-gamma-200);
+}
 
+.article ul li {
+    margin: 0;
+    padding: .4rem;
+    display: flex;
+    justify-content: space-around;
+}
+
+.article ul li * {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-content: center;
+    flex-basis: 33%;
+}
+
+.article li:nth-child(2n) {
+    background-color: var(--color-gamma-300);
+}
+
+.article li:hover {
+    background-color: var(--color-gamma-500);
+    cursor: pointer;
+}
+
+ul li .itemData {}
 
 /* {
     flex-basis: 100%;

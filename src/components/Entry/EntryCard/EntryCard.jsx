@@ -138,7 +138,9 @@ const EntryCard = (props) => {
     const onFilterHandler = (value) => {
         const filterValue = value.toLowerCase();
         const newArray = props.foodItems[navState].filter((el) => {
-            return el.name.toLowerCase().includes(filterValue);
+            return el.name.toLowerCase().includes(filterValue) || el.ingredients.some(ing => {
+                return ing.fdcId ? ing.description.toLowerCase().includes(filterValue) : ing.toLowerCase().includes(filterValue);
+            })
         })
         setFoodItems(newArray);
     }

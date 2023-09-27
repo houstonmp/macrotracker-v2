@@ -132,3 +132,99 @@ i {
         transform: rotate(360deg);
     }
 }
+
+.ingList {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    flex-basis: 100%;
+}
+
+.ingList div {
+    background-color: var(--color-alpha-300);
+    margin: .5rem;
+    padding: .5rem;
+    color: white;
+    /* overflow: hidden; */
+    flex-basis: 30%;
+    flex-grow: 1;
+    /* max-width: 30%; */
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    border-radius: 3px;
+}
+
+.ingList div .ingItem {
+    /* flex-basis: 100%; */
+    flex-grow: 1;
+    /* margin: 0 auto; */
+    margin: 0;
+    padding: 0;
+    flex-wrap: nowrap;
+}
+
+.ingList div .ingExit {
+    /* flex-basis: 100%; */
+    flex-shrink: 1;
+    /* margin: 0 auto; */
+    max-width: 5rem;
+    ;
+    padding: 0;
+    margin: 0;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+
+.ingItem {
+    /* flex-basis: 70%; */
+    /* min-width: fit-content; */
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 0;
+    /* flex-shrink: 1; */
+}
+
+.ingExit {
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding: 3rem;
+    /* flex-basis: min-content; */
+    min-width: min-content;
+    text-align: center;
+    justify-self: flex-end;
+    /* max-width: min-content; */
+    align-self: center;
+    /* flex-shrink: 1; */
+}
+
+.ingList div:hover {
+    background-color: var(--color-alpha-100);
+    cursor: pointer;
+}
+
+.ingList div:hover :is(.ingExit, .ingItem) {
+    background-color: transparent;
+    color: black;
+}
+
+
+/* .ingList div {
+    flex-basis: 100%;
+    flex-grow:
+    margin: 0;
+    padding: 0;
+}
+
+.ingList div:first-child {
+
+    flex-basis: 70%;
+}
+
+.ingList div:last-child {
+    flex-grow: 1;
+
+    min-width: min-content;
+} */

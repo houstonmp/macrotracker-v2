@@ -4,7 +4,7 @@ const FilterChoice = (props) => {
     const [listItem, setList] = useState(props.food);
 
     const onAddFoodHandler = () => {
-        console.log(listItem);
+        props.onAddItemHandler(listItem);
     }
     const onKeyUpHandler = (e) => {
         e.preventDefault();

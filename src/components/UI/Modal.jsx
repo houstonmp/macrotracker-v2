@@ -20,7 +20,7 @@ const Backdrop = props => {
         }
     }
 
-    return <div onClick={closeModalHandler} className={styles.backdrop}>
+    return <div onMouseDown={closeModalHandler} className={styles.backdrop}>
         {props.children}
     </div>
 }

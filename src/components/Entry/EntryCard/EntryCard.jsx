@@ -22,6 +22,7 @@ export const RecipeForm = () => {
     let formIsValid = false;
     const [foodList, setFoodList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [ingList, setIngList] = useState([]);
 
     const nameToForm = (inputObj) => setName(inputObj);
 
@@ -47,7 +48,7 @@ export const RecipeForm = () => {
     let responseJSON = '';
     const onFilterHandler = async (value) => {
         setIsLoading(true);
-        let api_key = '';
+        let api_key = USDA_api_key ? USDA_api_key : '';
 
         if (value) {
             console.log("fetching")
@@ -65,6 +66,7 @@ export const RecipeForm = () => {
                 const data = await response.json();
                 responseJSON = data;
                 responseJSON = responseJSON.foods.filter(food => {
+                    let i = 0;
                     return food.dataType.includes(radioState);
                 })
                 responseJSON = responseJSON.length > 0 && responseJSON.map(food => {
@@ -109,21 +111,46 @@ export const RecipeForm = () => {
     const switchRadioFilter = (target) => {
         setRadioState(target.value);
     }
+    const onAddItemHandler = (listItem) => {
+        if (!ingList.some(el => el.fdcId == listItem.fdcId)) {
+            setIngList(prev => {
+                let newArray = [listItem, ...prev];
+                return newArray;
+            })
+        }
+    }
+    const onDeleteIngHandler = (e) => {
+        setIngList(prev => {
+            let index = prev.findIndex(el => el.fdcId == e.target.id);
+            return index ? prev.toSpliced(index - 1, 1) : prev;
+        })
+    }
+
+    // const truncate = (str, n) => {
+    //     return (str.length > n) ? str.split(',')[0].slice(0, n - 1) : str;
+    // };
 
     return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit">
         <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={nameToForm} onValidate={validateInput} isOptional={false} placeholder="Roast Chicken" />
         <SearchInput onSearch={onFilterHandler} label="Ingredients" />
+        <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'ingredientRadioFilter', value: ['Foundational', 'Branded', 'Experimental', 'SR Legacy', 'FNDDS'] }} />
+        <div className={classes.ingList}>
+            {ingList.length > 0 ? ingList.map(el =>
+                <div id={el.fdcId} key={el.fdcId} onClick={onDeleteIngHandler}>
+                    <div className={classes.ingItem}>{el.description}</div>
+                    <div className={classes.ingExit}>X</div></div>)
+                : 'Click an item to add to list'}</div>
+
         {isLoading ? <div className={classes.circle}></div> :
             <li className={formClasses.article}>
-
                 <ul>
                     {foodList.length > 0 && foodList.map(food => {
-                        return <FilterChoice food={food} />
+                        return <FilterChoice food={food} onAddItemHandler={onAddItemHandler} />
                     })}
                     {foodList.length === 0 && <li style={{ textAlign: "center" }}>Result not found...</li>}
                 </ul>
             </li>}
-        <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'ingredientRadioFilter', value: ['Foundational', 'Branded', 'Experimental', 'SR Legacy', 'FNDDS'] }} />
+
     </Form>
 }
 

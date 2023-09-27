@@ -12,6 +12,7 @@ import IngredientData from './IngredientData'
 import RadioInput from '../../UI/RadioInput';
 import formClasses from "../../Form/Form.module.css"
 import { recipeListActions } from '../../store/recipe-list-slice';
+import FilterChoice from './FilterChoice';
 
 export const RecipeForm = () => {
     const [nameState, setName] = useState({});
@@ -20,6 +21,7 @@ export const RecipeForm = () => {
     const validateInput = (value) => value.trim() !== '';
     let formIsValid = false;
     const [foodList, setFoodList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const nameToForm = (inputObj) => setName(inputObj);
 
@@ -44,6 +46,7 @@ export const RecipeForm = () => {
 
     let responseJSON = '';
     const onFilterHandler = async (value) => {
+        setIsLoading(true);
         let api_key = '';
 
         if (value) {
@@ -64,7 +67,6 @@ export const RecipeForm = () => {
                 responseJSON = responseJSON.foods.filter(food => {
                     return food.dataType.includes(radioState);
                 })
-                console.log("response is 1:", responseJSON);
                 responseJSON = responseJSON.length > 0 && responseJSON.map(food => {
                     let tempObj = {};
                     for (let i = 0; i < food.foodNutrients.length; i++) {
@@ -83,59 +85,21 @@ export const RecipeForm = () => {
                                 break;
                         }
                     }
-
                     return {
                         fdcId: food.fdcId,
                         description: food.description,
                         dataType: food.dataType,
                         gtinUpc: food.gtinUpc,
+                        brandName: food.brandName,
+                        servingSize: food.servingSize,
+                        servingSizeUnit: food.servingSizeUnit,
                         foodNutrients: tempObj
-
-                        // {
-                        //     switch (a.nutrientNumber) {
-                        //         case "203":
-                        //             console.log("Protein")
-                        //             return {
-                        //                 ...a,
-                        //                 protein: a.value
-                        //             }
-                        //         case "204":
-                        //             console.log("fat")
-                        //             return {
-                        //                 ...a,
-                        //                 fat: a.value
-                        //             }
-                        //         case "205":
-                        //             console.log("Carbs")
-                        //             return {
-                        //                 ...a,
-                        //                 carbs: a.value
-                        //             }
-                        //         case "208":
-                        //             return {
-                        //                 ...a,
-                        //                 calories: a.value
-                        //             }
-                        //     }
-                        // })
-
-                        // map(el => {
-                        //     switch (el.nutrientNumber) {
-                        //         case "203":
-                        //         case "204":
-                        //         case "205":
-                        //         case "208":
-                        //             return true;
-                        //     }
-                        // })
                     }
                 })
-                console.log("response is 2:", responseJSON)
-                // responseJSON.length > 0 && responseJSON.forEach(food => {
-                //     food.foodNutrients = food.foodNutrients
-                // })
                 setFoodList(responseJSON);
+                setIsLoading(false);
             } catch (error) {
+                setIsLoading(false);
                 console.log(error.message)
                 return
             }
@@ -149,39 +113,17 @@ export const RecipeForm = () => {
     return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit">
         <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={nameToForm} onValidate={validateInput} isOptional={false} placeholder="Roast Chicken" />
         <SearchInput onSearch={onFilterHandler} label="Ingredients" />
+        {isLoading ? <div className={classes.circle}></div> :
+            <li className={formClasses.article}>
+
+                <ul>
+                    {foodList.length > 0 && foodList.map(food => {
+                        return <FilterChoice food={food} />
+                    })}
+                    {foodList.length === 0 && <li style={{ textAlign: "center" }}>Result not found...</li>}
+                </ul>
+            </li>}
         <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'ingredientRadioFilter', value: ['Foundational', 'Branded', 'Experimental', 'SR Legacy', 'FNDDS'] }} />
-        <li className={formClasses.article}>
-            <ul>
-                {foodList && foodList.map(food => {
-                    // console.log(food.dataType.includes(radioState))
-                    return (<li key={food.description}>
-                        <h4>{food.description}</h4>
-                        <div className="itemData">
-                            <div>FDC #:{food.dataType}</div>
-                            <div>Barcode: {food.gtinUpc ? food.gtinUpc : 'N/A'}</div>
-                        </div>
-                        <div>
-                            <div>Protein: {food.foodNutrients.protein}</div>
-                            <div>Carbs: {food.foodNutrients.carbs}</div>
-                            <div>Fat: {food.foodNutrients.fat}</div>
-                            <div>Calories: {food.foodNutrients.calories}</div>
-                        </div>
-                    </li>)
-                    {/* <ul>
-                        <li>{food.fdcId}</li>
-                        <li>{food.gtinUPC}</li>
-                        {food.foodNutrients.map(nutrient => {
-                            return <>
-                                <li>{nutrient.nutrientName}</li>
-                                <li>{nutrient.nutrientNumber}</li>
-                                <li>{nutrient.value}</li>
-                            </>
-                        })}
-                    </ul> */}
-                })}
-                {!foodList && <li style={{ textAlign: "center" }}>Result not found</li>}
-            </ul>
-        </li>
     </Form>
 }
 

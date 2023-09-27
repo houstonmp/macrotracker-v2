@@ -22,6 +22,16 @@
     border-left: 1px solid black;
 }
 
+td input {
+    background-color: transparent;
+    border: none;
+    max-width: 100%;
+}
+
+td input:focus {
+    background-color: white;
+}
+
 @media only screen and (max-width: 768px) {
     .cardFlex {
         margin: 0;

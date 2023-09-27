@@ -98,3 +98,37 @@ i {
     padding-right: 4px;
     /* flex-grow: 1; */
 }
+
+.article .circle {
+    align-items: center;
+}
+
+.circle {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    margin: 1rem auto;
+}
+
+.circle:after {
+    content: " ";
+    display: block;
+
+    width: 2rem;
+    height: 2rem;
+
+    border-radius: 50%;
+    border: 6px solid var(--color-alpha-300);
+    border-color: var(--color-alpha-300) transparent var(--color-alpha-300) transparent;
+    animation: circle-animation 1.2s linear infinite;
+}
+
+@keyframes circle-animation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

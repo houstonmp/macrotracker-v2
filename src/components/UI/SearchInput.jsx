@@ -13,7 +13,9 @@ const SearchInput = (props) => {
     }
     useEffect(() => {
         const timeout = setTimeout(() => {
-            props.onSearch(searchValue);
+            if (searchValue) {
+                props.onSearch(searchValue);
+            }
         }, 300);
         return () => {
             clearTimeout(timeout)
@@ -21,7 +23,7 @@ const SearchInput = (props) => {
     }, [searchValue])
 
     return <li>
-        <input className={inputClasses.input} id="search" name="search" type="text" onChange={onChangeHandler} placeholder={props.label} value={searchValue} />
+        <input className={inputClasses.input} list={props.list} name="search" type="text" onChange={onChangeHandler} placeholder={props.label} value={searchValue} />
     </li>
 }
 

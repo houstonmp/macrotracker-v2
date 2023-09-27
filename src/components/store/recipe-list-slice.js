@@ -18,6 +18,7 @@ const recipeListSlice = createSlice({
             if (action.payload.type === "RECIPE") {
                 // recipeArray = action.type;               
                 recipeArray = 'recipes';
+                // console.log("Finished recipe is:", action.payload.data)
             }
             else if (action.payload.type === "ITEM") {
                 recipeArray = 'items';

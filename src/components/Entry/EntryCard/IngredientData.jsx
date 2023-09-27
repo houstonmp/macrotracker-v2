@@ -16,7 +16,11 @@ const IngredientData = (props) => {
                 <td key={`ingredients-${item.name}`}>
                     <ul>
                         {item.ingredients.map((el, index) => {
-                            return <li key={`ing-${el}${index}`}>{`${el},`}</li>
+                            if (el.fdcId) { //For USDA Ingredients
+                                return <li key={`ing-${el.fdcId}${index}`}>{`${el.description.split(',')[0]},`}</li>
+                            } else { //For custom listed ingredients
+                                return <li key={`ing-${el}${index}`}>{`${el},`}</li>
+                            }
                         })}
                     </ul>
                 </td>

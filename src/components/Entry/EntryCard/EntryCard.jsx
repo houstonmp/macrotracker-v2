@@ -12,18 +12,15 @@ import IngredientData from './IngredientData'
 import RadioInput from '../../UI/RadioInput';
 import formClasses from "../../Form/Form.module.css"
 import { recipeListActions } from '../../store/recipe-list-slice';
-import FilterChoice from './FilterChoice';
+
+
+import InputRecipeData from './InputRecipeData';
 
 export const RecipeForm = () => {
     const [nameState, setName] = useState({});
-    const [radioState, setRadioState] = useState('Foundation');
     const dispatch = useDispatch();
-    const validateInput = (value) => value.trim() !== '';
     let formIsValid = false;
-    const [foodList, setFoodList] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
     const [ingList, setIngList] = useState([]);
-
     const nameToForm = (inputObj) => setName(inputObj);
 
     if (nameState.isValid) {
@@ -31,13 +28,13 @@ export const RecipeForm = () => {
     }
 
     const itemFormHandler = (e) => {
-        e.preventDefault();
-        if (formIsValid) {
+        if (formIsValid && ingList.length > 0) {
             dispatch(recipeListActions.updateRecipe({
                 type: "RECIPE",
                 data: {
                     id: nameState.value,
                     name: nameState.value,
+                    ingredients: ingList
                 }
             }));
             return true;
@@ -45,72 +42,7 @@ export const RecipeForm = () => {
         return false;
     };
 
-    let responseJSON = '';
-    const onFilterHandler = async (value) => {
-        setIsLoading(true);
-        let api_key = USDA_api_key ? USDA_api_key : '';
 
-        if (value) {
-            console.log("fetching")
-            try {
-                console.log(value);
-                const response = await fetch(`https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${api_key}&query=` + value, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                if (!response.ok) {
-                    throw new ERROR('Could not connect to Server')
-                }
-                const data = await response.json();
-                responseJSON = data;
-                responseJSON = responseJSON.foods.filter(food => {
-                    let i = 0;
-                    return food.dataType.includes(radioState);
-                })
-                responseJSON = responseJSON.length > 0 && responseJSON.map(food => {
-                    let tempObj = {};
-                    for (let i = 0; i < food.foodNutrients.length; i++) {
-                        switch (food.foodNutrients[i].nutrientNumber) {
-                            case "203":
-                                tempObj = { protein: food.foodNutrients[i].value, ...tempObj }
-                                break;
-                            case "204":
-                                tempObj = { fat: food.foodNutrients[i].value, ...tempObj }
-                                break;
-                            case "205":
-                                tempObj = { carbs: food.foodNutrients[i].value, ...tempObj }
-                                break;
-                            case "208":
-                                tempObj = { calories: food.foodNutrients[i].value, ...tempObj }
-                                break;
-                        }
-                    }
-                    return {
-                        fdcId: food.fdcId,
-                        description: food.description,
-                        dataType: food.dataType,
-                        gtinUpc: food.gtinUpc,
-                        brandName: food.brandName,
-                        servingSize: food.servingSize,
-                        servingSizeUnit: food.servingSizeUnit,
-                        foodNutrients: tempObj
-                    }
-                })
-                setFoodList(responseJSON);
-                setIsLoading(false);
-            } catch (error) {
-                setIsLoading(false);
-                console.log(error.message)
-                return
-            }
-        }
-    }
-
-    const switchRadioFilter = (target) => {
-        setRadioState(target.value);
-    }
     const onAddItemHandler = (listItem) => {
         if (!ingList.some(el => el.fdcId == listItem.fdcId)) {
             setIngList(prev => {
@@ -126,31 +58,8 @@ export const RecipeForm = () => {
         })
     }
 
-    // const truncate = (str, n) => {
-    //     return (str.length > n) ? str.split(',')[0].slice(0, n - 1) : str;
-    // };
-
     return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit">
-        <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={nameToForm} onValidate={validateInput} isOptional={false} placeholder="Roast Chicken" />
-        <SearchInput onSearch={onFilterHandler} label="Ingredients" />
-        <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'ingredientRadioFilter', value: ['Foundational', 'Branded', 'Experimental', 'SR Legacy', 'FNDDS'] }} />
-        <div className={classes.ingList}>
-            {ingList.length > 0 ? ingList.map(el =>
-                <div id={el.fdcId} key={el.fdcId} onClick={onDeleteIngHandler}>
-                    <div className={classes.ingItem}>{el.description}</div>
-                    <div className={classes.ingExit}>X</div></div>)
-                : 'Click an item to add to list'}</div>
-
-        {isLoading ? <div className={classes.circle}></div> :
-            <li className={formClasses.article}>
-                <ul>
-                    {foodList.length > 0 && foodList.map(food => {
-                        return <FilterChoice food={food} onAddItemHandler={onAddItemHandler} />
-                    })}
-                    {foodList.length === 0 && <li style={{ textAlign: "center" }}>Result not found...</li>}
-                </ul>
-            </li>}
-
+        <InputRecipeData ingList={ingList} nameToForm={nameToForm} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} />
     </Form>
 }
 
@@ -228,12 +137,9 @@ const EntryCard = (props) => {
 
     const onFilterHandler = (value) => {
         const filterValue = value.toLowerCase();
-
         const newArray = props.foodItems[navState].filter((el) => {
-            console.log(filterValue, el);
             return el.name.toLowerCase().includes(filterValue);
         })
-
         setFoodItems(newArray);
     }
 

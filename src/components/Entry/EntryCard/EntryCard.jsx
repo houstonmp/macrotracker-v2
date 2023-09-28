@@ -67,6 +67,7 @@ export const RecipeForm = () => {
     const itemFormHandler = (e) => {
         if (formIsValid && formData.data.ingredients.length > 0) {
             dispatch(recipeListActions.updateRecipe(formData));
+            dispatch(uiActions.closeModal());
             return true;
         }
         return false;
@@ -132,7 +133,7 @@ export const RecipeForm = () => {
     return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit" overloadFooter={true}>
         {sectionState === 'enter' && <InputRecipeData key={`input-recipe`} ingList={formData.data.ingredients} formData={formData.data} nameToForm={nameToForm} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onContinue={onContinueHandler} formIsValid={formIsValid} />}
         {sectionState === 'modify' && <ModifyRecipeData key={`modify-recipe`} ingList={formData.data.ingredients} formData={formData.data} urlToForm={urlToForm} instructionsToForm={instructionsToForm} onDelete={onDeleteIngHandler} onClose={onCloseHandler} onBack={onBackHandler} onContinue={onContinueHandler} formIsValid={formIsValid} />}
-        {sectionState === 'confirm' && <ConfirmRecipeData key={`confirm-recipe`} ingList={formData.data.ingredients} formData={formData.data} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onBack={onBackHandler} />}
+        {sectionState === 'confirm' && <ConfirmRecipeData key={`confirm-recipe`} ingList={formData.data.ingredients} formData={formData.data} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onBack={onBackHandler} onSubmit={itemFormHandler} />}
     </Form>
 }
 

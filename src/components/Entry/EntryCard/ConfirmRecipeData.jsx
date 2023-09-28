@@ -61,7 +61,7 @@ const ConfirmRecipeData = (props) => {
             <Button type='button' onClick={props.onClose}>Cancel</Button>
             <div>
                 <Button type='button' onClick={props.onBack}>Back</Button>
-                <Button type='button' onClick={props.onContinue} disable={!props.formIsValid}>Submit</Button>
+                <Button type='button' onClick={props.onSubmit}>Submit</Button>
             </div>
         </footer>
     </>

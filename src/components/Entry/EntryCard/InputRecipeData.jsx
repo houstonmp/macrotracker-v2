@@ -92,7 +92,7 @@ const InputRecipeData = (props) => {
                         <div className={classes.ingExit}>X</div></div>)
                 }</div>
             <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'ingredientRadioFilter', value: ['Foundational', 'Branded', 'Experimental', 'SR Legacy', 'FNDDS'] }} />
-            <SearchInput onSearch={onFilterHandler} label="Ingredients" />
+            <SearchInput onSearch={onFilterHandler} label="Find ingredient data" />
 
 
 

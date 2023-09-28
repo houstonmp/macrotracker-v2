@@ -218,6 +218,7 @@ i {
     display: grid !important;
     grid-template-columns: 5% 65% 30%;
     flex-basis: 100%;
+    align-items: center;
 }
 
 .inputIngContainer {
@@ -237,16 +238,28 @@ i {
 
 textarea {
     box-sizing: border-box;
-    /* flex-basis: 100%; */
     width: 100%;
     resize: vertical;
     max-height: 20vh;
-    /* flex-grow: 1; */
-    /* max-width: 100%; */
+    white-space: pre-wrap;
 }
 
 .ingBtn {
     display: flex;
     flex-basis: 100%;
     justify-content: center;
+}
+
+.img {
+    width: 30%;
+}
+
+.instructText {
+    word-wrap: break-word;
+    padding-left: 1rem;
+    ;
+}
+
+.instructText .instructBullet {
+    margin: 1rem;
 }

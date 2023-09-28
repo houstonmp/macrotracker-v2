@@ -10,32 +10,46 @@ import { USDA_api_key } from './api_key';
 import formClasses from "../../Form/Form.module.css"
 import { uiActions } from "../../store/ui-slice";
 
+import useInput from "../../../hooks/use-input";
+import { useEffect } from "react";
+
 const ModifyRecipeData = (props) => {
-    const [foodList, setFoodList] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
     const validateInput = (value) => value.trim() !== '';
-    console.log("In Modify:", props.formData)
+
+    const {
+        value,
+        isValid,
+        hasError,
+        inputChangeHandler,
+        inputBlurHandler,
+    } = useInput(() => true, props.formData.instructions);
+
+    useEffect(() => {
+        props.instructionsToForm({
+            value,
+            isValid,
+            hasError
+        })
+    }, [isValid, hasError, value]);
 
     return <>
         <article className={formClasses.article}>
-            {/* <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={props.nameToForm} onValidate={validateInput} isOptional={false} defaultValue={props.formData.name} /> */}
-            <Input id="url" key="url" name="urlInput" type="url" label="Image Url: (Optional)" onPass={props.nameToForm} onValidate={validateInput} isOptional={true} />
+            <Input id="url" key="url" name="urlInput" type="url" label="Image Url: (Optional)" onPass={props.urlToForm} onValidate={validateInput} isOptional={true} defaultValue={props.formData.img} />
 
             <h3>Modify Ingredients</h3>
             <li>
-                <div className={classes.ingridientContainer}>
+                <div key={`ingredients-container`} className={classes.ingridientContainer}>
                     {props.ingList.length > 0 ? props.ingList.map((el, index) =>
                         <>
-                            <div>{index + 1}.</div>
-                            <i>{` ${el.description}`}</i>
-                            <div className={classes.inputIngContainer}>
-                                <Input id={"ingWeight" + el.fdcId} key={"ingWeight" + el.fdcId} name="ing-" type="number" onPass={props.nameToForm} onValidate={validateInput} isOptional={true} />
+                            <div key={`num-${index}`}>{index + 1}.</div>
+                            <i key={`desc-${index}`} > {` ${el.description}`}</i >
+                            <div key={`input-${index}`} className={classes.inputIngContainer}>
+                                {/* <Input id={"ingWeight" + el.fdcId} key={"ingWeight" + el.fdcId + index} name="ing-" type="number" onPass={props.nameToForm} onValidate={validateInput} isOptional={true} /> */}
 
-
-                                <div>
+                                <div key={`value-${index}`} >
                                     (g)
                                 </div>
-                            </div>
+                            </div >
                         </>
 
                     )
@@ -45,16 +59,16 @@ const ModifyRecipeData = (props) => {
                     <Button type='button'>+ Add Ingredient</Button>
                 </div>
                 <h3>Recipe Instructions: (Optional)</h3>
-                <textarea id="recipe-info" name="recipe-info" rows="8">
+                <textarea key={`recipe-text`} id="recipe-info" name="recipe-info" rows="8" onBlur={inputBlurHandler} onChange={inputChangeHandler} defaultValue={props.formData.instructions}>
 
                 </textarea>
             </li>
-        </article>
+        </article >
         <footer className={formClasses.footer}>
             <Button type='button' onClick={props.onClose}>Cancel</Button>
             <div>
                 <Button type='button' onClick={props.onBack}>Back</Button>
-                <Button type='button' onClick={props.onContinue} disable={!props.formIsValid}>Continue</Button>
+                <Button type='button' onClick={props.onContinue}>Continue</Button>
             </div>
         </footer>
     </>

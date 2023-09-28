@@ -17,18 +17,28 @@ import { uiActions } from '../../store/ui-slice';
 
 import InputRecipeData from './InputRecipeData';
 import ModifyRecipeData from './ModifyRecipeData';
+import ConfirmRecipeData from './ConfirmRecipeData'
 
 export const RecipeForm = () => {
     const [nameState, setName] = useState({});
+    const [instructions, setInstructions] = useState({});
+    const [imgUrl, setImage] = useState({});
     const dispatch = useDispatch();
     let formIsValid = false;
+
     const nameToForm = (inputObj) => setName(inputObj);
+    const instructionsToForm = (inputObj) => setInstructions(inputObj);
+    const urlToForm = (inputObj) => setImage(inputObj);
+
     const [sectionState, setSectionState] = useState('enter');
+
     const [formData, setFormData] = useState({
         type: "RECIPE",
         data: {
             id: '',
             name: '',
+            instructions: '',
+            img: '',
             ingredients: []
         }
     });
@@ -41,12 +51,14 @@ export const RecipeForm = () => {
                     data: {
                         ...prev.data,
                         id: nameState.value,
-                        name: nameState.value
+                        name: nameState.value,
+                        instructions: instructions.value,
+                        img: imgUrl.value
                     }
                 }
             })
         }
-    }, [nameState.value])
+    }, [nameState.value, imgUrl.value, instructions.value])
 
     if (nameState.isValid) {
         formIsValid = true;
@@ -98,38 +110,29 @@ export const RecipeForm = () => {
             if (prev === 'modify') {
                 return 'enter';
             }
+            else if (prev === 'confirm') {
+                return 'modify';
+            }
         });
     }
 
     const onContinueHandler = (e) => {
         e.preventDefault();
-
-        // if (formIsValid) {
-        //     setFormData(prev => {
-        //         console.log(nameState.value, prev.data.ingredients, prev.data.id, prev.data.name);
-        //         let newObj = {
-        //             data: {
-        //                 id: nameState.value,
-        //                 name: nameState.value,
-        //                 ingredients: prev.data.ingredients || []
-        //             },
-        //             ...prev
-        //         }
-        //         console.log(newObj)
-        //         return newObj;
-        //     })
-        // }
         setSectionState(prev => {
+            console.log(e, prev)
             if (prev === 'enter') {
                 return 'modify';
+            } else if (prev === 'modify') {
+                return 'confirm'
             }
         });
-
+        console.log("Switching:", formData)
     }
 
     return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit" overloadFooter={true}>
-        {sectionState === 'enter' && <InputRecipeData ingList={formData.data.ingredients} formData={formData.data} nameToForm={nameToForm} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onContinue={onContinueHandler} formIsValid={formIsValid} />}
-        {sectionState === 'modify' && <ModifyRecipeData ingList={formData.data.ingredients} formData={formData.data} nameToForm={nameToForm} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onBack={onBackHandler} formIsValid={formIsValid} />}
+        {sectionState === 'enter' && <InputRecipeData key={`input-recipe`} ingList={formData.data.ingredients} formData={formData.data} nameToForm={nameToForm} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onContinue={onContinueHandler} formIsValid={formIsValid} />}
+        {sectionState === 'modify' && <ModifyRecipeData key={`modify-recipe`} ingList={formData.data.ingredients} formData={formData.data} urlToForm={urlToForm} instructionsToForm={instructionsToForm} onDelete={onDeleteIngHandler} onClose={onCloseHandler} onBack={onBackHandler} onContinue={onContinueHandler} formIsValid={formIsValid} />}
+        {sectionState === 'confirm' && <ConfirmRecipeData key={`confirm-recipe`} ingList={formData.data.ingredients} formData={formData.data} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onBack={onBackHandler} />}
     </Form>
 }
 

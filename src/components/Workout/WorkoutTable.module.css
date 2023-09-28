@@ -26,6 +26,7 @@ td input {
     background-color: transparent;
     border: none;
     max-width: 100%;
+    color: white;
 }
 
 td input:focus {

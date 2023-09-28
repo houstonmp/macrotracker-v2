@@ -214,20 +214,68 @@ i {
     margin: 4rem;
 }
 
-/* .ingList div {
+.ingModifyContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
     flex-basis: 100%;
-    flex-grow:
-    margin: 0;
-    padding: 0;
 }
 
-.ingList div:first-child {
-
-    flex-basis: 70%;
-}
-
-.ingList div:last-child {
+.ingModifyContainer .ingDesc {
     flex-grow: 1;
+    flex-basis: 50%;
+}
 
-    min-width: min-content;
-} */
+.inputIngContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-basis: 50%;
+    max-width: 50%;
+}
+
+.inputIngContainer:first-child {
+    flex-basis: 70%;
+    flex-grow: 1;
+}
+
+.inputIngContainer:last-child {
+    flex-basis: 30%;
+    flex-grow: 1;
+}
+
+.modifyContainer li {
+    list-style: armenian;
+}
+
+.ingDesc {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: nowrap;
+}
+
+.ingDesc:first-child {
+    margin-right: 10px;
+    flex-basis: 5%;
+}
+
+.ingDesc:last-child {
+    flex-basis: 50%;
+    flex-grow: 1;
+}
+
+textarea {
+    box-sizing: border-box;
+    /* flex-basis: 100%; */
+    width: 100%;
+    resize: vertical;
+    max-height: 20vh;
+    /* flex-grow: 1; */
+    /* max-width: 100%; */
+}
+
+.ingBtn {
+    display: flex;
+    flex-basis: 100%;
+    justify-content: center;
+}

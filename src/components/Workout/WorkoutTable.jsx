@@ -255,11 +255,11 @@ const WorkoutTable = (props) => {
         }>
             {DUMMY_DATA.map(el => {
                 return <tr>
-                    <td><input value={el.name} /></td>
-                    <td><input value={el.area} /></td>
-                    <td><input value={`${el.wght}${el.unit}`} /></td>
-                    <td><input value={el.reps} /></td>
-                    <td><input value={el.sets} /></td>
+                    <td><input defaultValue={el.name} /></td>
+                    <td><input defaultValue={el.area} /></td>
+                    <td><input defaultValue={`${el.wght}${el.unit}`} /></td>
+                    <td><input defaultValue={el.reps} /></td>
+                    <td><input defaultValue={el.sets} /></td>
                     <td><input type="checkbox"></input></td>
                     <td><input type="checkbox"></input></td>
                     <td><input type="checkbox"></input></td>

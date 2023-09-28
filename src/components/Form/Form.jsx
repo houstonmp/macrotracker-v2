@@ -7,8 +7,6 @@ import classes from './Form.module.css';
 const Form = props => {
     const dispatch = useDispatch();
 
-    // const [formIsValid, setFormIsValid] = useState(false);
-
     const formHandler = (e) => {
         e.preventDefault();
         props.onFormSubmit();
@@ -26,8 +24,10 @@ const Form = props => {
     return <form onSubmit={formHandler} className={classes.form}>
         <ul>
             {props.children}
-            <Button type='button' onClick={onCloseHandler}>Close</Button>
-            <Button type='submit' disable={!props.formIsValid}>Submit</Button>
+            {!props.overloadFooter && <footer className={classes.footer}>
+                <Button type='button' onClick={onCloseHandler}>Cancel</Button>
+                <Button type='submit' disable={!props.formIsValid}>Submit</Button>
+            </footer>}
         </ul>
     </form>
 

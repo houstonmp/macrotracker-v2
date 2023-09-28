@@ -9,7 +9,7 @@ const Input = (props) => {
         hasError,
         inputChangeHandler,
         inputBlurHandler,
-    } = useInput(props.onValidate);
+    } = useInput(props.onValidate, props.defaultValue);
 
     useEffect(() => {
         props.onPass({

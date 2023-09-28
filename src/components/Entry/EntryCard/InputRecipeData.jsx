@@ -2,11 +2,13 @@ import { useState } from "react";
 import classes from "./EntryCard.module.css"
 
 import Input from "../../UI/Input";
+import Button from "../../UI/Button"
 import SearchInput from "../../UI/SearchInput";
 import RadioInput from "../../UI/RadioInput";
 import FilterChoice from './FilterChoice';
 import { USDA_api_key } from './api_key';
 import formClasses from "../../Form/Form.module.css"
+
 
 const InputRecipeData = (props) => {
     const [foodList, setFoodList] = useState([]);
@@ -80,7 +82,7 @@ const InputRecipeData = (props) => {
         setRadioState(target.value);
     }
 
-    return <>    <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={props.nameToForm} onValidate={validateInput} isOptional={false} placeholder="Roast Chicken" />
+    return <>    <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={props.nameToForm} onValidate={validateInput} isOptional={false} defaultValue={props.formData.name} placeholder="Roast Chicken" />
         <SearchInput onSearch={onFilterHandler} label="Ingredients" />
         <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'ingredientRadioFilter', value: ['Foundational', 'Branded', 'Experimental', 'SR Legacy', 'FNDDS'] }} />
         <div className={classes.ingList}>
@@ -94,11 +96,17 @@ const InputRecipeData = (props) => {
             <li className={formClasses.article}>
                 <ul>
                     {foodList.length > 0 && foodList.map(food => {
-                        return <FilterChoice food={food} onAddItemHandler={props.onAdd} />
+                        return <FilterChoice key={'USDA_List' + food.fdcId} food={food} onAddItemHandler={props.onAdd} />
                     })}
                     {foodList.length === 0 && <li style={{ textAlign: "center" }}>Result not found...</li>}
+
                 </ul>
-            </li>}
+            </li>
+        }
+        <footer className={formClasses.footer}>
+            <Button type='button' onClick={props.onClose}>Cancel</Button>
+            <Button type='button' onClick={props.onContinue} disable={!props.formIsValid}>Continue</Button>
+        </footer>
     </>
 }
 

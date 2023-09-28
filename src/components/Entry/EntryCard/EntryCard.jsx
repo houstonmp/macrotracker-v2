@@ -12,31 +12,49 @@ import IngredientData from './IngredientData'
 import RadioInput from '../../UI/RadioInput';
 import formClasses from "../../Form/Form.module.css"
 import { recipeListActions } from '../../store/recipe-list-slice';
+import { uiActions } from '../../store/ui-slice';
 
 
 import InputRecipeData from './InputRecipeData';
+import ModifyRecipeData from './ModifyRecipeData';
 
 export const RecipeForm = () => {
     const [nameState, setName] = useState({});
     const dispatch = useDispatch();
     let formIsValid = false;
-    const [ingList, setIngList] = useState([]);
     const nameToForm = (inputObj) => setName(inputObj);
+    const [sectionState, setSectionState] = useState('enter');
+    const [formData, setFormData] = useState({
+        type: "RECIPE",
+        data: {
+            id: '',
+            name: '',
+            ingredients: []
+        }
+    });
+
+    useEffect(() => {
+        if (nameState.isValid) {
+            setFormData(prev => {
+                return {
+                    ...prev,
+                    data: {
+                        ...prev.data,
+                        id: nameState.value,
+                        name: nameState.value
+                    }
+                }
+            })
+        }
+    }, [nameState.value])
 
     if (nameState.isValid) {
         formIsValid = true;
     }
 
     const itemFormHandler = (e) => {
-        if (formIsValid && ingList.length > 0) {
-            dispatch(recipeListActions.updateRecipe({
-                type: "RECIPE",
-                data: {
-                    id: nameState.value,
-                    name: nameState.value,
-                    ingredients: ingList
-                }
-            }));
+        if (formIsValid && formData.data.ingredients.length > 0) {
+            dispatch(recipeListActions.updateRecipe(formData));
             return true;
         }
         return false;
@@ -44,22 +62,74 @@ export const RecipeForm = () => {
 
 
     const onAddItemHandler = (listItem) => {
-        if (!ingList.some(el => el.fdcId == listItem.fdcId)) {
-            setIngList(prev => {
-                let newArray = [listItem, ...prev];
-                return newArray;
+        //Check if ingredient exists
+        if (!formData.data.ingredients.some(el => el.fdcId == listItem.fdcId)) {
+            setFormData(prev => {
+                return {
+                    ...prev,
+                    data: {
+                        ...prev.data,
+                        ingredients: [...prev.data.ingredients, listItem],
+                    }
+                }
             })
         }
     }
     const onDeleteIngHandler = (e) => {
-        setIngList(prev => {
+        setFormData(prev => {
             let index = prev.findIndex(el => el.fdcId == e.target.id);
-            return index ? prev.toSpliced(index - 1, 1) : prev;
+            return {
+                ...prev,
+                data: {
+                    ...prev.data,
+                    ingredients: index ? prev.ingredients.toSpliced(index - 1, 1) : prev.ingredients,
+                }
+            }
         })
     }
+    const onCloseHandler = (e) => {
+        e.preventDefault();
+        dispatch(uiActions.closeModal());
+    }
 
-    return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit">
-        <InputRecipeData ingList={ingList} nameToForm={nameToForm} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} />
+    const onBackHandler = (e) => {
+        e.preventDefault();
+        setSectionState(prev => {
+            if (prev === 'modify') {
+                return 'enter';
+            }
+        });
+    }
+
+    const onContinueHandler = (e) => {
+        e.preventDefault();
+
+        // if (formIsValid) {
+        //     setFormData(prev => {
+        //         console.log(nameState.value, prev.data.ingredients, prev.data.id, prev.data.name);
+        //         let newObj = {
+        //             data: {
+        //                 id: nameState.value,
+        //                 name: nameState.value,
+        //                 ingredients: prev.data.ingredients || []
+        //             },
+        //             ...prev
+        //         }
+        //         console.log(newObj)
+        //         return newObj;
+        //     })
+        // }
+        setSectionState(prev => {
+            if (prev === 'enter') {
+                return 'modify';
+            }
+        });
+
+    }
+
+    return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit" overloadFooter={true}>
+        {sectionState === 'enter' && <InputRecipeData ingList={formData.data.ingredients} formData={formData.data} nameToForm={nameToForm} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onContinue={onContinueHandler} formIsValid={formIsValid} />}
+        {sectionState === 'modify' && <ModifyRecipeData ingList={formData.data.ingredients} formData={formData.data} nameToForm={nameToForm} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onBack={onBackHandler} formIsValid={formIsValid} />}
     </Form>
 }
 
@@ -166,7 +236,7 @@ const EntryCard = (props) => {
 
             <div className={formClasses.form}>
                 <ul>
-                    <SearchInput onSearch={onFilterHandler} label="Filter Name" />
+                    <SearchInput onSearch={onFilterHandler} label={`Filter ${navState}`} />
                     <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'recipeRadioFilter', value: ['Macros', 'Ingredients'] }} />
                 </ul>
             </div>

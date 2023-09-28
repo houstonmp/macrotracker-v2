@@ -210,6 +210,9 @@ i {
     color: black;
 }
 
+.article p {
+    margin: 4rem;
+}
 
 /* .ingList div {
     flex-basis: 100%;

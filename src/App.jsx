@@ -31,7 +31,8 @@ function App() {
 
   useEffect(() => {
     const body = document.querySelector('body');
-    body.classList = `${lightMode} ${themeName}`
+    // body.classList = `${lightMode} ${themeName}`
+    body.classList = `${'dark'} ${'red'}`
   }, [lightMode, themeName])
 
   useEffect(() => {

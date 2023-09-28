@@ -35,9 +35,12 @@
 }
 
 .article {
-    max-height: 35vh;
+    max-height: 50vh;
     overflow: scroll;
-    background-color: var(--color-gamma-200);
+    flex-grow: 1;
+    /* background-color: var(--color-gamma-200); */
+    border-radius: 5px;
+    margin-bottom: 1.3rem;
 }
 
 .article ul li {
@@ -59,12 +62,10 @@
     background-color: var(--color-gamma-300);
 }
 
-.article li:hover {
+.article .serverInfo li:hover {
     background-color: var(--color-gamma-500);
     cursor: pointer;
 }
-
-ul li .itemData {}
 
 .article {
     overflow: auto;
@@ -75,6 +76,12 @@ ul li .itemData {}
     flex-basis: 100%;
     flex-grow: 1;
     justify-content: space-between;
+}
+
+@media only screen and (max-width: 768px) {
+    .article {
+        max-height: 60vh;
+    }
 }
 
 /* {

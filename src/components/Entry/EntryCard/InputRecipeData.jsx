@@ -82,27 +82,32 @@ const InputRecipeData = (props) => {
         setRadioState(target.value);
     }
 
-    return <>    <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={props.nameToForm} onValidate={validateInput} isOptional={false} defaultValue={props.formData.name} placeholder="Roast Chicken" />
-        <SearchInput onSearch={onFilterHandler} label="Ingredients" />
-        <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'ingredientRadioFilter', value: ['Foundational', 'Branded', 'Experimental', 'SR Legacy', 'FNDDS'] }} />
-        <div className={classes.ingList}>
-            {props.ingList.length > 0 ? props.ingList.map(el =>
-                <div id={el.fdcId} key={el.fdcId} onClick={props.onDelete}>
-                    <div className={classes.ingItem}>{el.description}</div>
-                    <div className={classes.ingExit}>X</div></div>)
-                : 'Click an item to add to list'}</div>
+    return <>
+        <article className={formClasses.article}>
+            <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={props.nameToForm} onValidate={validateInput} isOptional={false} defaultValue={props.formData.name} placeholder="Roast Chicken" />
+            <div className={classes.ingList}>
+                {props.ingList.length > 0 && props.ingList.map(el =>
+                    <div id={el.fdcId} key={el.fdcId} onClick={props.onDelete}>
+                        <div className={classes.ingItem}>{el.description}</div>
+                        <div className={classes.ingExit}>X</div></div>)
+                }</div>
+            <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'ingredientRadioFilter', value: ['Foundational', 'Branded', 'Experimental', 'SR Legacy', 'FNDDS'] }} />
+            <SearchInput onSearch={onFilterHandler} label="Ingredients" />
 
-        {isLoading ? <div className={classes.circle}></div> :
-            <li className={formClasses.article}>
-                <ul>
-                    {foodList.length > 0 && foodList.map(food => {
-                        return <FilterChoice key={'USDA_List' + food.fdcId} food={food} onAddItemHandler={props.onAdd} />
-                    })}
-                    {foodList.length === 0 && <li style={{ textAlign: "center" }}>Result not found...</li>}
 
-                </ul>
-            </li>
-        }
+
+            {isLoading ? <div className={classes.circle}></div> :
+                <li className={formClasses.serverInfo}>
+                    <ul>
+                        {foodList.length > 0 && foodList.map(food => {
+                            return <FilterChoice key={'USDA_List' + food.fdcId} food={food} onAddItemHandler={props.onAdd} />
+                        })}
+                        {(props.ingList.length === 0 && foodList.length === 0) ? < div > {'Click an item to add to list'}</div> : <li style={{ textAlign: "center" }}>Result not found...</li>}
+
+                    </ul>
+                </li>
+            }
+        </article >
         <footer className={formClasses.footer}>
             <Button type='button' onClick={props.onClose}>Cancel</Button>
             <Button type='button' onClick={props.onContinue} disable={!props.formIsValid}>Continue</Button>

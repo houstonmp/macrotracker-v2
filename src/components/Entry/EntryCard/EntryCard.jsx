@@ -90,12 +90,12 @@ export const RecipeForm = () => {
     }
     const onDeleteIngHandler = (e) => {
         setFormData(prev => {
-            let index = prev.findIndex(el => el.fdcId == e.target.id);
+            let index = prev.data.ingredients.length > 0 && prev.data.ingredients.findIndex(el => el.fdcId == e.target.id);
             return {
                 ...prev,
                 data: {
                     ...prev.data,
-                    ingredients: index ? prev.ingredients.toSpliced(index - 1, 1) : prev.ingredients,
+                    ingredients: index ? prev.data.ingredients.toSpliced(index - 1, 1) : prev.ingredients,
                 }
             }
         })

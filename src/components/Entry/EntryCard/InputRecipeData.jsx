@@ -6,7 +6,7 @@ import Button from "../../UI/Button"
 import SearchInput from "../../UI/SearchInput";
 import RadioInput from "../../UI/RadioInput";
 import FilterChoice from './FilterChoice';
-import { USDA_api_key } from './api_key';
+// import { USDA_api_key } from './api_key';
 import formClasses from "../../Form/Form.module.css"
 
 
@@ -19,7 +19,7 @@ const InputRecipeData = (props) => {
     let responseJSON = '';
     const onFilterHandler = async (value) => {
         setIsLoading(true);
-        let api_key = USDA_api_key ? USDA_api_key : '';
+        let api_key = import.meta.env.VITE_USDA_KEY;
 
         if (value) {
             try {

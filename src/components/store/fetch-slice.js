@@ -1,30 +1,30 @@
+import { foodDiaryActions } from "./food-diary-slice";
 import { uiActions } from "./ui-slice"
 import { weightActions } from "./weight-slice";
 
 
-export const fetchWeightData = () => {
+export const fetchData = (fetchObj) => {
     return async (dispatch) => {
         dispatch(uiActions.showNotification({
             status: 'pending',
             title: 'Fetching Cart',
             message: 'Requesting Data from the server'
         }));
-        const sendRequest = async () => {
-
-            const response = await fetch('https://health-app-c5571-default-rtdb.firebaseio.com/weight.json')
-            if (!response.ok) {
-                throw new Error('Error: Couldn\'t send request');
-            }
-            const data = await response.json();
-
-            return data;
-        }
         try {
+            const sendRequest = async () => {
+
+                const response = await fetch('https://health-app-c5571-default-rtdb.firebaseio.com/' + fetchObj.url)
+                if (!response.ok) {
+                    throw new Error('Error: Couldn\'t send request');
+                }
+                const data = await response.json();
+
+                return data;
+            }
+
             const data = await sendRequest();
-            dispatch(weightActions.replaceWeightObj({
-                weightObj: data.weightObj || [],
-                changed: false
-            }));
+
+            fetchObj.saveData(data)
 
             dispatch(uiActions.showNotification({
                 status: 'success',
@@ -42,7 +42,7 @@ export const fetchWeightData = () => {
     }
 }
 
-export const fetchSlice = (weightObj) => {
+export const fetchSlice = (objectData) => {
     return async (dispatch) => {
         dispatch(uiActions.showNotification({
             status: 'pending',
@@ -51,13 +51,7 @@ export const fetchSlice = (weightObj) => {
         }));
 
         const sendRequest = async () => {
-            const response = await fetch(`https://health-app-c5571-default-rtdb.firebaseio.com/weight.json`, {
-                method: 'PUT',
-                body: JSON.stringify({ weightObj: weightObj }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await fetch(`https://health-app-c5571-default-rtdb.firebaseio.com/` + objectData.url, objectData.header);
             if (!response.ok) {
                 throw new Error('Error: Data could not be uploaded to server')
             }

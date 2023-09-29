@@ -17,7 +17,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { useDispatch, useSelector } from 'react-redux'
 // import { weightActions } from "./components/store/weight-slice";
-import { fetchSlice, fetchWeightData } from "./components/store/fetch-slice";
+import { fetchSlice, fetchData } from "./components/store/fetch-slice";
+
+import { foodDiaryActions } from "./components/store/food-diary-slice";
+import { weightActions } from "./components/store/weight-slice";
 
 
 let isInitial = true;
@@ -26,6 +29,7 @@ function App() {
   const isModal = useSelector(state => state.ui.modal.modalIsVisible);
   const { lightMode, themeName } = useSelector(state => { return state.ui.theme });
   const weightSelector = useSelector(state => state.weight);
+  const diarySelector = useSelector(state => state.fDiary);
   const notification = useSelector(state => state.ui.notification);
   const dispatch = useDispatch();
 
@@ -36,20 +40,70 @@ function App() {
   }, [lightMode, themeName])
 
   useEffect(() => {
-    // let url = `https://health-app-c5571-default-rtdb.firebaseio.com/`;
     if (isInitial) {
-      dispatch(fetchWeightData());
+      dispatch(fetchData({
+        url: 'fDiary.json',
+        saveData: (data) => {
+          dispatch(foodDiaryActions.replaceDiaryObj(data.diaryObj || []))
+        },
+        header: {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      }));
+
+      dispatch(fetchData({
+        url: 'weight.json',
+        saveData: (data) => {
+          dispatch(weightActions.replaceWeightObj({
+            weightObj: data.weightObj || [],
+            changed: false
+          }));
+
+        },
+        header: {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      }));
       isInitial = false;
       return;
     }
-    // let header = {
-    // }
+
+
     if (weightSelector.changed) {
-      // header.body = weightSelector.weightObj;
-      // header.method = 'POST';
-      dispatch(fetchSlice(weightSelector.weightObj));
+      dispatch(fetchSlice({
+        url: 'weight.json',
+        header: {
+          method: 'PUT',
+          body: JSON.stringify({
+            weightObj: weightSelector.weightObj
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      }));
     }
-  }, [weightSelector.weightObj, dispatch]);
+    if (diarySelector.changed) {
+      dispatch(fetchSlice({
+        url: 'fDiary.json',
+        header: {
+          method: 'PUT',
+          body: JSON.stringify({
+            diaryObj: diarySelector.diaryObj
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      }))
+    }
+  }, [weightSelector.weightObj, diarySelector.diaryObj, dispatch]);
 
   const router = createBrowserRouter([{
     path: '/',

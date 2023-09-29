@@ -4,10 +4,11 @@ const foodDiarySlice = createSlice({
     name: 'fDiary',
     initialState: {
         diaryObj: [],
+        changed: false
     },
     reducers: {
         replaceDiaryObj(state, action) {
-            state.diaryObj = action.payload
+            state.diaryObj = action.payload;
         },
         srchDate(state, action) {
             return state.diaryObj.findIndex(el => {
@@ -26,6 +27,8 @@ const foodDiarySlice = createSlice({
                         tCarbs: action.payload.data.tCarbs,
                     }
                 })
+                state.changed = true;
+                return;
             }
             let dateExists = state.diaryObj.findIndex(el => {
                 return el.date === action.payload.date;
@@ -36,6 +39,8 @@ const foodDiarySlice = createSlice({
                 state.diaryObj[dateExists].macros.tCarbs = parseFloat((state.diaryObj[dateExists].macros.tCarbs + action.payload.data.tCarbs).toFixed(2));
                 state.diaryObj[dateExists].macros.tProtein = parseFloat((state.diaryObj[dateExists].macros.tProtein + action.payload.data.tProtein).toFixed(2));
                 state.diaryObj[dateExists].macros.tFat = parseFloat((state.diaryObj[dateExists].macros.tFat + action.payload.data.tFat).toFixed(2));
+                state.changed = true;
+                return;
             } else {
                 state.diaryObj.push({
                     date: action.payload.date,
@@ -47,6 +52,8 @@ const foodDiarySlice = createSlice({
                         tCarbs: action.payload.data.tCarbs,
                     }
                 })
+                state.changed = true;
+                return;
             }
         }
     }

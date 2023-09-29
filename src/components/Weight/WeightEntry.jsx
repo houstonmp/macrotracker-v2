@@ -23,6 +23,7 @@ export const WeightForm = () => {
 
     const weightToForm = (inputObj) => setWeight(inputObj);
     const dateHandler = (e) => setDate(e.target.value);
+    const [radioState, setRadioState] = useState('lbs');
 
     if (weightState.isValid) {
         formIsValid = true;
@@ -41,13 +42,19 @@ export const WeightForm = () => {
         }
         return false;
     };
+
+    const switchRadioFilter = (target) => {
+        setFilterState(target.value);
+    }
+
+
     return (<Form onFormSubmit={workoutFormHandler} formIsValid={formIsValid}>
         <li>
             <label htmlFor="date" >Date:</label>
             <input type="date" name="date" onChange={dateHandler} value={dateState} />
         </li>
         <Input id="weightValue" key="weightValue" name="weightValue" type="number" label="Weight:" onPass={weightToForm} onValidate={validateInput} />
-        <RadioInput liClass={classes.radio} radioBtnArray={{ name: 'lbsKgs', value: ['lbs', 'kgs'] }} />
+        <RadioInput liClass={classes.radio} setFilterState={switchRadioFilter} radioBtnArray={{ name: 'lbsKgs', value: ['lbs', 'kgs'] }} />
     </Form>);
 }
 

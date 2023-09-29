@@ -3,7 +3,7 @@ import Card from "../UI/Card";
 import Button from "../UI/Button";
 import classes from './WorkoutTable.module.css'
 import ReactToPrint from "react-to-print";
-import { useRef, forwardRef } from "react";
+import { useRef } from "react";
 
 const DUMMY_DATA = [
     {

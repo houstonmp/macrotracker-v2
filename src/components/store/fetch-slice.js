@@ -1,6 +1,6 @@
-import { foodDiaryActions } from "./food-diary-slice";
+
 import { uiActions } from "./ui-slice"
-import { weightActions } from "./weight-slice";
+
 
 
 export const fetchData = (fetchObj) => {

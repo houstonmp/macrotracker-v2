@@ -1,7 +1,7 @@
 import styles from './Modal.module.css';
 import ReactDOM from 'react-dom';
 import Card from './Card';
-import Form from '../Form/Form'
+
 import { ItemForm } from '../Entry/EntryCard/EntryCard';
 
 import { useDispatch, useSelector } from 'react-redux'

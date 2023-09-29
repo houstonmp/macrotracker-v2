@@ -32,10 +32,10 @@ const foodDiarySlice = createSlice({
             })
             if (dateExists > -1) {
                 state.diaryObj[dateExists].food.push(action.payload.data);
-                state.diaryObj[dateExists].macros.calories += action.payload.data.calories;
-                state.diaryObj[dateExists].macros.tCarbs += action.payload.data.tCarbs;
-                state.diaryObj[dateExists].macros.tProtein += action.payload.data.tProtein;
-                state.diaryObj[dateExists].macros.tFat += action.payload.data.tFat;
+                state.diaryObj[dateExists].macros.calories = parseFloat((state.diaryObj[dateExists].macros.calories + action.payload.data.calories).toFixed(2));
+                state.diaryObj[dateExists].macros.tCarbs = parseFloat((state.diaryObj[dateExists].macros.tCarbs + action.payload.data.tCarbs).toFixed(2));
+                state.diaryObj[dateExists].macros.tProtein = parseFloat((state.diaryObj[dateExists].macros.tProtein + action.payload.data.tProtein).toFixed(2));
+                state.diaryObj[dateExists].macros.tFat = parseFloat((state.diaryObj[dateExists].macros.tFat + action.payload.data.tFat).toFixed(2));
             } else {
                 state.diaryObj.push({
                     date: action.payload.date,

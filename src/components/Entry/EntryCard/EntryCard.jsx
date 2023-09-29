@@ -29,6 +29,63 @@ export const RecipeForm = () => {
     const nameToForm = (inputObj) => setName(inputObj);
     const instructionsToForm = (inputObj) => setInstructions(inputObj);
     const urlToForm = (inputObj) => setImage(inputObj);
+    const ingredientsToForm = (inputObj) => {
+        if (formData.data.ingredients.some(ing => ing.fdcId == inputObj.id) && inputObj.isValid) {
+            setFormData(prev => {
+                let ingredientsArray = prev.data.ingredients.length > 0 && prev.data.ingredients.map(ing => {
+                    if (ing.fdcId === inputObj.id) {
+
+                        const calculateData = (actualSize, nutrientValue, servingSize = 100) => parseFloat(((actualSize * nutrientValue / servingSize)).toFixed(2))
+                        let calculatedData = {
+                            servingSize: inputObj.value,
+                            cProtein: calculateData(inputObj.value, ing.foodNutrients.protein, ing.servingSize),
+                            cCarbs: calculateData(inputObj.value, ing.foodNutrients.carbs, ing.servingSize),
+                            cFat: calculateData(inputObj.value, ing.foodNutrients.fat, ing.servingSize),
+                            cCalories: calculateData(inputObj.value, ing.foodNutrients.calories, ing.servingSize)
+                        };
+
+                        return {
+                            ...ing, calculatedData
+                        }
+
+                    } else {
+                        return {
+                            ...ing
+                        }
+                    }
+
+                })
+                return {
+                    ...prev,
+                    data: {
+                        ...prev.data,
+                        ingredients: ingredientsArray || [...prev],
+                        calories: ingredientsArray ? parseFloat((ingredientsArray.reduce((a, b) => { return { calculatedData: { cCalories: (a.calculatedData.cCalories + b.calculatedData.cCalories) } } }, {
+                            calculatedData: {
+                                cCalories: 0,
+                            }
+                        }).calculatedData.cCalories).toFixed(2)) : prev.data.calories,
+                        tCarbs: ingredientsArray ? parseFloat((ingredientsArray.reduce((a, b) => { return { calculatedData: { cCarbs: (a.calculatedData.cCarbs + b.calculatedData.cCarbs) } } }, {
+                            calculatedData: {
+                                cCarbs: 0,
+                            }
+                        }).calculatedData.cCarbs).toFixed(2)) : prev.data.tCarbs,
+                        tFat: ingredientsArray ? parseFloat((ingredientsArray.reduce((a, b) => { return { calculatedData: { cFat: (a.calculatedData.cFat + b.calculatedData.cFat) } } }, {
+                            calculatedData: {
+                                cFat: 0,
+                            }
+                        }).calculatedData.cFat).toFixed(2)) : prev.data.tFat,
+                        tProtein: ingredientsArray ? parseFloat((ingredientsArray.reduce((a, b) => { return { calculatedData: { cProtein: (a.calculatedData.cProtein + b.calculatedData.cProtein) } } }, {
+                            calculatedData: {
+                                cProtein: 0,
+                            }
+                        }).calculatedData.cProtein).toFixed(2)) : prev.data.tProtein
+                    }
+                }
+            })
+        }
+        return
+    };
 
     const [sectionState, setSectionState] = useState('enter');
 
@@ -78,6 +135,13 @@ export const RecipeForm = () => {
         //Check if ingredient exists
         if (!formData.data.ingredients.some(el => el.fdcId == listItem.fdcId)) {
             setFormData(prev => {
+                listItem.calculatedData = {
+                    cCalories: 0,
+                    cCarbs: 0,
+                    cFat: 0,
+                    cProtein: 0
+                }
+                console.log(listItem.calculatedData)
                 return {
                     ...prev,
                     data: {
@@ -88,6 +152,7 @@ export const RecipeForm = () => {
             })
         }
     }
+
     const onDeleteIngHandler = (e) => {
         setFormData(prev => {
             let index = prev.data.ingredients.length > 0 && prev.data.ingredients.findIndex(el => el.fdcId == e.target.id);
@@ -132,7 +197,7 @@ export const RecipeForm = () => {
 
     return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit" overloadFooter={true}>
         {sectionState === 'enter' && <InputRecipeData key={`input-recipe`} ingList={formData.data.ingredients} formData={formData.data} nameToForm={nameToForm} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onContinue={onContinueHandler} formIsValid={formIsValid} />}
-        {sectionState === 'modify' && <ModifyRecipeData key={`modify-recipe`} ingList={formData.data.ingredients} formData={formData.data} urlToForm={urlToForm} instructionsToForm={instructionsToForm} onDelete={onDeleteIngHandler} onClose={onCloseHandler} onBack={onBackHandler} onContinue={onContinueHandler} formIsValid={formIsValid} />}
+        {sectionState === 'modify' && <ModifyRecipeData key={`modify-recipe`} ingList={formData.data.ingredients} formData={formData.data} urlToForm={urlToForm} instructionsToForm={instructionsToForm} ingredientsToForm={ingredientsToForm} onDelete={onDeleteIngHandler} onClose={onCloseHandler} onBack={onBackHandler} onContinue={onContinueHandler} formIsValid={formIsValid} />}
         {sectionState === 'confirm' && <ConfirmRecipeData key={`confirm-recipe`} ingList={formData.data.ingredients} formData={formData.data} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onBack={onBackHandler} onSubmit={itemFormHandler} />}
     </Form>
 }

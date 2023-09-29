@@ -44,16 +44,16 @@ const InputRecipeData = (props) => {
                     for (let i = 0; i < food.foodNutrients.length; i++) {
                         switch (food.foodNutrients[i].nutrientNumber) {
                             case "203":
-                                tempObj = { protein: food.foodNutrients[i].value, ...tempObj }
+                                tempObj = { ...tempObj, protein: food.foodNutrients[i].value }
                                 break;
                             case "204":
-                                tempObj = { fat: food.foodNutrients[i].value, ...tempObj }
+                                tempObj = { ...tempObj, fat: food.foodNutrients[i].value }
                                 break;
                             case "205":
-                                tempObj = { carbs: food.foodNutrients[i].value, ...tempObj }
+                                tempObj = { ...tempObj, carbs: food.foodNutrients[i].value }
                                 break;
                             case "208":
-                                tempObj = { calories: food.foodNutrients[i].value, ...tempObj }
+                                tempObj = { ...tempObj, calories: food.foodNutrients[i].value }
                                 break;
                         }
                     }

@@ -25,21 +25,21 @@ const ConfirmRecipeData = (props) => {
                     {props.ingList.length > 0 && props.ingList.map((el, index) =>
                         <>
                             <div>{index + 1}.</div>
-                            <i>{` ${el.description}`} {Math.floor(Math.random() * 100)}(g)</i>
+                            <i>{` ${el.description}`} ({el.calculatedData.servingSize}{el.servingSizeUnit || 'g'})</i>
                             <div className={classes.inputIngContainer}>
 
                                 <div>
-                                    <p>
-
-                                    </p>
                                     <div>
-                                        Protein: {Math.floor(Math.random() * 100)}(g)
+                                        Total Energy: {el.calculatedData.cCalories}({'kCal'})
                                     </div>
                                     <div>
-                                        Carbs: {Math.floor(Math.random() * 100)}(g)
+                                        Protein: {el.calculatedData.cProtein}({el.servingSizeUnit || 'g'})
                                     </div>
                                     <div>
-                                        Fat: {Math.floor(Math.random() * 100)}(g)
+                                        Carbs: {el.calculatedData.cCarbs}({el.servingSizeUnit || 'g'})
+                                    </div>
+                                    <div>
+                                        Fat: {el.calculatedData.cFat}({el.servingSizeUnit || 'g'})
                                     </div>
                                 </div>
                             </div>

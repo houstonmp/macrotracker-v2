@@ -31,7 +31,6 @@ const FoodDiary = () => {
             </tr>
         }>
             {foodDiary && foodDiary.food.map((item, index) => {
-                const identifier = Math.floor(Math.random * 10000);
                 return (<tr key={`${item.name}-${index}`} id={index}>
                     <td key={`name-${item.name}`}>
                         {item.name}

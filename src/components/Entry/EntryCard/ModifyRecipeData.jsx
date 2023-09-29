@@ -44,7 +44,7 @@ const ModifyRecipeData = (props) => {
                             <div key={`num-${index}`}>{index + 1}.</div>
                             <i key={`desc-${index}`} > {` ${el.description}`}</i >
                             <div key={`input-${index}`} className={classes.inputIngContainer}>
-                                {/* <Input id={"ingWeight" + el.fdcId} key={"ingWeight" + el.fdcId + index} name="ing-" type="number" onPass={props.nameToForm} onValidate={validateInput} isOptional={true} /> */}
+                                <Input id={el.fdcId} key={"ingWeight" + el.fdcId + index} name="ing-" type="number" onPass={props.ingredientsToForm} onValidate={validateInput} isOptional={true} defaultValue={el.calculatedData ? el.calculatedData.servingSize : 0} />
 
                                 <div key={`value-${index}`} >
                                     (g)
@@ -60,7 +60,6 @@ const ModifyRecipeData = (props) => {
                 </div>
                 <h3>Recipe Instructions: (Optional)</h3>
                 <textarea key={`recipe-text`} id="recipe-info" name="recipe-info" rows="8" onBlur={inputBlurHandler} onChange={inputChangeHandler} defaultValue={props.formData.instructions}>
-
                 </textarea>
             </li>
         </article >

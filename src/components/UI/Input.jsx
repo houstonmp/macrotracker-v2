@@ -4,15 +4,17 @@ import { useEffect } from 'react';
 
 const Input = (props) => {
     const {
+        id,
         value,
         isValid,
         hasError,
         inputChangeHandler,
         inputBlurHandler,
-    } = useInput(props.onValidate, props.defaultValue);
+    } = useInput(props.onValidate, props.defaultValue, props.id);
 
     useEffect(() => {
         props.onPass({
+            id,
             value,
             isValid,
             hasError

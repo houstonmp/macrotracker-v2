@@ -9,6 +9,7 @@ const weightSlice = createSlice({
     reducers: {
         replaceWeightObj(state, action) {
             state.weightObj = action.payload.weightObj;
+            state.changed = action.payload.changed;
         },
         srchDate(state, action) {
             return state.weightObj.findIndex((el) => {

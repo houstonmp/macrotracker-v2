@@ -19,8 +19,8 @@ import { uiActions } from './store/ui-slice';
 
 const MainNav = (props) => {
     const dispatch = useDispatch();
-    const lightMode = useSelector(state => state.ui.theme.lightMode);
-    const settingsIsVisible = useSelector(state => state.ui.settings.settingsIsVisible);
+    const lightMode = useSelector(state => state.ui.userPreferences.theme.lightMode);
+    const settingsIsVisible = useSelector(state => state.ui.userPreferences.settings.settingsIsVisible);
     let settingsHREF = settingsIsVisible ? 'settings' : '/';
 
     const onToggleHandler = () => {

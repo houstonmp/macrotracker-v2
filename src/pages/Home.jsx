@@ -22,12 +22,11 @@ const Home = (props) => {
 
 
   return <PageContent title="Home">
+    <FoodDiary></FoodDiary>
     <MacroList></MacroList>
     <WeightEntry
       onModal={showModalHandler} ></WeightEntry>
     <WeightChart classes={classes.chart} />
-    <FoodDiary></FoodDiary>
-
   </PageContent>
 }
 

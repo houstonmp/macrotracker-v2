@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 const WeightChart = (props) => {
     var style = getComputedStyle(document.body);
-    const theme = useSelector(state => state.ui.theme.lightMode);
+    const theme = useSelector(state => state.ui.userPreferences.theme.lightMode);
 
     let colorPrimaryBlue = '#E6F1F8';
     let colorPrimaryBlue100 = '#BFDCEE';

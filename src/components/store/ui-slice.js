@@ -8,16 +8,24 @@ const uiSlice = createSlice({
             modalIsVisible: false,
             modalInformation: null,
         },
-        theme: {
-            themeName: 'teal',
-            lightMode: 'light'
-            // lightMode: setThemeDetector()
+        userPreferences: {
+            theme: {
+                themeName: 'teal',
+                lightMode: 'light'
+            },
+            settings: {
+                settingsIsVisible: false
+            },
+
         },
-        settings: {
-            settingsIsVisible: false
-        }
+        changed: false
     },
     reducers: {
+        replaceUiObj(state, action) {
+            state.userPreferences.theme = action.payload.userPreferences.theme;
+            state.userPreferences.settings = action.payload.userPreferences.settings;
+            state.changed = action.payload.changed;
+        },
         showNotification(state, action) {
             state.notification = {
                 status: action.payload.status,
@@ -38,10 +46,12 @@ const uiSlice = createSlice({
             state.modal.modalInformation = null;
         },
         setLightMode(state, action) {
-            state.theme.lightMode = action.payload;
+            state.userPreferences.theme.lightMode = action.payload;
+            state.changed = true;
         },
         setTheme(state, action) {
-            state.theme.themeName = action.payload;
+            state.userPreferences.theme.themeName = action.payload;
+            state.changed = true;
         },
         toggleSettings(state, action) {
             state.settings.settingsIsVisible = !state.settings.settingsIsVisible;

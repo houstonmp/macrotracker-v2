@@ -8,7 +8,8 @@ const foodDiarySlice = createSlice({
     },
     reducers: {
         replaceDiaryObj(state, action) {
-            state.diaryObj = action.payload;
+            state.diaryObj = action.payload.diaryObj;
+            state.changed = false;
         },
         srchDate(state, action) {
             return state.diaryObj.findIndex(el => {

@@ -21,47 +21,42 @@ import { fetchSlice, fetchData } from "./components/store/fetch-slice";
 
 import { foodDiaryActions } from "./components/store/food-diary-slice";
 import { weightActions } from "./components/store/weight-slice";
+import { uiActions } from "./components/store/ui-slice";
+import { recipeListActions } from "./components/store/recipe-list-slice";
 
 
 let isInitial = true;
 
 function App() {
   const isModal = useSelector(state => state.ui.modal.modalIsVisible);
-  const { lightMode, themeName } = useSelector(state => { return state.ui.theme });
+  const { lightMode, themeName } = useSelector(state => { return state.ui.userPreferences.theme });
   const weightSelector = useSelector(state => state.weight);
   const diarySelector = useSelector(state => state.fDiary);
+  const uiSelector = useSelector(state => state.ui);
+  const recipeSelector = useSelector(state => state.recipes)
   const notification = useSelector(state => state.ui.notification);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const body = document.querySelector('body');
-    // body.classList = `${lightMode} ${themeName}`
-    body.classList = `${'dark'} ${'red'}`
-  }, [lightMode, themeName])
+    body.classList = `${lightMode} ${themeName}`
+  }, [uiSelector.userPreferences])
 
   useEffect(() => {
     if (isInitial) {
       dispatch(fetchData({
-        url: 'fDiary.json',
+        url: 'healthApp.json',
         saveData: (data) => {
-          dispatch(foodDiaryActions.replaceDiaryObj(data.diaryObj || []))
-        },
-        header: {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      }));
-
-      dispatch(fetchData({
-        url: 'weight.json',
-        saveData: (data) => {
-          dispatch(weightActions.replaceWeightObj({
-            weightObj: data.weightObj || [],
-            changed: false
-          }));
-
+          data.userPreferences && dispatch(uiActions.replaceUiObj({ userPreferences: data.userPreferences || {}, changed: false }))
+          data.weightObj && dispatch(weightActions.replaceWeightObj({ weightObj: data.weightObj || [], changed: false }))
+          data.diaryObj && dispatch(foodDiaryActions.replaceDiaryObj({ diaryObj: data.diaryObj || [], changed: false }))
+          data.recipeObj && dispatch(recipeListActions.replaceRecipeObj({
+            recipeObj: {
+              items: data.recipeObj.items || [],
+              meals: data.recipeObj.meals || [],
+              recipes: data.recipeObj.recipes || []
+            } || {}, changed: false
+          }))
         },
         header: {
           method: 'GET',
@@ -74,14 +69,16 @@ function App() {
       return;
     }
 
-
-    if (weightSelector.changed) {
+    if (weightSelector.changed || diarySelector.changed || uiSelector.changed || recipeSelector.changed) {
       dispatch(fetchSlice({
-        url: 'weight.json',
+        url: 'healthApp.json',
         header: {
           method: 'PUT',
           body: JSON.stringify({
-            weightObj: weightSelector.weightObj
+            diaryObj: diarySelector.diaryObj,
+            weightObj: weightSelector.weightObj,
+            userPreferences: uiSelector.userPreferences,
+            recipeObj: recipeSelector.recipeObj
           }),
           headers: {
             'Content-Type': 'application/json'
@@ -89,21 +86,9 @@ function App() {
         }
       }));
     }
-    if (diarySelector.changed) {
-      dispatch(fetchSlice({
-        url: 'fDiary.json',
-        header: {
-          method: 'PUT',
-          body: JSON.stringify({
-            diaryObj: diarySelector.diaryObj
-          }),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      }))
-    }
-  }, [weightSelector.weightObj, diarySelector.diaryObj, dispatch]);
+  }, [weightSelector.weightObj, diarySelector.diaryObj, uiSelector.userPreferences, recipeSelector.recipeObj, dispatch]);
+
+
 
   const router = createBrowserRouter([{
     path: '/',

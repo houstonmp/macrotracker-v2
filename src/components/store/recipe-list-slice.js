@@ -7,38 +7,34 @@ const recipeListSlice = createSlice({
             recipes: [],
             items: [],
             meals: []
-        }
+        },
+        changed: false
     },
     reducers: {
         replaceRecipeObj(state, action) {
-            state.recipeObj = action.payload
+            state.recipeObj = action.payload.recipeObj
+            state.changed = action.payload.changed
         },
         updateRecipe(state, action) {
             let recipeArray = '';
             if (action.payload.type === "RECIPE") {
-                // recipeArray = action.type;               
                 recipeArray = 'recipes';
-                // console.log("Finished recipe is:", action.payload.data)
             }
             else if (action.payload.type === "ITEM") {
                 recipeArray = 'items';
-            } else if (recipeArray === 'MEAL') {
+            } else if (action.payload.type === 'MEAL') {
                 recipeArray = 'meals';
             } else {
                 return;
             }
 
-            if (!(state.recipeObj.items.length > 0)) {
+            if (state.recipeObj[recipeArray].length > 0) {
                 state.recipeObj[recipeArray].push(action.payload.data)
+                state.changed = true;
             }
-            // let itemExists = state.recipeObj.items.findIndex(el => {
-            //     return el.name === action.payload.name;
-            // })
-            // if (itemExists > -1) {
-            //     state.recipeObj.items[itemExists]
-            // }
             else {
-                state.recipeObj[recipeArray].items.push(action.payload.data)
+                state.recipeObj[recipeArray] = [action.payload.data];
+                state.changed = true;
             }
         }
     }

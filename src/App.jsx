@@ -113,6 +113,9 @@ function App() {
       {
         path: 'calendar',
         element: <Calendar></Calendar>,
+      }, {
+        path: 'settings',
+        element: <Settings />
       }
     ]
   },

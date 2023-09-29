@@ -1,6 +1,7 @@
 .table {
     display: grid;
     max-height: 15rem;
+    margin: .2rem 0 3rem;
 }
 
 

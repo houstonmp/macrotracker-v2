@@ -88,15 +88,11 @@ i {
     text-align: left;
     padding-left: 10%;
     flex-wrap: wrap;
-    /* grid-template-columns: repeat(3, 1fr);
-    padding: 0 20%;
-    text-align: left; */
 }
 
 .ingredient-table li {
     white-space: normal;
     padding-right: 4px;
-    /* flex-grow: 1; */
 }
 
 .article .circle {
@@ -177,13 +173,10 @@ i {
 }
 
 .ingItem {
-    /* flex-basis: 70%; */
-    /* min-width: fit-content; */
     flex-grow: 1;
     white-space: nowrap;
     overflow: hidden;
     margin: 0;
-    /* flex-shrink: 1; */
 }
 
 .ingExit {
@@ -191,13 +184,10 @@ i {
     flex-grow: 0;
     flex-shrink: 0;
     padding: 3rem;
-    /* flex-basis: min-content; */
     min-width: min-content;
     text-align: center;
     justify-self: flex-end;
-    /* max-width: min-content; */
     align-self: center;
-    /* flex-shrink: 1; */
 }
 
 .ingList div:hover {

@@ -91,64 +91,41 @@ function App() {
 
 
   const router = createBrowserRouter([{
-    path: '/',
+    index: '/',
     element: <RootLayout></RootLayout>,
-    children: [
-      {
-        index: true,
-        element: <Home></Home>,
-      },
-      {
-        path: 'workout',
-        element: <Workout></Workout>,
-      },
-      {
-        path: 'food',
-        element: <Entry></Entry>,
-      },
-      {
-        path: 'insights',
-        element: <Insights></Insights>,
-      },
-      {
-        path: 'calendar',
-        element: <Calendar></Calendar>,
-      }, {
-        path: 'settings',
-        element: <Settings />
-      }
-    ]
+    children: [{
+      index: true,
+      element: <Home></Home>,
+    },
+    {
+      path: 'workout',
+      element: <Workout></Workout>,
+    },
+    {
+      path: 'food',
+      element: <Entry></Entry>,
+    },
+    {
+      path: 'insights',
+      element: <Insights></Insights>,
+    },
+    {
+      path: 'calendar',
+      element: <Calendar></Calendar>,
+    }, {
+      path: 'settings',
+      element: <Settings />
+    }]
   },
-  {
-    path: '/settings',
-    element: <RootLayout classes="settings" />,
-    children: [
-      {
-        index: true,
-        element: <Settings />
-      },
-    ]
-  }
-
-
-
   ])
 
 
   return (
     <>
       <div router={router}>
-
         <RouterProvider router={router} />
-        {/* <AnimatedSwitch
-          atEnter={{ opacity: 0 }}
-          atLeave={{ opacity: 0 }}
-          atActive={{ opacity: 1 }}
-          className="switch-wrapper"
-        > */}
         <Waves />
         {isModal && <Modal></Modal>}
-        {/* </AnimatedSwitch> */}
       </div>
     </>
   );

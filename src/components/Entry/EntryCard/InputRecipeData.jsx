@@ -6,7 +6,6 @@ import Button from "../../UI/Button"
 import SearchInput from "../../UI/SearchInput";
 import RadioInput from "../../UI/RadioInput";
 import FilterChoice from './FilterChoice';
-// import { USDA_api_key } from './api_key';
 import formClasses from "../../Form/Form.module.css"
 
 

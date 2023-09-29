@@ -1,7 +1,5 @@
 .error {
     outline: 1px solid red;
-    /* background-color: red; */
-    /* background-color: (--error-100); */
 }
 
 .error-text {

@@ -13,9 +13,6 @@ const uiSlice = createSlice({
                 themeName: 'teal',
                 lightMode: 'light'
             },
-            settings: {
-                settingsIsVisible: false
-            },
 
         },
         changed: false
@@ -53,9 +50,6 @@ const uiSlice = createSlice({
             state.userPreferences.theme.themeName = action.payload;
             state.changed = true;
         },
-        toggleSettings(state, action) {
-            state.settings.settingsIsVisible = !state.settings.settingsIsVisible;
-        }
     }
 })
 

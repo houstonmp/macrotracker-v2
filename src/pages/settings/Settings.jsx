@@ -25,6 +25,7 @@ const SettingsContent = (props) => {
         e.preventDefault();
         dispatch(uiActions.setTheme(e.currentTarget.id));
     }
+
     return <PageContent title="Settings" classes={classes.settings}>
         <Card>
             <h1>Themes</h1>

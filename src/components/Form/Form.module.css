@@ -38,7 +38,6 @@
     max-height: 50vh;
     overflow: scroll;
     flex-grow: 1;
-    /* background-color: var(--color-gamma-200); */
     border-radius: 5px;
     margin-bottom: 1.3rem;
 }
@@ -83,7 +82,3 @@
         max-height: 60vh;
     }
 }
-
-/* {
-    flex-basis: 100%;
-} */

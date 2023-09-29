@@ -2,7 +2,7 @@ import classes from "./MacroList.module.css"
 
 import Card from "../UI/Card"
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const MacroList = (props) => {
     const [date, setDate] = useState(new Date().toJSON().slice(0, 10));

@@ -1,9 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import formClasses from '../Form/Form.module.css'
 import inputClasses from './SearchInput.module.css'
-
-import Input from "../UI/Input";
 
 const SearchInput = (props) => {
     const [searchValue, setSearchValue] = useState('');

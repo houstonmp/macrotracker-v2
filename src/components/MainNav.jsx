@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styles from './MainNav.module.css'
 
 import {
@@ -20,8 +19,6 @@ import { uiActions } from './store/ui-slice';
 const MainNav = (props) => {
     const dispatch = useDispatch();
     const lightMode = useSelector(state => state.ui.userPreferences.theme.lightMode);
-    const settingsIsVisible = useSelector(state => state.ui.userPreferences.settings.settingsIsVisible);
-    let settingsHREF = settingsIsVisible ? 'settings' : '/';
 
     const onToggleHandler = () => {
         if (lightMode === 'light') {
@@ -31,9 +28,6 @@ const MainNav = (props) => {
             dispatch(uiActions.setLightMode('light'));
         }
     }
-    const onToggleSettingsHandler = () => {
-        dispatch(uiActions.toggleSettings());
-    }
 
 
 
@@ -41,7 +35,7 @@ const MainNav = (props) => {
 
         <ul className={styles.list}>
             <li>
-                <NavLink to="/settings" title="Settings" onClick={onToggleSettingsHandler} alt="settings" className={({ isActive }) => (isActive ? styles.active : '')} end>
+                <NavLink to="/settings" title="Settings" alt="settings" className={({ isActive }) => (isActive ? styles.active : '')} end>
                     <SettingIcon applyFill="var(--color-alpha)"></SettingIcon>
                 </NavLink>
             </li>

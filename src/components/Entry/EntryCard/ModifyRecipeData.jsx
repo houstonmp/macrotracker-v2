@@ -1,13 +1,8 @@
-import { useState } from "react";
 import classes from "./EntryCard.module.css"
 
 import Input from "../../UI/Input";
 import Button from "../../UI/Button"
-import SearchInput from "../../UI/SearchInput";
-import RadioInput from "../../UI/RadioInput";
-import FilterChoice from './FilterChoice';
 import formClasses from "../../Form/Form.module.css"
-import { uiActions } from "../../store/ui-slice";
 
 import useInput from "../../../hooks/use-input";
 import { useEffect } from "react";

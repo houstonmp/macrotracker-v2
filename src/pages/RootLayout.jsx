@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom"
 import MainNav from "../components/MainNav"
 import { useSelector } from "react-redux"
 
-const RootLayout = (props) => {
+const RootLayout = () => {
 
     return <>
 

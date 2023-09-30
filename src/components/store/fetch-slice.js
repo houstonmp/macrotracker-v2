@@ -4,6 +4,7 @@ import { uiActions } from "./ui-slice"
 
 
 export const fetchData = (fetchObj) => {
+
     return async (dispatch) => {
         dispatch(uiActions.showNotification({
             status: 'pending',
@@ -12,7 +13,6 @@ export const fetchData = (fetchObj) => {
         }));
         try {
             const sendRequest = async () => {
-
                 const response = await fetch('https://health-app-c5571-default-rtdb.firebaseio.com/' + fetchObj.url)
                 if (!response.ok) {
                     throw new Error('Error: Couldn\'t send request');

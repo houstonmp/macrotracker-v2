@@ -23,6 +23,7 @@ import { foodDiaryActions } from "./components/store/food-diary-slice";
 import { weightActions } from "./components/store/weight-slice";
 import { uiActions } from "./components/store/ui-slice";
 import { recipeListActions } from "./components/store/recipe-list-slice";
+import SignIn from './pages/SignIn'
 
 
 let isInitial = true;
@@ -44,8 +45,10 @@ function App() {
 
   useEffect(() => {
     if (isInitial) {
+
       dispatch(fetchData({
         url: 'healthApp.json',
+        // user_Id: 'user1',
         saveData: (data) => {
           data.userPreferences && dispatch(uiActions.replaceUiObj({ userPreferences: data.userPreferences || {}, changed: false }))
           data.weightObj && dispatch(weightActions.replaceWeightObj({ weightObj: data.weightObj || [], changed: false }))
@@ -90,33 +93,34 @@ function App() {
 
 
 
-  const router = createBrowserRouter([{
-    index: '/',
-    element: <RootLayout></RootLayout>,
-    children: [{
-      index: true,
-      element: <Home></Home>,
-    },
+  const router = createBrowserRouter([
     {
-      path: 'workout',
-      element: <Workout></Workout>,
+      index: '/',
+      element: <RootLayout></RootLayout>,
+      children: [{
+        index: true,
+        element: <Home></Home>
+      },
+      {
+        path: 'workout',
+        element: <Workout></Workout>,
+      },
+      {
+        path: 'food',
+        element: <Entry></Entry>,
+      },
+      {
+        path: 'insights',
+        element: <Insights></Insights>,
+      },
+      {
+        path: 'calendar',
+        element: <Calendar></Calendar>,
+      }, {
+        path: 'settings',
+        element: <Settings></Settings>,
+      }]
     },
-    {
-      path: 'food',
-      element: <Entry></Entry>,
-    },
-    {
-      path: 'insights',
-      element: <Insights></Insights>,
-    },
-    {
-      path: 'calendar',
-      element: <Calendar></Calendar>,
-    }, {
-      path: 'settings',
-      element: <Settings />
-    }]
-  },
   ])
 
 

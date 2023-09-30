@@ -33,7 +33,7 @@ const ModifyRecipeData = (props) => {
             <h3>Modify Ingredients</h3>
             <li>
                 <div key={`ingredients-container`} className={classes.ingridientContainer}>
-                    {props.ingList.length > 0 ? props.ingList.map((el, index) =>
+                    {props.ingList.length > 0 && props.ingList.map((el, index) =>
                         <>
                             <div key={`num-${index}`}>{index + 1}.</div>
                             <i key={`desc-${index}`} > {` ${el.description}`}</i >
@@ -47,7 +47,7 @@ const ModifyRecipeData = (props) => {
                         </>
 
                     )
-                        : 'Click an item to add to list'}
+                    }
                 </div>
                 <div className={classes.ingBtn}>
                     <Button type='button'>+ Add Ingredient</Button>

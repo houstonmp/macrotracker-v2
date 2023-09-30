@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+
 .article {
     width: 100%;
     display: flex;
@@ -10,24 +12,143 @@
 .signin ul {
     display: flex;
     justify-content: center;
-    padding: 5rem;
+
     background-color: var(--color-gamma-100);
     border-radius: 10px;
 
-    /* background-image: url("/signin.jpg");
+    background: url("/signin.jpg");
     background-size: cover;
-    background-clip: inherit; */
+    background-position: left;
+    background-clip: inherit;
+    background-blend-mode: inherit;
+
+}
+
+.signin form {
+    max-width: 70%;
 }
 
 .signin ul {
     filter: none;
     transition: filter .5s ease-in;
-    filter: drop-shadow(0 0 9px var(--glow-color));
+    filter: drop-shadow(0 0 4px var(--glow-color));
 }
 
 .signin {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh
+    height: 100vh;
+
+}
+
+.signInContainer {
+    margin-left: 50%;
+    padding: 5rem;
+    background-color: var(--color-gamma-100);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: 0 10px 10px 0;
+
+
+}
+
+.signInContainer .signinItem {
+    flex-basis: 100%;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.signInBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 50%;
+    bottom: 0;
+}
+
+.googleSignIn {
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+    border-radius: 5px;
+    /* flex-basis: 100%; */
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.googleSignIn:hover {
+    background: #ebebeb;
+    /* color: darkgrey; */
+    filter: drop-shadow(0 0 3px var(--glow-color));
+}
+
+.fitColor {
+    color: var(--glow-color)
+}
+
+.googleSignIn svg {}
+
+.googleSignIn span {
+    margin: 0 8px;
+}
+
+.hrText {
+    line-height: 1em;
+    position: relative;
+    outline: 0;
+    border: 0;
+    color: black;
+    text-align: center;
+    height: 1.5em;
+    opacity: .5;
+    margin: 2rem;
+    flex-basis: 100%;
+
+    &:before {
+        content: 'OR';
+        background: linear-gradient(to right, transparent, #818078, transparent);
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 1px;
+    }
+
+    &:after {
+        content: attr(data-content);
+        position: relative;
+        display: inline-block;
+        color: black;
+
+        padding: 0 .5em;
+        line-height: 1.5em;
+        color: #818078;
+        background-color: var(--color-gamma-100);
+    }
+}
+
+.privacyPolicy {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+@media only screen and (max-width: 1000px) {
+    .signInContainer {
+        margin: 0;
+        flex-basis: 100%;
+        background: none;
+        padding: 2rem;
+    }
+
+    .signin ul {
+        background: none;
+    }
 }

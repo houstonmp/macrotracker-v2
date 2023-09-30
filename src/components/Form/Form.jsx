@@ -21,7 +21,7 @@ const Form = props => {
     }
 
 
-    return <form onSubmit={formHandler} className={classes.form}>
+    return <form onSubmit={formHandler} className={`${classes.form}`}>
         <ul>
             {props.children}
             {!props.overloadFooter && <footer className={classes.footer}>

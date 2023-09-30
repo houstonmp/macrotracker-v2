@@ -24,7 +24,7 @@ const SignIn = (props) => {
                 <div className={classes.signinItem}><h1>Login to <span className={classes.fitColor}>Fit</span>Pad</h1></div>
                 {!signupState && <>
                     {/* <div>Please login to use the app.</div> */}
-                    <button className={`${classes.googleSignIn}`} onClick={props.onSignIn}><GoogleIcon /><span>Sign In With Google</span></button>
+                    <button type="button" className={`${classes.googleSignIn}`} onClick={props.onSignIn}><GoogleIcon /><span>Sign In With Google</span></button>
 
                     {/* <div className={classes.signinItem}> */}
                     <hr className={classes.hrText} data-content="OR"></hr>
@@ -37,14 +37,14 @@ const SignIn = (props) => {
                         <Input placeholder="Password" type="password" onValidate={validateInput} onPass={emailToForm}></Input>
                     </div>
                     <div className={classes.signinItem}>
-                        <a onClick={toggleSignup}><span className={classes.fitColor}>Forgot Password?</span></a>
+                        <a onClick={toggleSignup}><i className={classes.fitColor}>Forgot Password?</i></a>
                     </div>
                     <div className={classes.signinItem}>
                         <Button onClick={props.onSignIn} classes={classes.signinItem}>Log in!</Button>
                     </div>
 
 
-                    <p>Don't have an account? <a onClick={toggleSignup}><span className={classes.fitColor}>Sign up here!</span></a></p>
+                    <p>Don't have an account? <a onClick={toggleSignup}><i className={classes.fitColor}>Sign up here!</i></a></p>
                 </>
                 }
                 {signupState && <> <button className={`${classes.googleSignIn}`} onClick={props.onSignIn}><GoogleIcon /><span>Sign In With Google</span></button>
@@ -60,14 +60,14 @@ const SignIn = (props) => {
                     </div>
                     <div className={`${classes.signinItem} ${classes.privacyPolicy}`}>
                         <input type="checkbox"></input>
-                        <div>Agree to the <a onClick={toggleSignup}><span className={classes.fitColor}>Privacy Policy</span></a></div>
+                        <div>Agree to the<a onClick={toggleSignup}><i className={classes.fitColor}>Privacy Policy</i></a></div>
                     </div>
                     <div className={classes.signinItem}>
-                        <Button onClick={props.onSignIn} classes={classes.signinItem}>Sign In!</Button>
+                        <Button type="button" onClick={props.onSignIn} classes={classes.signinItem}>Sign In!</Button>
                     </div>
 
 
-                    <p>Already have an account? <a onClick={toggleSignup}><span className={classes.fitColor}>Login here!</span></a></p>
+                    <p>Already have an account?<a onClick={toggleSignup}><i className={classes.fitColor}>Login here!</i></a></p>
                 </>
                 }
 

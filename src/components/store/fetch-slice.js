@@ -1,6 +1,6 @@
 
 import { uiActions } from "./ui-slice"
-
+import { auth } from "../../Firebase";
 
 
 export const fetchData = (fetchObj) => {
@@ -13,7 +13,9 @@ export const fetchData = (fetchObj) => {
         }));
         try {
             const sendRequest = async () => {
-                const response = await fetch('https://health-app-c5571-default-rtdb.firebaseio.com/' + fetchObj.url)
+                const token = await auth.currentUser.getIdToken()
+
+                const response = await fetch('https://health-app-c5571-default-rtdb.firebaseio.com/' + fetchObj.url + token)
                 if (!response.ok) {
                     throw new Error('Error: Couldn\'t send request');
                 }
@@ -51,7 +53,9 @@ export const fetchSlice = (objectData) => {
         }));
 
         const sendRequest = async () => {
-            const response = await fetch(`https://health-app-c5571-default-rtdb.firebaseio.com/` + objectData.url, objectData.header);
+            const token = await auth.currentUser.getIdToken();
+
+            const response = await fetch(`https://health-app-c5571-default-rtdb.firebaseio.com/` + objectData.url + token, objectData.header);
             if (!response.ok) {
                 throw new Error('Error: Data could not be uploaded to server')
             }

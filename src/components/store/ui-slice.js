@@ -13,11 +13,28 @@ const uiSlice = createSlice({
                 themeName: 'teal',
                 lightMode: 'light'
             },
-
+            user: {}
         },
         changed: false
     },
     reducers: {
+        reinitializeStore(state) {
+            state = {
+                notification: null,
+                modal: {
+                    modalIsVisible: false,
+                    modalInformation: null,
+                },
+                userPreferences: {
+                    theme: {
+                        themeName: 'teal',
+                        lightMode: 'light'
+                    },
+                    user: {}
+                },
+                changed: false
+            }
+        },
         replaceUiObj(state, action) {
             state.userPreferences.theme = action.payload.userPreferences.theme;
             state.userPreferences.settings = action.payload.userPreferences.settings;
@@ -29,6 +46,9 @@ const uiSlice = createSlice({
                 title: action.payload.title,
                 message: action.payload.message
             }
+        },
+        replaceUserObj(state, action) {
+            state.userPreferences.user = action.payload;
         },
         showModal(state, action) {
             state.modal.modalInformation = {

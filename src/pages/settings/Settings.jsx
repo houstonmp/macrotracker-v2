@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PageContent from "../../components/PageContent";
 import classes from "./Settings.module.css"
 import { uiActions } from "../../components/store/ui-slice";
@@ -11,6 +11,9 @@ import yellow from "../../assets/themes/yellow.jpg"
 import green from "../../assets/themes/green.jpg"
 import blue from "../../assets/themes/blue.jpg"
 import red from "../../assets/themes/red.jpg"
+import { auth, signOutWithGoogle } from "../../Firebase";
+import Button from "../../components/UI/Button";
+
 
 const Background = (props) => {
     return <main className="settings">
@@ -21,13 +24,33 @@ const Background = (props) => {
 
 const SettingsContent = (props) => {
     const dispatch = useDispatch();
+    const userData = useSelector(state => state.ui.userPreferences.user);
     const onThemeChangeHandler = (e) => {
         e.preventDefault();
         dispatch(uiActions.setTheme(e.currentTarget.id));
     }
+    const onClickHandler = () => {
+        signOutWithGoogle();
+        sessionStorage.clear();
+        localStorage.clear();
+        window.location.reload();
+    }
+
 
     return <PageContent title="Settings" classes={classes.settings}>
-        <Card>
+        <Card classes={classes.userProfile}>
+            <img className={classes.userImg} src={userData.imgURL}></img>
+            <ul className={classes.userInfo}>
+                <li>Name: {userData.name}</li>
+                <li>Email: {userData.email}</li>
+            </ul>
+
+
+            <Button onClick={onClickHandler}>Signout</Button>
+        </Card>
+        <Card classes={classes.userProfile}>
+        </Card>
+        <Card classes={classes.themes}>
             <h1>Themes</h1>
             <ul className={classes.themeCard}>
 
@@ -59,8 +82,6 @@ const SettingsContent = (props) => {
                     <img src={red} alt="Red Theme" />
                     <p>red</p>
                 </a>
-
-
             </ul>
         </Card>
 

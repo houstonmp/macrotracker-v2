@@ -17,7 +17,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { useDispatch, useSelector } from 'react-redux'
 // import { weightActions } from "./components/store/weight-slice";
-import { fetchSlice, fetchData } from "./components/store/fetch-slice";
+import { fetchSlice } from "./components/store/fetch-slice";
 
 import { foodDiaryActions } from "./components/store/food-diary-slice";
 import { weightActions } from "./components/store/weight-slice";
@@ -31,6 +31,7 @@ let isInitial = true;
 function App() {
   const isModal = useSelector(state => state.ui.modal.modalIsVisible);
   const { lightMode, themeName } = useSelector(state => { return state.ui.userPreferences.theme });
+  const user = useSelector(state => { return state.ui.userPreferences.user });
   const weightSelector = useSelector(state => state.weight);
   const diarySelector = useSelector(state => state.fDiary);
   const uiSelector = useSelector(state => state.ui);
@@ -44,37 +45,9 @@ function App() {
   }, [uiSelector.userPreferences])
 
   useEffect(() => {
-    if (isInitial) {
-
-      dispatch(fetchData({
-        url: 'healthApp.json',
-        // user_Id: 'user1',
-        saveData: (data) => {
-          data.userPreferences && dispatch(uiActions.replaceUiObj({ userPreferences: data.userPreferences || {}, changed: false }))
-          data.weightObj && dispatch(weightActions.replaceWeightObj({ weightObj: data.weightObj || [], changed: false }))
-          data.diaryObj && dispatch(foodDiaryActions.replaceDiaryObj({ diaryObj: data.diaryObj || [], changed: false }))
-          data.recipeObj && dispatch(recipeListActions.replaceRecipeObj({
-            recipeObj: {
-              items: data.recipeObj.items || [],
-              meals: data.recipeObj.meals || [],
-              recipes: data.recipeObj.recipes || []
-            } || {}, changed: false
-          }))
-        },
-        header: {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      }));
-      isInitial = false;
-      return;
-    }
-
-    if (weightSelector.changed || diarySelector.changed || uiSelector.changed || recipeSelector.changed) {
+    if ((weightSelector.changed || diarySelector.changed || uiSelector.changed || recipeSelector.changed) && user.uid) {
       dispatch(fetchSlice({
-        url: 'healthApp.json',
+        url: 'users/' + user.uid + '/healthApp.json?auth=',
         header: {
           method: 'PUT',
           body: JSON.stringify({
@@ -89,7 +62,7 @@ function App() {
         }
       }));
     }
-  }, [weightSelector.weightObj, diarySelector.diaryObj, uiSelector.userPreferences, recipeSelector.recipeObj, dispatch]);
+  }, [weightSelector.weightObj, diarySelector.diaryObj, uiSelector.userPreferences.theme, recipeSelector.recipeObj, dispatch]);
 
 
 

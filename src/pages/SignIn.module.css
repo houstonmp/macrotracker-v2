@@ -39,7 +39,7 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-
+    height: 100dvh;
 }
 
 .signInContainer {
@@ -89,10 +89,12 @@
 }
 
 .fitColor {
-    color: var(--glow-color)
+    color: var(--glow-color);
 }
 
-.googleSignIn svg {}
+a .fitColor:hover {
+    text-decoration: underline;
+}
 
 .googleSignIn span {
     margin: 0 8px;

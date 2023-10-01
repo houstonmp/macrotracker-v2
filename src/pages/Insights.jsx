@@ -14,7 +14,8 @@ const Insights = () => {
         dispatch(uiActions.showModal({
             title: 'Entry',
             message: null,
-            componentName: e.target.name
+            componentName: e.target.name,
+            disableExit: false
         })
         )
     }

@@ -13,11 +13,15 @@ import { WeightForm } from '../Weight/WeightEntry';
 
 const Backdrop = props => {
     const dispatch = useDispatch();
+    const modalObj = useSelector(state => state.ui.modal.modalInformation)
 
     const closeModalHandler = (e) => {
+        // if (!modalObj.disableExit) {
         if (e.currentTarget === e.target) {
             dispatch(uiActions.closeModal())
         }
+        // }
+
     }
 
     return <div onMouseDown={closeModalHandler} className={styles.backdrop}>
@@ -40,6 +44,10 @@ const ModalOverlay = () => {
         case 'workout':
             modalData = <WeightForm></WeightForm>
             break;
+        // case 'initialize':
+        //     modalData = <div>
+        //         This is a test!
+        //     </div>
         default:
             modalData = <p>Sorry nothing to show at this time...</p>
     }

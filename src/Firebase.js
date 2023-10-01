@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // import { getDatabase, ref, onValue } from 'firebase/database?
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithRedirect } from 'firebase/auth'
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithRedirect, getAdditionalUserInfo } from 'firebase/auth'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -28,13 +28,15 @@ provider.setCustomParameters({
 })
 
 export const signInWithGoogle = async () => {
-    result = signInWithRedirect(auth, provider).then((result) => {
-        // const result = signInWithPopup(auth, provider).then((result) => {
-        console.log("In signInWithGoogle,", result)
-        return result;
+    signInWithRedirect(auth, provider).then(async () => {
+
+        // const isNewUser = result.additionalUserInfo.isNewUser();
+        // const { isNewUser } = getAdditionalUserInfo(result);
+        // const isNewUser = auth.getAdditionalUserInfo(result).isNewUser;
     }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
     })
-    return result;
 }
 
 export const createUser = async (email, password) => {
@@ -47,7 +49,6 @@ export const createUser = async (email, password) => {
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.log(errorCode, errorMessage)
         });
 }
 export const signinUser = async (email, password) => {

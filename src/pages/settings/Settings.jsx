@@ -31,8 +31,6 @@ const SettingsContent = (props) => {
     }
     const onClickHandler = () => {
         signOutWithGoogle();
-        sessionStorage.clear();
-        localStorage.clear();
         window.location.reload();
     }
 

@@ -11,6 +11,7 @@ import { weightActions } from "../components/store/weight-slice";
 import { foodDiaryActions } from "../components/store/food-diary-slice";
 import { recipeListActions } from "../components/store/recipe-list-slice";
 import { fetchData } from "../components/store/fetch-slice";
+import { getAdditionalUserInfo, getRedirectResult } from "firebase/auth";
 
 let isInitial = true;
 
@@ -20,7 +21,7 @@ const RootLayout = () => {
     const dispatch = useDispatch();
 
     const onSignInHandler = () => {
-        signInWithGoogle().then(authResult => {
+        signInWithGoogle().then(() => {
         }).catch(error => console.log(error))
     }
 
@@ -49,7 +50,6 @@ const RootLayout = () => {
                     }
                 }));
 
-
                 isInitial = false;
                 return;
             }
@@ -61,16 +61,23 @@ const RootLayout = () => {
     useEffect(() => {
         auth.onAuthStateChanged(async (userAuth) => {
             if (userAuth) {
-                // const token = await auth.currentUser.getIdToken();
                 const userData = {
                     uid: userAuth.uid,
-                    // token: token,
                     imgURL: userAuth.photoURL,
                     email: userAuth.email,
-                    name: userAuth.displayName
+                    name: userAuth.displayName,
                 }
+                // const redirectResult = await getRedirectResult(auth)
+                // if (redirectResult) {
+                //     try {
+                //         const details = getAdditionalUserInfo(redirectResult)
+                //         const isNewUser = details.isNewUser;
+                //         userData.initialize = isNewUser;
+                //     } catch (error) {
+                //         console.log(error)
+                //     }
+                // }
                 dispatch(uiActions.replaceUserObj(userData));
-                // console.log("User Data:", userData)
                 setSignedIn(true)
             } else {
                 setSignedIn(false)

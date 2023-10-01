@@ -15,7 +15,8 @@ const Home = (props) => {
     dispatch(uiActions.showModal({
       title: 'Home',
       message: null,
-      componentName: e.target.name
+      componentName: e.target.name,
+      disableExit: false
     })
     )
   }

@@ -11,22 +11,11 @@ import Settings from "./pages/settings/Settings"
 import { useEffect } from 'react'
 import useThemeDetector from "./hooks/use-theme";
 
-// import MainNav from './components/MainNav'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import { AnimatedSwitch } from "react-router-transition";
 
 import { useDispatch, useSelector } from 'react-redux'
-// import { weightActions } from "./components/store/weight-slice";
 import { fetchSlice } from "./components/store/fetch-slice";
 
-import { foodDiaryActions } from "./components/store/food-diary-slice";
-import { weightActions } from "./components/store/weight-slice";
-import { uiActions } from "./components/store/ui-slice";
-import { recipeListActions } from "./components/store/recipe-list-slice";
-import SignIn from './pages/SignIn'
-
-
-let isInitial = true;
 
 function App() {
   const isModal = useSelector(state => state.ui.modal.modalIsVisible);

@@ -75,18 +75,9 @@ const SignIn = (props) => {
                         </div>
                         <div className={classes.signinItem}>
                             {!signupState ?
-                                <Button type="submit" classes={classes.signinItem} disable={!formIsValid}>Log in!</Button> :
-                                <Button type="submit" classes={classes.signinItem} disable={!formIsValid}>Sign Up!</Button>
+                                <Button type="submit" classes={classes.signinItem} disable={!formIsValid}>Submit!</Button> :
                             }
                         </div>
-
-
-                        {!signupState ?
-                            <p>Don't have an account? <a onClick={toggleSignup}><i className={classes.fitColor}>Sign up here!</i></a></p> :
-                            <p>Already have an account?<a onClick={toggleSignup}><i className={classes.fitColor}>Login here!</i></a></p>
-                        }
-
-
 
                         {/* {signupState && <> <button className={`${classes.googleSignIn}`} onClick={props.onSignIn}><GoogleIcon /><span>Sign In With Google</span></button>
 

@@ -314,6 +314,18 @@ a {
   cursor: pointer;
 }
 
+.signInScreen {
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+}
+
+.App form {
+  max-width: 70%;
+}
 
 
 @media only screen and (max-width: 768px) {

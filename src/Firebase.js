@@ -28,11 +28,7 @@ provider.setCustomParameters({
 })
 
 export const signInWithGoogle = async () => {
-    signInWithRedirect(auth, provider).then(async () => {
-
-        // const isNewUser = result.additionalUserInfo.isNewUser();
-        // const { isNewUser } = getAdditionalUserInfo(result);
-        // const isNewUser = auth.getAdditionalUserInfo(result).isNewUser;
+    signInWithRedirect(auth, provider).then((response) => {
     }).catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -42,14 +38,12 @@ export const signInWithGoogle = async () => {
 export const createUser = async (email, password) => {
     console.log(email, password)
     createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            // Signed up 
-            const user = userCredential.user;
-        })
+        .then(response => response)
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
         });
+    return response
 }
 export const signinUser = async (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
@@ -64,6 +58,8 @@ export const signinUser = async (email, password) => {
             console.log(errorCode, errorMessage)
         });
 }
+
+
 
 export const signOutWithGoogle = async () => {
     auth.signOut();

@@ -1,30 +1,46 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
 
 .article {
-    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-
     /* background-color: ; */
 }
 
-.signin ul {
+.signin {
     display: flex;
     justify-content: center;
+}
+
+.signin form {
+    max-height: none;
+}
+
+.signin ul {
+    /* display: flex;
+    justify-content: center; */
 
     background-color: var(--color-gamma-100);
     border-radius: 10px;
+    position: relative;
 
     background: url("/signin.jpg");
     background-size: cover;
     background-position: left;
     background-clip: inherit;
     background-blend-mode: inherit;
-
 }
 
+/* .signin img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 50%;
+    bottom: 0;
+} */
+
 .signin form {
+
     max-width: 70%;
 }
 
@@ -34,13 +50,13 @@
     filter: drop-shadow(0 0 4px var(--glow-color));
 }
 
-.signin {
+/* .signin ul {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    height: 100dvh;
-}
+    /* height: 100vh;
+    height: 100dvh; */
+/* }  */
 
 .signInContainer {
     margin-left: 50%;

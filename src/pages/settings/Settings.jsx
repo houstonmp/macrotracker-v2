@@ -11,7 +11,9 @@ import yellow from "../../assets/themes/yellow.jpg"
 import green from "../../assets/themes/green.jpg"
 import blue from "../../assets/themes/blue.jpg"
 import red from "../../assets/themes/red.jpg"
-import { auth, signOutWithGoogle } from "../../Firebase";
+
+
+import { signOutWithGoogle } from "../../Firebase";
 import Button from "../../components/UI/Button";
 
 
@@ -42,8 +44,6 @@ const SettingsContent = (props) => {
                 <li>Name: {userData.name}</li>
                 <li>Email: {userData.email}</li>
             </ul>
-
-
             <Button onClick={onClickHandler}>Signout</Button>
         </Card>
         <Card classes={classes.userProfile}>
@@ -82,7 +82,6 @@ const SettingsContent = (props) => {
                 </a>
             </ul>
         </Card>
-
     </PageContent>
 }
 

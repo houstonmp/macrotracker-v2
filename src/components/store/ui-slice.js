@@ -20,6 +20,7 @@ const uiSlice = createSlice({
     reducers: {
         reinitializeStore(state) {
             state = {
+                isSignedIn: false,
                 notification: null,
                 modal: {
                     modalIsVisible: false,
@@ -34,6 +35,9 @@ const uiSlice = createSlice({
                 },
                 changed: false
             }
+        },
+        setSignIn(state, action) {
+            state.isSignedIn = action.payload
         },
         replaceUiObj(state, action) {
             state.userPreferences.theme = action.payload.userPreferences.theme;

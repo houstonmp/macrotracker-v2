@@ -192,10 +192,6 @@ div li {
     padding-top: .5rem !important;
 }
 
-/* .register .signinItem li div {
-    padding-bottom: 10px;
-} */
-
 .register label {
     line-height: 2rem;
 }
@@ -220,24 +216,11 @@ div li {
     margin: 0 1rem;
 }
 
-/* .register .section {
-    margin: 3rem 0;
-    max-height: 40vh;
-    overflow-y: scroll;
-
-} */
-
-/* .register .signinItem {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    text-align: left;
-} */
-
 .button {
     flex-basis: 100%;
     line-height: 2rem;
 }
+
 
 .radios {
     display: flex;
@@ -253,7 +236,10 @@ div li {
 @media only screen and (max-width: 1000px) {
     .register form {
         max-width: none !important;
-        margin: 1rem;
+        /* margin: 1rem; */
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0;
     }
 
     .signInContainer {

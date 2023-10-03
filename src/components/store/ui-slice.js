@@ -54,6 +54,10 @@ const uiSlice = createSlice({
         replaceUserObj(state, action) {
             state.userPreferences.user = action.payload;
         },
+        replaceUserObjRegister(state, action) {
+            state.userPreferences.user = action.payload;
+            state.changed = true;
+        },
         showModal(state, action) {
             state.modal.modalInformation = {
                 title: action.payload.title,

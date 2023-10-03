@@ -24,7 +24,7 @@ import { weightActions } from "./components/store/weight-slice";
 import { foodDiaryActions } from "./components/store/food-diary-slice";
 import { recipeListActions } from "./components/store/recipe-list-slice";
 import { getAdditionalUserInfo } from "firebase/auth";
-import { BMRImperialMen, TDEE, MacrosByDiceSplit } from "./assets/functions";
+import { BMRImperialMen, TDEE, MacrosByDiceSplit, getAgeFromBirthday } from "./assets/functions";
 
 
 function App() {
@@ -75,6 +75,35 @@ function App() {
                   recipes: data.recipeObj.recipes || []
                 } || {}, changed: false
               }))
+
+              if (!data.userPreferences.user.height || !data.userPreferences.user.activityLevel || !data.userPreferences.user.age || !data.userPreferences.user.birthday) {
+                dispatch(uiActions.replaceUserObj(userData));
+                navigate('/register');
+              } else {
+                try {
+                  const birthArray = data.userPreferences.user.birthday.split("-");
+                  let AGE = parseInt(getAgeFromBirthday(birthArray[0], birthArray[1], birthArray[2]));
+                  let BMR = BMRImperialMen(201.9, data.userPreferences.user.height.in, AGE);
+                  let TDEEValue = TDEE(data.userPreferences.user.activityLevel, BMR);
+                  let dailyMacros = MacrosByDiceSplit(TDEEValue, 85);
+
+                  userData.BMR = BMR;
+                  userData.TDEEValue = TDEEValue;
+                  userData.dailyMacros = dailyMacros;
+                  userData.birthday = data.userPreferences.user.birthday;
+                  userData.activityLevel = data.userPreferences.user.activityLevel;
+                  userData.age = AGE; //Update this
+                  userData.height = data.userPreferences.user.height;
+                  userData.weightDeficit = data.userPreferences.user.weightDeficit;
+
+
+                  dispatch(uiActions.replaceUserObj(userData));
+                  navigate('');
+                } catch (error) {
+                  console.log(error.code, error.message)
+                }
+
+              }
             },
             header: {
               method: 'GET',
@@ -84,22 +113,7 @@ function App() {
             }
           }));
 
-          if (!user.height || !user.activityLevel || !user.age || !user.birthDay) {
-            console.log("Moving to register!")
-            dispatch(uiActions.replaceUserObj(userData));
-            navigate('/register');
-          } else {
-            let BMR = BMRImperialMen(201.9, userData.height.in, userData.age);
-            let TDEEValue = TDEE(userData.activityLevel, BMR);
-            let dailyMacros = MacrosByDiceSplit(TDEEValue, 85);
 
-            userData.BMR = BMR;
-            userData.TDEEValue = TDEEValue;
-            userData.dailyMacros = dailyMacros;
-
-            dispatch(uiActions.replaceUserObj(userData));
-            navigate('');
-          }
         } else {
           sessionStorage.removeItem("Auth Token");
         }
@@ -141,7 +155,7 @@ function App() {
         }
       }));
     }
-  }, [weightSelector.weightObj, diarySelector.diaryObj, uiSelector.userPreferences.theme, recipeSelector.recipeObj, dispatch]);
+  }, [weightSelector.weightObj, diarySelector.diaryObj, uiSelector.userPreferences, recipeSelector.recipeObj, dispatch]);
 
 
 

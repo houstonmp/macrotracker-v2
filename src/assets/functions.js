@@ -2,33 +2,33 @@
 //BMR Formula uses the Harris-Benedict Formula
 
 export const BMRImperialMen = (weightLbs, heightIn, ageYears) => {
-    return (6.23762 * weightLbs) + (12.7084 * heightIn) - (6.755 * ageYears) + 66.473;
+    return parseInt((6.23762 * weightLbs) + (12.7084 * heightIn) - (6.755 * ageYears) + 66.473);
 }
 
 export const BMRMetricMen = (weightKgs, heightCm, ageYears) => {
-    return (13.7516 * weightKgs) + (5.0033 * heightCm) - (6.755 * ageYears) + 66.473;
+    return parseInt((13.7516 * weightKgs) + (5.0033 * heightCm) - (6.755 * ageYears) + 66.473);
 }
 
 export const BMRMetricWomen = (weightKgs, heightCm, ageYears) => {
-    return (9.5634 * weightKgs) + (1.8496 * heightCm) - (4.6756 * ageYears) + 655.0955;
+    return parseInt((9.5634 * weightKgs) + (1.8496 * heightCm) - (4.6756 * ageYears) + 655.0955);
 }
 
 export const BMRImperialWomen = (weightLbs, heightIn, ageYears) => {
-    return (4.33789 * weightLbs) + (4.69798 * heightIn) - (4.6756 * ageYears) + 655.0955;
+    return parseInt((4.33789 * weightLbs) + (4.69798 * heightIn) - (4.6756 * ageYears) + 655.0955);
 }
 
 
 //BMI Calculator
 export const BMIImperial = (weightLbs, heightIn) => {
-    return (weightLbs / (heightIn * heightIn)) * 703;
+    return parseInt((weightLbs / (heightIn * heightIn)) * 703);
 }
 
 export const BMIBoundaries = (BMI, heightIn) => {
-    return (BMI * (heightIn * heightIn)) / 703;
+    return parseInt((BMI * (heightIn * heightIn)) / 703);
 }
 
 export const BMIMetric = (weightKgs, heightCm) => {
-    return (weightKgs / (heightCm * heightCm)) * 10000;
+    return parseInt((weightKgs / (heightCm * heightCm)) * 10000);
 }
 
 //Body Fat % formula based on Navy formula
@@ -42,12 +42,12 @@ export const BodyFatWomenMetric = (waist, hip, neck, height) => {
 
 export const getAgeFromBirthday = (birthYear, birthMonth, birthDay) => {
     let currentDate = new Date();
-    return (((currentDate.getFullYear - birthYear) * 365) + ((currentMonth - birthMonth) * 12) + (currentDate.getDate() - birthDay)) / 365;
+    return parseInt((((currentDate.getFullYear() - birthYear) * 365) + ((currentDate.getMonth() - birthMonth) * 12) + (currentDate.getDate() - birthDay)) / 365);
 }
 
 //Calories regularly exhausted from exercise / week (Total Daily EnergyExpenditure)
 export const TDEE = (activityLevel, BMR) => {
-    return activityLevel * BMR;
+    return parseInt(activityLevel * BMR);
 }
 
 //Macros calculated from the 40/40/20
@@ -56,9 +56,9 @@ export const MacrosByDiceSplit = (TDEE, goalPercentage) => {
     let goal = (TDEE * goalPercentage / 100);
 
     return {
-        goalProtein: (goal * 0.4) / 4,
-        goalCarbs: (goal * 0.4) / 4,
-        goalFat: (goal * 0.4) / 9,
+        goalProtein: parseInt((goal * 0.4) / 4),
+        goalCarbs: parseInt((goal * 0.4) / 4),
+        goalFat: parseInt((goal * 0.4) / 9),
 
     }
 }

@@ -9,7 +9,6 @@ import Calendar from "./pages/Calendar";
 import Insights from "./pages/Insights";
 import Settings from "./pages/settings/Settings"
 import { useEffect } from 'react'
-import useThemeDetector from "./hooks/use-theme";
 import { signInWithGoogle, auth } from "./Firebase";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +22,6 @@ import { uiActions } from "./components/store/ui-slice";
 import { weightActions } from "./components/store/weight-slice";
 import { foodDiaryActions } from "./components/store/food-diary-slice";
 import { recipeListActions } from "./components/store/recipe-list-slice";
-import { getAdditionalUserInfo } from "firebase/auth";
 import { BMRImperialMen, TDEE, MacrosByDiceSplit, getAgeFromBirthday } from "./assets/functions";
 
 
@@ -42,63 +40,65 @@ function App() {
 
 
   useEffect(() => {
-    auth.onAuthStateChanged(async (userAuth) => {
+    auth.onAuthStateChanged((userAuth) => {
       try {
         if (userAuth) {
           sessionStorage.setItem('Auth Token', userAuth.accessToken)
-          // let isNewUser = getAdditionalUserInfo(userAuth);
 
           const userData = {
             uid: userAuth.uid,
             imgURL: userAuth.photoURL,
             email: userAuth.email,
             name: userAuth.displayName,
-            // activityLevel: 1.2,
-            // age: 28,
-            // height: {
-            //   cm: 177.8,
-            //   in: 70
-            // }
-            // initialize: true
           }
-          // console.log(isNewUser);
           dispatch(fetchData({
             url: 'users/' + userAuth.uid + '/healthApp.json?auth=',
             saveData: (data) => {
-              data.userPreferences && dispatch(uiActions.replaceUiObj({ userPreferences: data.userPreferences || {}, changed: false }))
-              data.weightObj && dispatch(weightActions.replaceWeightObj({ weightObj: data.weightObj || [], changed: false }))
-              data.diaryObj && dispatch(foodDiaryActions.replaceDiaryObj({ diaryObj: data.diaryObj || [], changed: false }))
-              data.recipeObj && dispatch(recipeListActions.replaceRecipeObj({
-                recipeObj: {
-                  items: data.recipeObj.items || [],
-                  meals: data.recipeObj.meals || [],
-                  recipes: data.recipeObj.recipes || []
-                } || {}, changed: false
-              }))
+              try {
+                data.userPreferences && dispatch(uiActions.replaceUiObj({ userPreferences: data.userPreferences || {}, changed: false }))
+                data.weightObj && dispatch(weightActions.replaceWeightObj({ weightObj: data.weightObj || [], changed: false }))
+                data.diaryObj && dispatch(foodDiaryActions.replaceDiaryObj({ diaryObj: data.diaryObj || [], changed: false }))
+                data.recipeObj && dispatch(recipeListActions.replaceRecipeObj({
+                  recipeObj: {
+                    items: data.recipeObj.items || [],
+                    meals: data.recipeObj.meals || [],
+                    recipes: data.recipeObj.recipes || []
+                  } || {}, changed: false
+                }))
+              } catch (error) {
+                console.log(error.message)
+              }
 
-              if (!data.userPreferences.user.height || !data.userPreferences.user.activityLevel || !data.userPreferences.user.age || !data.userPreferences.user.birthday) {
+
+
+              if (!data || !data.userPreferences.user.height || !data.userPreferences.user.activityLevel || !data.userPreferences.user.age || !data.userPreferences.user.birthday) {
                 dispatch(uiActions.replaceUserObj(userData));
                 navigate('/register');
               } else {
                 try {
                   const birthArray = data.userPreferences.user.birthday.split("-");
                   let AGE = parseInt(getAgeFromBirthday(birthArray[0], birthArray[1], birthArray[2]));
-                  let BMR = BMRImperialMen(201.9, data.userPreferences.user.height.in, AGE);
-                  let TDEEValue = TDEE(data.userPreferences.user.activityLevel, BMR);
-                  let dailyMacros = MacrosByDiceSplit(TDEEValue, 85);
+                  if (data.weightObj) {
+                    let BMR = BMRImperialMen(201.9, data.userPreferences.user.height.in, AGE);
+                    let TDEEValue = TDEE(data.userPreferences.user.activityLevel, BMR);
+                    let dailyMacros = MacrosByDiceSplit(TDEEValue, (data.userPreferences.user.weightDeficit.lbs * 3500 / 7));
 
-                  userData.BMR = BMR;
-                  userData.TDEEValue = TDEEValue;
-                  userData.dailyMacros = dailyMacros;
+                    userData.BMR = BMR;
+                    userData.TDEEValue = TDEEValue;
+                    userData.dailyMacros = dailyMacros;
+                  }
+
                   userData.birthday = data.userPreferences.user.birthday;
-                  userData.activityLevel = data.userPreferences.user.activityLevel;
-                  userData.age = AGE; //Update this
+                  userData.age = AGE;
                   userData.height = data.userPreferences.user.height;
+                  userData.activityLevel = data.userPreferences.user.activityLevel;
                   userData.weightDeficit = data.userPreferences.user.weightDeficit;
 
+                  console.log(userData);
 
                   dispatch(uiActions.replaceUserObj(userData));
                   navigate('');
+
                 } catch (error) {
                   console.log(error.code, error.message)
                 }
@@ -157,71 +157,6 @@ function App() {
     }
   }, [weightSelector.weightObj, diarySelector.diaryObj, uiSelector.userPreferences, recipeSelector.recipeObj, dispatch]);
 
-
-
-  // const router = createBrowserRouter([
-  //   {
-  //     index: '/',
-  //     element: <RootLayout></RootLayout>,
-  //     children: [{
-  //       index: true,
-  //       element: <Home></Home>,
-  //       loader: async () => {
-  //         try {
-  //           if (!user.uid) {
-  //             return redirect('/login')
-  //           } else {
-
-  // const redirectResult = await getRedirectResult(auth)
-  // if (redirectResult) {
-  //     try {
-  //         const details = getAdditionalUserInfo(redirectResult)
-  //         const isNewUser = details.isNewUser;
-  //         userData.initialize = isNewUser;
-  //     } catch (error) {
-  //         console.log(error)
-  //     }
-  // }
-
-  //         } catch (error) {
-  //           console.log(error.message)
-  //         }
-
-  //       }
-  //     },
-  //     {
-  //       path: 'workout',
-  //       element: <Workout></Workout>,
-  //     },
-  //     {
-  //       path: 'food',
-  //       element: <Entry></Entry>,
-  //     },
-  //     {
-  //       path: 'insights',
-  //       element: <Insights></Insights>,
-  //     },
-  //     {
-  //       path: 'calendar',
-  //       element: <Calendar></Calendar>,
-  //     },
-  //     {
-  //       path: 'settings',
-  //       element: <Settings></Settings>,
-  //     },
-  //     ]
-  //   },
-  //   {
-  //     path: '/login',
-  //     element: <SignIn onSignIn={onSignInHandler} />,
-  //     loader: () => {
-  //       if (user.uid) {
-  //         return redirect('')
-  //       }
-  //       return null;
-  //     }
-  //   }
-  // ])
   useEffect(() => {
     let authToken = sessionStorage.getItem('Auth Token')
     if (authToken) {

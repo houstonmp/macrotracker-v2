@@ -51,14 +51,14 @@ export const TDEE = (activityLevel, BMR) => {
 }
 
 //Macros calculated from the 40/40/20
-export const MacrosByDiceSplit = (TDEE, goalPercentage) => {
+export const MacrosByDiceSplit = (TDEE, goalDeficit) => {
 
-    let goal = (TDEE * goalPercentage / 100);
+    let goal = (TDEE - goalDeficit);
 
     return {
         goalProtein: parseInt((goal * 0.4) / 4),
         goalCarbs: parseInt((goal * 0.4) / 4),
-        goalFat: parseInt((goal * 0.4) / 9),
-
+        goalFat: parseInt((goal * 0.2) / 9),
+        goalCalories: parseInt(goal)
     }
 }

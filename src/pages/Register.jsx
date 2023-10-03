@@ -72,15 +72,6 @@ const Register = (props) => {
                 }, ...user
             }
 
-            let BMR = BMRImperialMen(201.9, newUserObj.height.in, newUserObj.age);
-            let TDEEValue = TDEE(newUserObj.activityLevel, BMR);
-            let dailyMacros = MacrosByDiceSplit(TDEEValue, 85);
-
-            newUserObj.BMR = BMR;
-            newUserObj.TDEEValue = TDEEValue;
-            newUserObj.dailyMacros = dailyMacros;
-
-            // console.log("You user array is:", newUserObj);
             dispatch(uiActions.replaceUserObjRegister(newUserObj))
             navigate('/')
         }

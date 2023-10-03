@@ -119,6 +119,18 @@ const WeightChart = (props) => {
                     },
                     backgroundColor: '#ff9f40',
                 },
+                {
+                    id: 4,
+                    label: 'BMI 30',
+                    data: user.height && weightObj.map((weight) => BMIBoundaries(30, user.height.in)),
+                    borderColor: gammaCol2,
+                    fill: {
+                        target: 'origin',
+                        // above: '#ff6384',
+                        below: '#ff9f40',
+                    },
+                    backgroundColor: '#ff9f40',
+                },
                 ]
             }} />
     </Card>

@@ -9,6 +9,8 @@ import Input from "../UI/Input";
 import { useDispatch, useSelector } from "react-redux";
 import { weightActions } from "../store/weight-slice";
 import RadioInput from "../UI/RadioInput";
+import { uiActions } from "../store/ui-slice";
+import { BMRImperialMen, TDEE, MacrosByDiceSplit } from "../../assets/functions";
 
 export const WeightForm = () => {
 
@@ -24,6 +26,8 @@ export const WeightForm = () => {
     const weightToForm = (inputObj) => setWeight(inputObj);
     const dateHandler = (e) => setDate(e.target.value);
     const [radioState, setRadioState] = useState('lbs');
+    const user = useSelector(state => state.ui.userPreferences.user)
+    const weightObj = useSelector(state => state.weight.weightObj)
 
     if (weightState.isValid) {
         formIsValid = true;
@@ -31,13 +35,29 @@ export const WeightForm = () => {
 
     const workoutFormHandler = (e) => {
         if (formIsValid) {
+
+
+            let userData = { ...user };
+
             dispatch(weightActions.updateWeight({
                 type: "UPDATE",
                 date: dateState,
                 value: weightState.value,
                 unit: radioState
             }));
+
             dispatch(weightActions.sortDates());
+            console.log(weightObj[weightObj.length - 1], user.age, user.activityLevel, user.weightDeficit.lbs)
+            let BMR = BMRImperialMen(weightObj[weightObj.length - 1].lbs, user.height.in, user.age);
+            let TDEEValue = TDEE(user.activityLevel, BMR);
+            let dailyMacros = MacrosByDiceSplit(TDEEValue, (user.weightDeficit.lbs * 3500 / 7));
+
+            userData.BMR = BMR;
+            userData.TDEEValue = TDEEValue;
+            userData.dailyMacros = dailyMacros;
+
+            dispatch(uiActions.replaceUserObjRegister(userData))
+
             return true;
         }
         return false;

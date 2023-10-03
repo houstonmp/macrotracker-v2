@@ -24,7 +24,7 @@ const Input = (props) => {
     let classList = `${!props.isOptional && hasError && classes.error}`;
 
     return <li>
-        <label htmlFor={props.name}>{props.label}<div>{props.children}</div></label>
+        <label htmlFor={props.name}>{props.label}{props.children && <div>{props.children}</div>}</label>
         <input className={classList} id={props.id} type={props.type} name={props.name} value={value} placeholder={props.placeholder} onBlur={inputBlurHandler} onChange={inputChangeHandler}>
         </input>
 

@@ -8,13 +8,16 @@ import { GoogleIcon } from "../assets/Icons";
 import { createUser, signinUser } from "../Firebase";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import RadioInput from "../components/UI/RadioInput";
 
-const SignIn = (props) => {
+const Register = (props) => {
     const validatePassword = (value) => value.trim() !== '';
     const validateEmail = (value) => value.trim() !== '' && value.includes('@');
     const [emailValue, setEmail] = useState({});
     const [passwordValue, setPassword] = useState({});
     const [signupState, setSignup] = useState(true);
+    const [radioState, setFilterState] = useState('in');
+    const [weightUnit, setWeightUnitState] = useState('lbs')
     const navigate = useNavigate();
 
     const emailToForm = (inputObj) => setEmail(inputObj);
@@ -37,6 +40,14 @@ const SignIn = (props) => {
     const toggleSignup = () => {
         setSignup(prev => !prev);
     }
+    const switchRadioFilter = (target) => {
+        setFilterState(target.value);
+    }
+
+    const switchRadioWeightFilter = (target) => {
+        setWeightUnitState(target.value);
+    }
+
 
     useEffect(() => {
         let authToken = sessionStorage.getItem('Auth Token')
@@ -47,66 +58,74 @@ const SignIn = (props) => {
 
     return <>
         <div className="signInScreen">
-            <div className={classes.signin}>
+            <div className={classes.register}>
                 <Form className={classes.section} overloadFooter={true} onFormSubmit={onFormSubmitHandler}>
                     {/* <SignInBG classes={classes.signInBg} /> */}
                     <div className={classes.signInContainer}>
-                        <div className={classes.signinItem}><h1>{!signupState ? 'Login to' : 'Sign up for'} <span className={classes.fitColor}>Fit</span>Pad</h1></div>
+                        <div className={classes.signinItem}><h1><span className={classes.fitColor}>Fit</span>Pad</h1></div>
+                        {/* <i>We just need a few things to  get started!</i> */}
+                        <hr className={classes.hrText} data-content="Let's get started!"></hr>
+                        <section className={classes.section}>
+                            <div className={classes.signinItem}>
+                                <Input label="Birthday:" type="date" onValidate={validatePassword} onPass={passwordToForm}></Input>
+                            </div>
+                            <div className={classes.signinItem}>
+                                <li>
+                                    {radioState === 'cm' && < Input label="How tall are you?" type="value" onValidate={validatePassword} onPass={passwordToForm}></Input>}
+                                    {radioState === 'in' && <>
+                                        <label htmlFor="height">What is your height?</label>
+                                        <div>
+                                            <select id="height">
+                                                <option>7 ft</option>
+                                                <option>6 ft</option>
+                                                <option>5 ft</option>
+                                            </select>
+                                            <select id="height">
+                                                <option>11 in</option>
+                                                <option>10 in</option>
+                                                <option>9 in</option>
+                                                <option>8 in</option>
+                                                <option>7 in</option>
+                                                <option>6 in</option>
+                                                <option>5 in</option>
+                                                <option>4 in</option>
+                                                <option>3 in</option>
+                                                <option>2 in</option>
+                                                <option>1 in</option>
+                                                <option>0 in</option>
+                                            </select>
+                                        </div>
 
-                        <button type="button" className={`${classes.googleSignIn}`} onClick={props.onSignIn}><GoogleIcon /><span>Sign In With Google</span></button>
-
-                        <hr className={classes.hrText} data-content="OR"></hr>
-
-                        <div className={classes.signinItem}>
-                            <Input placeholder="Email" type="email" onValidate={validateEmail} onPass={emailToForm}></Input>
-                        </div>
-                        <div className={classes.signinItem}>
-                            <Input placeholder="Password" type="password" onValidate={validatePassword} onPass={passwordToForm}></Input>
-                        </div>
-                        <div className={`${classes.signinItem} ${signupState && classes.privacyPolicy}`}>
-                            {!signupState ?
-                                <a onClick={toggleSignup}><i className={classes.fitColor}>Forgot Password?</i></a> :
-                                <>
-                                    <input type="checkbox"></input>
-                                    <div>Agree to the<a onClick={toggleSignup}><i className={classes.fitColor}>Privacy Policy</i></a></div>
-                                </>
-                            }
-
-                        </div>
-                        <div className={classes.signinItem}>
-                            {!signupState ?
-                                <Button type="submit" classes={classes.signinItem} disable={!formIsValid}>Submit!</Button> :
-                            }
-                        </div>
-
-                        {/* {signupState && <> <button className={`${classes.googleSignIn}`} onClick={props.onSignIn}><GoogleIcon /><span>Sign In With Google</span></button>
-
-                    <hr className={classes.hrText} data-content="OR"></hr>
-
-
-                    <div className={classes.signinItem}>
-                        <Input placeholder="Email" type="email" onValidate={validateInput} onPass={emailToForm}></Input>
-                    </div>
-                    <div className={classes.signinItem}>
-                        <Input placeholder="Password" type="password" onValidate={validateInput} onPass={emailToForm}></Input>
-                    </div>
-                    <div className={`${classes.signinItem} ${classes.privacyPolicy}`}>
-
-                    </div>
-                    <div className={classes.signinItem}>
-
-                    </div>
-
-
-                    <
-                </>
-                } */}
-
+                                    </>
+                                    }
+                                    <div>
+                                        <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'heightRadioFilter', value: ['in', 'cm'] }} />
+                                    </div>
+                                </li>
+                            </div>
+                            <div className={classes.signinItem}>
+                                <li>
+                                    <label htmlFor="activityLevel">How much do you exercise?</label>
+                                    <select id="activityLevel">
+                                        <option>Rarely {`(<1x per week)`}</option>
+                                        <option>Sometimes {`(1~3x / week)`}</option>
+                                        <option>Moderately {`(3~5x / week)`}</option>
+                                        <option>Daily {`(6~7x / week)`}</option>
+                                    </select>
+                                </li>
+                                {/* <i>* You can change this later!</i> */}
+                            </div>
+                            <div className={classes.signinItem}>
+                                <Input label="How much weight do you want to lose? (0 ~ 2 lbs per week)" type="number" onValidate={validatePassword} onPass={passwordToForm}></Input>
+                                <RadioInput onChange={switchRadioWeightFilter} radioBtnArray={{ name: 'weightRadioFilter', value: ['lbs', 'kgs'] }} />
+                            </div>
+                        </section>
+                        <Button type="submit" classes={classes.button} disable={!formIsValid}>Finish!</Button>
                     </div>
                 </Form >
-            </div>
+            </div >
         </div >
     </>
 }
 
-export default SignIn;
+export default Register;

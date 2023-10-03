@@ -18,6 +18,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSlice, fetchData } from "./components/store/fetch-slice";
 import SignIn from "./pages/SignIn";
+import Register from "./pages/Register";
 import { uiActions } from "./components/store/ui-slice";
 import { weightActions } from "./components/store/weight-slice";
 import { foodDiaryActions } from "./components/store/food-diary-slice";
@@ -41,7 +42,7 @@ function App() {
 
 
   useEffect(() => {
-    auth.onAuthStateChanged((userAuth) => {
+    auth.onAuthStateChanged(async (userAuth) => {
       try {
         if (userAuth) {
           sessionStorage.setItem('Auth Token', userAuth.accessToken)
@@ -52,13 +53,12 @@ function App() {
             imgURL: userAuth.photoURL,
             email: userAuth.email,
             name: userAuth.displayName,
-            // isNewUser: isNewUser,
-            activityLevel: 1.2,
-            age: 28,
-            height: {
-              cm: 177.8,
-              in: 70
-            }
+            // activityLevel: 1.2,
+            // age: 28,
+            // height: {
+            //   cm: 177.8,
+            //   in: 70
+            // }
             // initialize: true
           }
           // console.log(isNewUser);
@@ -84,19 +84,22 @@ function App() {
             }
           }));
 
+          if (!user.height || !user.activityLevel || !user.age || !user.birthDay) {
+            console.log("Moving to register!")
+            dispatch(uiActions.replaceUserObj(userData));
+            navigate('/register');
+          } else {
+            let BMR = BMRImperialMen(201.9, userData.height.in, userData.age);
+            let TDEEValue = TDEE(userData.activityLevel, BMR);
+            let dailyMacros = MacrosByDiceSplit(TDEEValue, 85);
 
-          let BMR = BMRImperialMen(201.9, userData.height.in, userData.age);
-          console.log(BMR)
-          let TDEEValue = TDEE(userData.activityLevel, BMR);
-          console.log(TDEEValue)
-          let dailyMacros = MacrosByDiceSplit(TDEEValue, 85);
+            userData.BMR = BMR;
+            userData.TDEEValue = TDEEValue;
+            userData.dailyMacros = dailyMacros;
 
-          userData.BMR = BMR;
-          userData.TDEEValue = TDEEValue;
-          userData.dailyMacros = dailyMacros;
-
-          navigate('');
-          dispatch(uiActions.replaceUserObj(userData));
+            dispatch(uiActions.replaceUserObj(userData));
+            navigate('');
+          }
         } else {
           sessionStorage.removeItem("Auth Token");
         }
@@ -112,7 +115,6 @@ function App() {
 
   const onSignInHandler = () => {
     signInWithGoogle().then((response) => {
-      // console.log("Response", response)
     }).catch(error => console.log(error))
   }
 
@@ -208,7 +210,6 @@ function App() {
   // ])
   useEffect(() => {
     let authToken = sessionStorage.getItem('Auth Token')
-    console.log("Auth", authToken)
     if (authToken) {
       navigate('')
     }
@@ -223,7 +224,7 @@ function App() {
         <>
           <Routes>
             <Route path="/signin" element={<SignIn onSignIn={onSignInHandler} />} />
-            {/* <Route path="/register" element={<Register />}></Route> */}
+            <Route path="/register" element={<Register />}></Route>
             <Route path="" element={<RootLayout />}>
               <Route path="" element={<Home />} />
               <Route path="workout" element={<Workout />} />

@@ -7,23 +7,25 @@
     /* background-color: ; */
 }
 
-.signin {
+:is(.register, .signin) {
     display: flex;
     justify-content: center;
 }
 
-.signin form {
+:is(.register, .signin) form {
     max-height: none;
 }
 
-.signin ul {
+:is(.register, .signin) ul {
     /* display: flex;
     justify-content: center; */
 
     background-color: var(--color-gamma-100);
     border-radius: 10px;
     position: relative;
+}
 
+.signin ul {
     background: url("/signin.jpg");
     background-size: cover;
     background-position: left;
@@ -39,12 +41,11 @@
     bottom: 0;
 } */
 
-.signin form {
-
+:is(.register, .signin) form {
     max-width: 70%;
 }
 
-.signin ul {
+:is(.register, .signin) ul {
     filter: none;
     transition: filter .5s ease-in;
     filter: drop-shadow(0 0 4px var(--glow-color));
@@ -66,11 +67,14 @@
     flex-wrap: wrap;
     justify-content: center;
     border-radius: 0 10px 10px 0;
-
-
 }
 
-.signInContainer .signinItem {
+.register .signInContainer {
+    margin: 0;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.signin .signInContainer .signinItem {
     flex-basis: 100%;
     padding-bottom: 10px;
     text-align: center;
@@ -151,6 +155,94 @@ a .fitColor:hover {
     }
 }
 
+.register .hrText {
+    margin: .3rem;
+}
+
+.register .signInContainer .signinItem {
+    margin: 1rem;
+}
+
+.register .signInContainer {
+    max-height: 90vh;
+    max-height: 90dvh;
+    overflow-y: auto;
+}
+
+.register select {
+    border-radius: 3px;
+    height: 1.5rem;
+}
+
+.register select:first-child {
+    margin-right: 5px !important;
+}
+
+.register .signInContainer * {
+    margin: 0;
+    padding: 0;
+}
+
+li>input[type=radio] {
+    align-self: center;
+    justify-self: center;
+}
+
+div li {
+    padding-top: .5rem !important;
+}
+
+/* .register .signinItem li div {
+    padding-bottom: 10px;
+} */
+
+.register label {
+    line-height: 2rem;
+}
+
+.register .signInScreen .signinItem {
+    margin: 3rem;
+    display: flex;
+    align-items: left;
+}
+
+.register .signinItem {
+    padding: .3rem;
+}
+
+.register .signinItem li {
+    padding: 0;
+}
+
+.signinItem :is(div, select) {
+    flex-basis: 100%;
+    display: flex;
+    margin: 0 1rem;
+}
+
+/* .register .section {
+    margin: 3rem 0;
+    max-height: 40vh;
+    overflow-y: scroll;
+
+} */
+
+/* .register .signinItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+} */
+
+.button {
+    flex-basis: 100%;
+    line-height: 2rem;
+}
+
+.radios {
+    display: flex;
+}
+
 .privacyPolicy {
     display: flex;
     flex-wrap: nowrap;
@@ -159,6 +251,11 @@ a .fitColor:hover {
 }
 
 @media only screen and (max-width: 1000px) {
+    .register form {
+        max-width: none !important;
+        margin: 1rem;
+    }
+
     .signInContainer {
         margin: 0;
         flex-basis: 100%;

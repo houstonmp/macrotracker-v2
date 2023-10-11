@@ -316,8 +316,8 @@ const EntryCard = (props) => {
             {foodItems.length === 0 && <p>Click 'Create {navState}' to get started!</p>}
 
             <footer className={classes.footer}>
-                <Button name='recipe' onClick={props.onModal}>+ Create Recipe</Button>
-                <Button name='item' onClick={props.onModal}>+ Create Item</Button>
+                {navState === 'recipes' && <Button name='recipe' onClick={props.onModal}>+ Create Recipe</Button>}
+                {navState === 'items' && < Button name='item' onClick={props.onModal}>+ Create Item</Button>}
             </footer>
         </article>
 

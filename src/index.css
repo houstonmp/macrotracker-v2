@@ -254,7 +254,6 @@
 }
 
 body {
-
   background: linear-gradient(white, white);
   transition: background 3s;
   background: linear-gradient(var(--color-gamma), var(--color-gamma-500));
@@ -267,10 +266,9 @@ body {
   min-height: 100vh;
   width: 100%;
   overflow-y: scroll;
-
 }
 
-.dark {
+.dark * {
   color: white;
 }
 

@@ -7,8 +7,6 @@
     margin: 0;
     flex: 2;
     color: inherit;
-    /* background-color: color-mix(in srgb, var(--color-beta-100) 40%, transparent); */
-    /* backdrop-filter: blur(4px); */
     border-radius: 10px;
     display: flex;
 }
@@ -31,6 +29,7 @@
     cursor: pointer;
     flex-grow: 1;
     margin: 10px;
+    transition: transform .6s;
 }
 
 .theme-select>img {
@@ -42,10 +41,18 @@
 
 .theme-select>p {
     position: absolute;
+
+    color: black;
+    padding: .5rem 1rem;
+    border-radius: 4px;
 }
 
 .theme-select:hover>img {
     border: 2px solid var(--color-beta-500);
+}
+
+.theme-select:hover {
+    transform: scale(102%);
 }
 
 .userProfile {

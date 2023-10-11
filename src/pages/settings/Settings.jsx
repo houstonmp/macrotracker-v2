@@ -39,9 +39,9 @@ const SettingsContent = (props) => {
 
     return <PageContent title="Settings" classes={classes.settings}>
         <Card classes={classes.userProfile}>
-            <img className={classes.userImg} src={userData.imgURL}></img>
+            {userData.imgURL && <img className={classes.userImg} src={userData.imgURL}></img>}
             <ul className={classes.userInfo}>
-                <li>Name: {userData.name}</li>
+                {userData.name && <li>Name: {userData.name}</li>}
                 <li>Email: {userData.email}</li>
             </ul>
             <Button onClick={onClickHandler}>Signout</Button>

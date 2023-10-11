@@ -188,7 +188,7 @@ li>input[type=radio] {
     justify-self: center;
 }
 
-div li {
+.signinItem li {
     padding-top: .5rem !important;
 }
 

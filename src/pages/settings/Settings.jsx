@@ -36,7 +36,6 @@ const SettingsContent = (props) => {
         window.location.reload();
     }
 
-
     return <PageContent title="Settings" classes={classes.settings}>
         <Card classes={classes.userProfile}>
             {userData.imgURL && <img className={classes.userImg} src={userData.imgURL}></img>}
@@ -47,6 +46,11 @@ const SettingsContent = (props) => {
             <Button onClick={onClickHandler}>Signout</Button>
         </Card>
         <Card classes={classes.userProfile}>
+            <p>Age: {userData && userData.age}</p>
+            <p>Birthday: {userData && userData.birthday}</p>
+            <p>Height: {userData.height && userData.height.in}</p>
+            <p>Preferred Unit: Imperial (lbs, in)</p>
+
         </Card>
         <Card classes={classes.themes}>
             <h1>Themes</h1>

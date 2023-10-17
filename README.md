@@ -11,6 +11,12 @@ A fitness tracking website to store recipe and workout data.
 
 ## Roadmap - (Goals and ToDos)
 
+Bootup:
+- Add loading bar/wheel until theme is applied
+
+NavBar:
+- Lock Navbar to the bottom of the screen on small devices and left on larger devices
+
 Settings:
 - Allow user to modify or change some information.
 

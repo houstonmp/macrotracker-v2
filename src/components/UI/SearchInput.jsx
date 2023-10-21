@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import inputClasses from './SearchInput.module.css'
+import classes from './Input.module.css'
 
 const SearchInput = (props) => {
     const [searchValue, setSearchValue] = useState('');
@@ -19,7 +20,7 @@ const SearchInput = (props) => {
     }, [searchValue])
 
     return <li>
-        <input className={inputClasses.input} list={props.list} name="search" type="text" onChange={onChangeHandler} placeholder={props.label} value={searchValue} />
+        <input className={`${classes.input}`} list={props.list} name="search" type="text" onChange={onChangeHandler} placeholder={props.label} value={searchValue} />
     </li>
 }
 

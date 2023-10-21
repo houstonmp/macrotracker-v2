@@ -17,19 +17,20 @@ export const WeightForm = () => {
 
     const dispatch = useDispatch();
     const validateInput = (value) => value.trim() !== '';
+    const validateDateInput = (value) => value && value.trim() !== '';
 
-    const [dateState, setDate] = useState(new Date().toJSON().slice(0, 10));
+    const [dateState, setDate] = useState({});
     let formIsValid = false;
 
     const [weightState, setWeight] = useState({});
 
     const weightToForm = (inputObj) => setWeight(inputObj);
-    const dateHandler = (e) => setDate(e.target.value);
+    const dateToForm = (inputObj) => setDate(inputObj);
     const [radioState, setRadioState] = useState('lbs');
     const user = useSelector(state => state.ui.userPreferences.user)
     const weightObj = useSelector(state => state.weight.weightObj)
 
-    if (weightState.isValid) {
+    if (weightState.isValid && dateState.isValid) {
         formIsValid = true;
     }
 
@@ -41,7 +42,7 @@ export const WeightForm = () => {
 
             dispatch(weightActions.updateWeight({
                 type: "UPDATE",
-                date: dateState,
+                date: dateState.value,
                 value: weightState.value,
                 unit: radioState
             }));
@@ -69,10 +70,12 @@ export const WeightForm = () => {
 
 
     return (<Form onFormSubmit={workoutFormHandler} formIsValid={formIsValid}>
-        <li>
+
+        {/* <li>
             <label htmlFor="date" >Date:</label>
             <input type="date" name="date" onChange={dateHandler} value={dateState} />
-        </li>
+        </li> */}
+        <Input id="dateValue" key="DateValue" name="date" type="date" label="Date:" onPass={dateToForm} onValidate={validateDateInput} defaultValue={new Date().toJSON().slice(0, 10)} />
         <Input id="weightValue" key="weightValue" name="weightValue" type="number" label="Weight:" onPass={weightToForm} onValidate={validateInput} />
         <RadioInput liClass={classes.radio} setFilterState={switchRadioFilter} radioBtnArray={{ name: 'lbsKgs', value: ['lbs', 'kgs'] }} />
     </Form>);

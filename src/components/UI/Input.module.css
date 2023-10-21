@@ -1,7 +1,11 @@
 .input {
     padding: 1rem;
-    border: 2px solid var(--color-alpha-100)
+    border: 2px solid var(--color-alpha-100);
 }
+
+/* .input[type="date"] {
+    padding: 
+} */
 
 .error {
     outline: 1px solid red;

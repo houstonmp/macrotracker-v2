@@ -25,12 +25,17 @@
 }
 
 .form input {
-    height: 1.5rem;
+    /* height: 1.5rem; */
     border-radius: 3px;
     margin: 0;
 }
 
+.form input[type="radio"] {
+    height: 1.5rem;
+}
+
 .form button {
+    /* padding: 1rem 2rem */
     align-self: flex-end;
 }
 

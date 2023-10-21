@@ -94,7 +94,7 @@ function App() {
                   userData.activityLevel = data.userPreferences.user.activityLevel;
                   userData.weightDeficit = data.userPreferences.user.weightDeficit;
 
-                  console.log(userData);
+                  // console.log(userData);
 
                   dispatch(uiActions.replaceUserObj(userData));
                   navigate('');

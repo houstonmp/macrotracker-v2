@@ -35,10 +35,10 @@ const RootLayout = () => {
         <div className={`root`}>
             {/* {ui.isSignedIn ? */}
             <>
+                <MainNav></MainNav>
                 <main>
                     <Outlet />
                 </main>
-                <MainNav></MainNav>
             </>
 
             {/* : <>

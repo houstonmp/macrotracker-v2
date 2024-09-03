@@ -9,7 +9,7 @@ import Calendar from "./pages/Calendar";
 import Insights from "./pages/Insights";
 import Settings from "./pages/settings/Settings"
 import { useEffect } from 'react'
-import { signInWithGoogle, auth } from "./Firebase";
+import { signInWithGoogle, auth, signinUser } from "./Firebase";
 import { useNavigate } from "react-router-dom";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -66,7 +66,7 @@ function App() {
                   } || {}, changed: false
                 }))
               } catch (error) {
-                console.log(error.message)
+                console.log("Failed to login:", error.message)
               }
 
 
@@ -129,7 +129,7 @@ function App() {
 
   const onSignInHandler = () => {
     signInWithGoogle().then((response) => {
-    }).catch(error => console.log(error))
+    }).catch(error => console.log("Error here:", error))
   }
 
   useEffect(() => {

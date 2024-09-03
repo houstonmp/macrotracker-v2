@@ -32,7 +32,9 @@ const Input = (props) => {
         {!props.isOptional && hasError && <p className={classes['error-text']}>
             Please enter a valid {props.type === 'text' && 'text input'}
             {props.type === 'number' && 'number input'}
-            {props.type === 'date' && 'date'}!
+            {props.type === 'date' && 'date'}
+            {props.type === 'password' && 'password'}
+            {props.type === 'email' && 'email'}!
         </p>}
     </li>
 

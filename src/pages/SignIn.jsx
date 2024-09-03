@@ -16,7 +16,11 @@ const SignIn = (props) => {
     const [passwordValue, setPassword] = useState({});
     const [signupState, setSignup] = useState(true);
     const navigate = useNavigate();
-
+    const onGuestLogin = () => {
+        if (signupState) {
+            signinUser("testEmail@gmail.com", "123456");
+        }
+    };
     const emailToForm = (inputObj) => setEmail(inputObj);
     const passwordToForm = (inputObj) => setPassword(inputObj);
 
@@ -27,9 +31,9 @@ const SignIn = (props) => {
     }
 
     const onFormSubmitHandler = (e) => {
-        if (formIsValid && signupState) {
+        if (formIsValid && !signupState) {
             createUser(emailValue.value, passwordValue.value);
-        } else if (formIsValid && !signupState) {
+        } else if (formIsValid && signupState) {
             signinUser(emailValue.value, passwordValue.value);
         }
     }
@@ -51,7 +55,7 @@ const SignIn = (props) => {
                 <Form className={classes.section} overloadFooter={true} onFormSubmit={onFormSubmitHandler}>
                     {/* <SignInBG classes={classes.signInBg} /> */}
                     <div className={classes.signInContainer}>
-                        <div className={classes.signinItem}><h1>{!signupState ? 'Login to' : 'Sign up for'} <span className={classes.fitColor}>Fit</span>Pad</h1></div>
+                        <div className={classes.signinItem}><h1>{signupState ? 'Login to' : 'Sign up for'} <span className={classes.fitColor}>Fit</span>Pad</h1></div>
 
                         <button type="button" className={`${classes.googleSignIn}`} onClick={props.onSignIn}><GoogleIcon /><span>Sign In With Google</span></button>
 
@@ -63,8 +67,8 @@ const SignIn = (props) => {
                         <div className={classes.signinItem}>
                             <Input placeholder="Password" type="password" onValidate={validatePassword} onPass={passwordToForm}></Input>
                         </div>
-                        <div className={`${classes.signinItem} ${signupState && classes.privacyPolicy}`}>
-                            {!signupState ?
+                        <div className={`${classes.signinItem} ${!signupState && classes.privacyPolicy}`}>
+                            {signupState ?
                                 <a onClick={toggleSignup}><i className={classes.fitColor}>Forgot Password?</i></a> :
                                 <>
                                     <input type="checkbox"></input>
@@ -74,14 +78,16 @@ const SignIn = (props) => {
 
                         </div>
                         <div className={classes.signinItem}>
-                            {!signupState ?
+                            {signupState ?
                                 <Button type="submit" classes={classes.signinItem} disable={!formIsValid}>Log in!</Button> :
                                 <Button type="submit" classes={classes.signinItem} disable={!formIsValid}>Sign Up!</Button>
                             }
+                            {signupState &&
+                                <Button type="button" classes={classes.signinItem} onClick={onGuestLogin}>Guest User</Button>}
                         </div>
 
 
-                        {!signupState ?
+                        {signupState ?
                             <p>Don't have an account? <a onClick={toggleSignup}><i className={classes.fitColor}>Sign up here!</i></a></p> :
                             <p>Already have an account?<a onClick={toggleSignup}><i className={classes.fitColor}>Login here!</i></a></p>
                         }

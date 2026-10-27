@@ -9,11 +9,9 @@ import Input from "../UI/Input";
 import { useDispatch, useSelector } from "react-redux";
 import { weightActions } from "../store/weight-slice";
 import RadioInput from "../UI/RadioInput";
-import { uiActions } from "../store/ui-slice";
-import { BMRImperialMen, TDEE, MacrosByDiceSplit } from "../../assets/functions";
+import DeleteButton from "../UI/DeleteButton";
 
 export const WeightForm = () => {
-
 
     const dispatch = useDispatch();
     const validateInput = (value) => value.trim() !== '';
@@ -27,19 +25,13 @@ export const WeightForm = () => {
     const weightToForm = (inputObj) => setWeight(inputObj);
     const dateToForm = (inputObj) => setDate(inputObj);
     const [radioState, setRadioState] = useState('lbs');
-    const user = useSelector(state => state.ui.userPreferences.user)
-    const weightObj = useSelector(state => state.weight.weightObj)
 
     if (weightState.isValid && dateState.isValid) {
         formIsValid = true;
     }
 
-    const workoutFormHandler = (e) => {
+    const workoutFormHandler = () => {
         if (formIsValid) {
-
-
-            let userData = { ...user };
-
             dispatch(weightActions.updateWeight({
                 type: "UPDATE",
                 date: dateState.value,
@@ -48,42 +40,30 @@ export const WeightForm = () => {
             }));
 
             dispatch(weightActions.sortDates());
-            console.log(weightObj[weightObj.length - 1], user.age, user.activityLevel, user.weightDeficit.lbs)
-            let BMR = BMRImperialMen(weightObj[weightObj.length - 1].lbs, user.height.in, user.age);
-            let TDEEValue = TDEE(user.activityLevel, BMR);
-            let dailyMacros = MacrosByDiceSplit(TDEEValue, (user.weightDeficit.lbs * 3500 / 7));
-
-            userData.BMR = BMR;
-            userData.TDEEValue = TDEEValue;
-            userData.dailyMacros = dailyMacros;
-
-            dispatch(uiActions.replaceUserObjRegister(userData))
-
             return true;
         }
         return false;
     };
 
     const switchRadioFilter = (target) => {
-        setFilterState(target.value);
+        setRadioState(target.value);
     }
 
 
     return (<Form onFormSubmit={workoutFormHandler} formIsValid={formIsValid}>
-
-        {/* <li>
-            <label htmlFor="date" >Date:</label>
-            <input type="date" name="date" onChange={dateHandler} value={dateState} />
-        </li> */}
         <Input id="dateValue" key="DateValue" name="date" type="date" label="Date:" onPass={dateToForm} onValidate={validateDateInput} defaultValue={new Date().toJSON().slice(0, 10)} />
         <Input id="weightValue" key="weightValue" name="weightValue" type="number" label="Weight:" onPass={weightToForm} onValidate={validateInput} />
-        <RadioInput liClass={classes.radio} setFilterState={switchRadioFilter} radioBtnArray={{ name: 'lbsKgs', value: ['lbs', 'kgs'] }} />
+        <RadioInput liClass={classes.radio} onChange={switchRadioFilter} radioBtnArray={{ name: 'lbsKgs', value: ['lbs', 'kgs'] }} />
     </Form>);
 }
 
 const WeightEntry = (props) => {
-    // const [date, setDate] = useState(new Date().toJSON().slice(0, 10));
+    const dispatch = useDispatch();
     const weightObj = useSelector(state => state.weight.weightObj);
+
+    const onDeleteHandler = (date) => {
+        dispatch(weightActions.removeWeight({ date }));
+    }
 
     return <Card >
         <header className={classes.header}>
@@ -101,6 +81,7 @@ const WeightEntry = (props) => {
                     <th>
                         kgs
                     </th>
+                    <th></th>
                 </tr>
             }>
                 {weightObj.length > -1 && weightObj.map((item, index) => {
@@ -113,6 +94,9 @@ const WeightEntry = (props) => {
                         </td>
                         <td key={`kgs-${item.date}`}>
                             {item.kgs}
+                        </td>
+                        <td key={`delete-${item.date}`}>
+                            <DeleteButton label={`Delete weight for ${item.date}`} onClick={() => onDeleteHandler(item.date)} />
                         </td>
                     </tr>)
                 })}

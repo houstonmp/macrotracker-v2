@@ -1,5 +1,5 @@
 .workout-table {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr) 2.5rem;
 }
 
 .workout :is(article, header, footer) {

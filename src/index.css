@@ -272,6 +272,16 @@ body {
   color: white;
 }
 
+/* Native controls (date pickers, dropdowns, checkboxes) follow the dark theme,
+   and fields get a dark fill so the white text above stays readable */
+.dark {
+  color-scheme: dark;
+}
+
+.dark :is(input, select, textarea) {
+  background-color: var(--color-beta-200);
+}
+
 .dark .waves path {
   filter: none;
   transition: filter .5s ease-in;

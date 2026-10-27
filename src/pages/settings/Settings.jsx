@@ -14,6 +14,7 @@ import red from "../../assets/themes/red.jpg"
 
 
 import { signOutWithGoogle } from "../../Firebase";
+import { getAgeFromBirthday } from "../../assets/functions";
 import Button from "../../components/UI/Button";
 
 
@@ -24,12 +25,15 @@ const Background = (props) => {
 }
 
 
-const SettingsContent = (props) => {
+const SettingsContent = () => {
     const dispatch = useDispatch();
     const userData = useSelector(state => state.ui.userPreferences.user);
     const onThemeChangeHandler = (e) => {
         e.preventDefault();
         dispatch(uiActions.setTheme(e.currentTarget.id));
+    }
+    const onSexChangeHandler = (e) => {
+        dispatch(uiActions.updateUser({ sex: e.target.value }));
     }
     const onClickHandler = () => {
         signOutWithGoogle();
@@ -46,9 +50,17 @@ const SettingsContent = (props) => {
             <Button onClick={onClickHandler}>Signout</Button>
         </Card>
         <Card classes={classes.userProfile}>
-            <p>Age: {userData && userData.age}</p>
+            <p>Age: {userData.birthday && getAgeFromBirthday(userData.birthday)}</p>
             <p>Birthday: {userData && userData.birthday}</p>
             <p>Height: {userData.height && userData.height.in}</p>
+            <p>
+                <label htmlFor="sex">Sex (for calorie estimate): </label>
+                <select id="sex" value={userData.sex || ''} onChange={onSexChangeHandler}>
+                    {!userData.sex && <option value="">Not set (using male formula)</option>}
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </p>
             <p>Preferred Unit: Imperial (lbs, in)</p>
 
         </Card>
@@ -89,7 +101,7 @@ const SettingsContent = (props) => {
     </PageContent>
 }
 
-const Settings = props => {
+const Settings = () => {
     return <>
         <div className={classes.settings}>
             <Background>

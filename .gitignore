@@ -28,3 +28,6 @@ api_key.js
 
 # Local Netlify folder
 .netlify
+
+# Local review notes
+OPEN_ITEMS.md

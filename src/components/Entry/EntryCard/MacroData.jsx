@@ -1,32 +1,29 @@
 import Table from "../../UI/Table"
+import DeleteButton from "../../UI/DeleteButton";
 import classes from './EntryCard.module.css'
+import { listEntryMacros } from "../../../assets/food";
 
 const MacroData = (props) => {
     return <Table tableClasses={classes['recipe-table']} header={
         <tr>
             <th>Food Name</th>
-            <th>Total Calories</th>
+            <th>Calories</th>
             <th>Protein (g)</th>
             <th>Carbs (g)</th>
             <th>Fat (g)</th>
+            <th></th>
         </tr>
     }>
-        {props.tableData.map((item, index) => {
-            return (<tr key={`${item.name}-${index}`} id={index} onClick={props.onClickHandler}>
-                <td key={`name-${item.name}`}>
-                    {item.name.substr(0, 10)}
-                </td>
-                <td key={`cal-${item.name}`}>
-                    {item.calories}
-                </td>
-                <td key={`protein-${item.name}`}>
-                    {item.tProtein}
-                </td>
-                <td key={`carbs-${item.name}`}>
-                    {item.tCarbs}
-                </td>
-                <td key={`fat-${item.name}`}>
-                    {item.tFat}
+        {props.tableData.map((item) => {
+            const macros = listEntryMacros(props.list, item);
+            return (<tr key={item.id} onClick={() => props.onLog(item)}>
+                <td title={item.name}>{item.name.substr(0, 10)}</td>
+                <td>{Math.round(macros.calories)}</td>
+                <td>{macros.protein}</td>
+                <td>{macros.carbs}</td>
+                <td>{macros.fat}</td>
+                <td onClick={(e) => e.stopPropagation()}>
+                    <DeleteButton label={`Delete ${item.name}`} onClick={() => props.onDelete(item)} />
                 </td>
             </tr>)
         })

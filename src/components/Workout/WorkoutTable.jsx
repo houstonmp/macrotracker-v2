@@ -208,7 +208,7 @@ const DUMMY_DATA = [
     },
 ]
 
-const WorkoutTable = (props) => {
+const WorkoutTable = () => {
     const componentRef = useRef();
 
     return <Card classes={classes.cardFlex}>

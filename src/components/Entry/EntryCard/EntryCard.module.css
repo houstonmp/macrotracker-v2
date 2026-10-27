@@ -33,14 +33,18 @@
 
 
 .recipe-table {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, 1fr) 2.5rem;
+}
+
+.diary-table {
+    grid-template-columns: repeat(5, 1fr) 2.5rem;
 }
 
 .ingredient-table {
-    grid-template-columns: 30% 70%;
+    grid-template-columns: 30% 1fr 2.5rem;
 }
 
-:is(.ingredient-table, .recipe-table) {
+:is(.ingredient-table, .recipe-table, .diary-table) {
     overflow-y: scroll
 }
 
@@ -252,4 +256,34 @@ textarea {
 
 .instructText .instructBullet {
     margin: 1rem;
+}
+.selected {
+    outline: 2px solid var(--color-beta-500);
+}
+
+.amount {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.amount .quantity {
+    flex-basis: 6rem;
+    flex-grow: 0;
+}
+
+/* Portion labels can be long ("1 egg whole without shell (50.3 g)") */
+.amount select {
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 auto;
+}
+
+.builderRow {
+    align-items: center;
+    gap: .5rem;
+}
+
+.builderName {
+    flex-grow: 1;
 }

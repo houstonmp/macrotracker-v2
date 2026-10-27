@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Modal from './components/UI/Modal'
 import RootLayout from "./pages/RootLayout";
 import Home from './pages/Home';
@@ -9,10 +8,10 @@ import Calendar from "./pages/Calendar";
 import Insights from "./pages/Insights";
 import Settings from "./pages/settings/Settings"
 import { useEffect } from 'react'
-import { signInWithGoogle, auth, signinUser } from "./Firebase";
+import { signInWithGoogle, auth } from "./Firebase";
 import { useNavigate } from "react-router-dom";
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSlice, fetchData } from "./components/store/fetch-slice";
@@ -22,7 +21,7 @@ import { uiActions } from "./components/store/ui-slice";
 import { weightActions } from "./components/store/weight-slice";
 import { foodDiaryActions } from "./components/store/food-diary-slice";
 import { recipeListActions } from "./components/store/recipe-list-slice";
-import { BMRImperialMen, TDEE, MacrosByDiceSplit, getAgeFromBirthday } from "./assets/functions";
+import { migrateDiaryObj, migrateRecipeObj } from "./assets/food";
 
 
 function App() {
@@ -33,7 +32,6 @@ function App() {
   const diarySelector = useSelector(state => state.fDiary);
   const uiSelector = useSelector(state => state.ui);
   const recipeSelector = useSelector(state => state.recipes)
-  const notification = useSelector(state => state.ui.notification);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -45,64 +43,36 @@ function App() {
         if (userAuth) {
           sessionStorage.setItem('Auth Token', userAuth.accessToken)
 
-          const userData = {
-            uid: userAuth.uid,
-            imgURL: userAuth.photoURL,
-            email: userAuth.email,
-            name: userAuth.displayName,
-          }
           dispatch(fetchData({
             url: 'users/' + userAuth.uid + '/healthApp.json?auth=',
             saveData: (data) => {
               try {
                 data.userPreferences && dispatch(uiActions.replaceUiObj({ userPreferences: data.userPreferences || {}, changed: false }))
                 data.weightObj && dispatch(weightActions.replaceWeightObj({ weightObj: data.weightObj || [], changed: false }))
-                data.diaryObj && dispatch(foodDiaryActions.replaceDiaryObj({ diaryObj: data.diaryObj || [], changed: false }))
-                data.recipeObj && dispatch(recipeListActions.replaceRecipeObj({
-                  recipeObj: {
-                    items: data.recipeObj.items || [],
-                    meals: data.recipeObj.meals || [],
-                    recipes: data.recipeObj.recipes || []
-                  } || {}, changed: false
-                }))
+                data.diaryObj && dispatch(foodDiaryActions.replaceDiaryObj({ diaryObj: migrateDiaryObj(data.diaryObj), changed: false }))
+                data.recipeObj && dispatch(recipeListActions.replaceRecipeObj({ recipeObj: migrateRecipeObj(data.recipeObj), changed: false }))
               } catch (error) {
                 console.log("Failed to login:", error.message)
               }
 
 
 
-              if (!data || !data.userPreferences.user.height || !data.userPreferences.user.activityLevel || !data.userPreferences.user.age || !data.userPreferences.user.birthday) {
-                dispatch(uiActions.replaceUserObj(userData));
+              const savedUser = { ...(data && data.userPreferences && data.userPreferences.user) };
+              // These used to be stored; selectDailyTargets derives them now
+              ['BMR', 'TDEEValue', 'dailyMacros', 'age'].forEach(key => delete savedUser[key]);
+
+              dispatch(uiActions.replaceUserObj({
+                ...savedUser,
+                uid: userAuth.uid,
+                imgURL: userAuth.photoURL,
+                email: userAuth.email,
+                name: userAuth.displayName,
+              }));
+
+              if (!savedUser.height || !savedUser.activityLevel || !savedUser.birthday || !savedUser.weightDeficit) {
                 navigate('/register');
               } else {
-                try {
-                  const birthArray = data.userPreferences.user.birthday.split("-");
-                  let AGE = parseInt(getAgeFromBirthday(birthArray[0], birthArray[1], birthArray[2]));
-                  if (data.weightObj) {
-                    let BMR = BMRImperialMen(201.9, data.userPreferences.user.height.in, AGE);
-                    let TDEEValue = TDEE(data.userPreferences.user.activityLevel, BMR);
-                    let dailyMacros = MacrosByDiceSplit(TDEEValue, (data.userPreferences.user.weightDeficit.lbs * 3500 / 7));
-
-                    userData.BMR = BMR;
-                    userData.TDEEValue = TDEEValue;
-                    userData.dailyMacros = dailyMacros;
-                  }
-
-                  userData.birthday = data.userPreferences.user.birthday;
-                  userData.age = AGE;
-                  userData.height = data.userPreferences.user.height;
-                  userData.activityLevel = data.userPreferences.user.activityLevel;
-                  userData.weightDeficit = data.userPreferences.user.weightDeficit;
-
-                  // console.log(userData);
-
-                  dispatch(uiActions.replaceUserObj(userData));
-                  navigate('');
-
-                } catch (error) {
-                  console.log(error.code, error.message)
-                }
-
+                navigate('');
               }
             },
             header: {
@@ -128,8 +98,7 @@ function App() {
 
 
   const onSignInHandler = () => {
-    signInWithGoogle().then((response) => {
-    }).catch(error => console.log("Error here:", error))
+    signInWithGoogle().catch(error => console.log("Error here:", error))
   }
 
   useEffect(() => {

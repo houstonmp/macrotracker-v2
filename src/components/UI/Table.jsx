@@ -6,14 +6,9 @@ const Table = forwardRef((props, ref) => {
         return `
         @media print {
             @page {
-                // size: landscape;
                 margin: 15.05mm !important;
                 padding: 0 !important;
             }
-            // html, body {
-            //     width:  200mm !important;
-            //     height: 100vh !important;
-            // }
             td:nth-child(6n),
             td:nth-child(7n),
             td:nth-child(8n),

@@ -2,7 +2,6 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    max-height: 70vh;
 }
 
 .form ul,
@@ -80,10 +79,14 @@
     flex-basis: 100%;
     flex-grow: 1;
     justify-content: space-between;
+    /* Keeps Cancel/Submit in view while a long form scrolls inside the modal */
+    position: sticky;
+    bottom: 0;
+    background-color: var(--color-gamma-100);
 }
 
 @media only screen and (max-width: 768px) {
     .article {
-        max-height: 60vh;
+        max-height: 45vh;
     }
 }

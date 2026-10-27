@@ -1,4 +1,3 @@
-import { signInWithGoogle } from "../Firebase"
 import Button from "../components/UI/Button";
 import classes from "./SignIn.module.css"
 import Input from "../components/UI/Input"
@@ -30,7 +29,7 @@ const SignIn = (props) => {
         formIsValid = true;
     }
 
-    const onFormSubmitHandler = (e) => {
+    const onFormSubmitHandler = () => {
         if (formIsValid && !signupState) {
             createUser(emailValue.value, passwordValue.value);
         } else if (formIsValid && signupState) {
@@ -53,7 +52,6 @@ const SignIn = (props) => {
         <div className="signInScreen">
             <div className={classes.signin}>
                 <Form className={classes.section} overloadFooter={true} onFormSubmit={onFormSubmitHandler}>
-                    {/* <SignInBG classes={classes.signInBg} /> */}
                     <div className={classes.signInContainer}>
                         <div className={classes.signinItem}><h1>{signupState ? 'Login to' : 'Sign up for'} <span className={classes.fitColor}>Fit</span>Pad</h1></div>
 
@@ -91,31 +89,6 @@ const SignIn = (props) => {
                             <p>Don't have an account? <a onClick={toggleSignup}><i className={classes.fitColor}>Sign up here!</i></a></p> :
                             <p>Already have an account?<a onClick={toggleSignup}><i className={classes.fitColor}>Login here!</i></a></p>
                         }
-
-
-
-                        {/* {signupState && <> <button className={`${classes.googleSignIn}`} onClick={props.onSignIn}><GoogleIcon /><span>Sign In With Google</span></button>
-
-                    <hr className={classes.hrText} data-content="OR"></hr>
-
-
-                    <div className={classes.signinItem}>
-                        <Input placeholder="Email" type="email" onValidate={validateInput} onPass={emailToForm}></Input>
-                    </div>
-                    <div className={classes.signinItem}>
-                        <Input placeholder="Password" type="password" onValidate={validateInput} onPass={emailToForm}></Input>
-                    </div>
-                    <div className={`${classes.signinItem} ${classes.privacyPolicy}`}>
-
-                    </div>
-                    <div className={classes.signinItem}>
-
-                    </div>
-
-
-                    <
-                </>
-                } */}
 
                     </div>
                 </Form >

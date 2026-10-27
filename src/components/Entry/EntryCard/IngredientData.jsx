@@ -1,28 +1,26 @@
 import Table from "../../UI/Table"
+import DeleteButton from "../../UI/DeleteButton";
 import classes from './EntryCard.module.css'
+import { ingredientNames } from "../../../assets/food";
 
 const IngredientData = (props) => {
     return <Table tableClasses={classes['ingredient-table']} header={
         <tr>
             <th>Food Name</th>
             <th>Ingredients</th>
+            <th></th>
         </tr>
     }>
-        {props.tableData.length >= 0 && props.tableData.map((item, index) => {
-            return (<tr key={`${item.name}-${index}`} id={index} onClick={props.onClickHandler}>
-                <td key={`name-${item.name}`}>
-                    {item.name.substr(0, 10)}
-                </td>
-                <td key={`ingredients-${item.name}`}>
+        {props.tableData.map((item) => {
+            return (<tr key={item.id} onClick={() => props.onLog(item)}>
+                <td title={item.name}>{item.name.substr(0, 10)}</td>
+                <td>
                     <ul>
-                        {item.ingredients.map((el, index) => {
-                            if (el.fdcId) { //For USDA Ingredients
-                                return <li key={`ing-${el.fdcId}${index}`}>{`${el.description.split(',')[0]},`}</li>
-                            } else { //For custom listed ingredients
-                                return <li key={`ing-${el}${index}`}>{`${el},`}</li>
-                            }
-                        })}
+                        {ingredientNames(props.list, item).map((name, index) => <li key={`ing-${index}`}>{`${name.split(',')[0]},`}</li>)}
                     </ul>
+                </td>
+                <td onClick={(e) => e.stopPropagation()}>
+                    <DeleteButton label={`Delete ${item.name}`} onClick={() => props.onDelete(item)} />
                 </td>
             </tr>)
         })

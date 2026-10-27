@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { LBS_PER_KG } from '../../assets/functions';
 
 const weightSlice = createSlice({
     name: 'weight',
@@ -11,29 +12,19 @@ const weightSlice = createSlice({
             state.weightObj = action.payload.weightObj;
             state.changed = action.payload.changed;
         },
-        srchDate(state, action) {
-            return state.weightObj.findIndex((el) => {
-                return el.date === action.payload.date;
-            })
-        },
         sortDates(state) {
-            state = state.weightObj.sort(function (a, b) {
+            state.weightObj.sort(function (a, b) {
                 return new Date(a.date) - new Date(b.date);
             });
         },
         updateWeight(state, action) {
             const switchWeightUnit = () => {
+                const wght = Number(action.payload.value);
                 if (action.payload.unit === "kgs") {
-                    let wght = action.payload.value;
-                    let kgs = wght;
-                    let lbs = Number((wght * 2.2).toFixed(2));
-                    return { kgs, lbs };
+                    return { kgs: wght, lbs: Number((wght * LBS_PER_KG).toFixed(2)) };
                 }
                 else if (action.payload.unit === "lbs") {
-                    let wght = action.payload.value;
-                    let kgs = Number((wght / 2.2).toFixed(2));
-                    let lbs = wght;
-                    return { kgs, lbs };
+                    return { kgs: Number((wght / LBS_PER_KG).toFixed(2)), lbs: wght };
                 }
             }
 
@@ -61,6 +52,10 @@ const weightSlice = createSlice({
             }
             state.changed = true;
 
+        },
+        removeWeight(state, action) {
+            state.weightObj = state.weightObj.filter(el => el.date !== action.payload.date);
+            state.changed = true;
         }
     }
 })

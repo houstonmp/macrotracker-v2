@@ -18,27 +18,6 @@ const uiSlice = createSlice({
         changed: false
     },
     reducers: {
-        reinitializeStore(state) {
-            state = {
-                isSignedIn: false,
-                notification: null,
-                modal: {
-                    modalIsVisible: false,
-                    modalInformation: null,
-                },
-                userPreferences: {
-                    theme: {
-                        themeName: 'teal',
-                        lightMode: 'light'
-                    },
-                    user: {}
-                },
-                changed: false
-            }
-        },
-        setSignIn(state, action) {
-            state.isSignedIn = action.payload
-        },
         replaceUiObj(state, action) {
             state.userPreferences.theme = action.payload.userPreferences.theme;
             state.userPreferences.settings = action.payload.userPreferences.settings;
@@ -58,11 +37,16 @@ const uiSlice = createSlice({
             state.userPreferences.user = action.payload;
             state.changed = true;
         },
+        updateUser(state, action) {
+            state.userPreferences.user = { ...state.userPreferences.user, ...action.payload };
+            state.changed = true;
+        },
         showModal(state, action) {
             state.modal.modalInformation = {
                 title: action.payload.title,
                 message: action.payload.message,
-                componentName: action.payload.componentName
+                componentName: action.payload.componentName,
+                data: action.payload.data
             }
             state.modal.modalIsVisible = true;
         },

@@ -16,7 +16,7 @@ import { uiActions } from './store/ui-slice';
 
 
 
-const MainNav = (props) => {
+const MainNav = () => {
     const dispatch = useDispatch();
     const lightMode = useSelector(state => state.ui.userPreferences.theme.lightMode);
 
@@ -70,14 +70,8 @@ const MainNav = (props) => {
                     {lightMode === 'dark' && <MoonIcon applyFill="var(--primary-gold-500)"></MoonIcon>}
                 </button>
             </li>
-            <li>
-                {/* <button onClick={onToggleSettingsHandler} className={`settings ${settingsIsVisible && styles['active']}`}>
-                    <SettingIcon applyFill="var(--color-alpha)"></SettingIcon>
-                </button> */}
-                {/* <NavLink to={settingsHREF} onClick={onToggleSettingsHandler} alt="settings" className={({ isActive }) => (isActive ? styles.active : '')}>
-                    <SettingIcon applyFill="var(--color-alpha)"></SettingIcon>
-                </NavLink> */}
-            </li>
+            {/* Spacer: .list :nth-last-child(2) pushes the theme toggle to the end */}
+            <li></li>
         </ul>
     </section >
 }

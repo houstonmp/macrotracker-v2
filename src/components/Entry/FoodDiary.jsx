@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Card from "../UI/Card"
 import Table from "../UI/Table";
+import DeleteButton from "../UI/DeleteButton";
+import { foodDiaryActions } from "../store/food-diary-slice";
 import classes from "./EntryCard/EntryCard.module.css"
 
 const FoodDiary = () => {
-    const [date, setDate] = useState(new Date().toJSON().slice(0, 10));
+    const dispatch = useDispatch();
+    const [date] = useState(new Date().toJSON().slice(0, 10));
     const foodDiary = useSelector(state => {
         const index = state.fDiary.diaryObj.findIndex(el => {
             return el.date === date;
@@ -17,35 +20,33 @@ const FoodDiary = () => {
         }
     })
 
+    const onDeleteHandler = (id) => {
+        dispatch(foodDiaryActions.removeFood({ date, id }));
+    }
+
     return <Card>
         <h3>
             Food Diary ({date})
         </h3>
-        <Table tableClasses={classes['recipe-table']} header={
+        <Table tableClasses={classes['diary-table']} header={
             <tr>
                 <th>Food</th>
                 <th>Calories</th>
                 <th>Protein (g)</th>
                 <th>Carbs (g)</th>
                 <th>Fat (g)</th>
+                <th></th>
             </tr>
         }>
-            {foodDiary && foodDiary.food.map((item, index) => {
-                return (<tr key={`${item.name}-${index}`} id={index}>
-                    <td key={`name-${item.name}`}>
-                        {item.name}
-                    </td>
-                    <td key={`cal-${item.name}`}>
-                        {item.calories}
-                    </td>
-                    <td key={`protein-${item.name}`}>
-                        {item.tProtein}
-                    </td>
-                    <td key={`carbs-${item.name}`}>
-                        {item.tCarbs}
-                    </td>
-                    <td key={`fat-${item.name}`}>
-                        {item.tFat}
+            {foodDiary && foodDiary.food.map((item) => {
+                return (<tr key={item.id}>
+                    <td title={item.amount}>{item.name} <i>({item.amount})</i></td>
+                    <td>{Math.round(item.macros.calories)}</td>
+                    <td>{item.macros.protein}</td>
+                    <td>{item.macros.carbs}</td>
+                    <td>{item.macros.fat}</td>
+                    <td>
+                        <DeleteButton label={`Remove ${item.name}`} onClick={() => onDeleteHandler(item.id)} />
                     </td>
                 </tr>)
             })}

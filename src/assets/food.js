@@ -1,0 +1,211 @@
+// Food data model
+//
+// Pantry food:  { id, name, source: 'usda' | 'custom', unit, nutrients: Macros, portions: [Portion], ... }
+// Recipe:       { id, name, servings, instructions, img, ingredients: [FoodAmount] }
+// Meal:         { id, name, entries: [FoodAmount & { type: 'food' } | { type: 'recipe', recipe, quantity }] }
+// Diary entry:  { id, name, amount, macros: Macros }
+//
+// A food is measured in one unit: 'g', 'ml', or 'serving' for things with no weight or
+// volume on the label ("1 bottle"). Its nutrients are per BASE_AMOUNT of that unit, and a
+// Portion is { label, amount } with the amount in that same unit, so every calculation
+// scales from one base. FoodAmount is { food, quantity, portion }; Macros is
+// { calories, protein, carbs, fat }.
+// Recipes and meals keep a copy of the foods they were built from, so deleting or
+// renaming a pantry food never changes them.
+
+export const UNITS = ['g', 'ml', 'serving'];
+export const BASE_AMOUNT = { g: 100, ml: 100, serving: 1 };
+
+// crypto.randomUUID is unavailable over plain http (e.g. a local Home Assistant address)
+export const createId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
+export const round = (value) => parseFloat(value.toFixed(2));
+
+export const emptyMacros = () => ({ calories: 0, protein: 0, carbs: 0, fat: 0 });
+
+export const scaleMacros = (macros, factor) => ({
+    calories: round(macros.calories * factor),
+    protein: round(macros.protein * factor),
+    carbs: round(macros.carbs * factor),
+    fat: round(macros.fat * factor),
+});
+
+export const sumMacros = (list) => list.reduce((total, macros) => ({
+    calories: round(total.calories + macros.calories),
+    protein: round(total.protein + macros.protein),
+    carbs: round(total.carbs + macros.carbs),
+    fat: round(total.fat + macros.fat),
+}), emptyMacros());
+
+// Logging by the food's own unit (1 g, 1 ml); 'serving' foods are logged by portion only
+export const unitPortion = (food) => (food.unit === 'serving' ? null : { label: food.unit, amount: 1 });
+
+export const amountOptions = (food) => [unitPortion(food), ...food.portions].filter(Boolean);
+
+export const nutrientBasis = (food) => (food.unit === 'serving'
+    ? `per ${food.portions.length > 0 ? food.portions[0].label : 'serving'}`
+    : `per ${BASE_AMOUNT[food.unit]} ${food.unit}`);
+
+export const foodMacros = (food, amount) => scaleMacros(food.nutrients, amount / BASE_AMOUNT[food.unit]);
+
+export const portionAmount = (amount) => Number(amount.quantity) * amount.portion.amount;
+
+export const foodAmountMacros = (amount) => foodMacros(amount.food, portionAmount(amount));
+
+export const recipeTotalMacros = (recipe) => sumMacros(recipe.ingredients.map(foodAmountMacros));
+
+export const recipeServingMacros = (recipe) => scaleMacros(recipeTotalMacros(recipe), 1 / (recipe.servings || 1));
+
+export const mealEntryMacros = (entry) => entry.type === 'recipe'
+    ? scaleMacros(recipeServingMacros(entry.recipe), Number(entry.quantity))
+    : foodAmountMacros(entry);
+
+export const mealTotalMacros = (meal) => sumMacros(meal.entries.map(mealEntryMacros));
+
+// The amount a food is logged in by default: its first portion, otherwise 100 g / 100 ml
+export const defaultAmount = (food) => food.portions.length > 0
+    ? { quantity: 1, portion: food.portions[0] }
+    : { quantity: BASE_AMOUNT[food.unit], portion: unitPortion(food) };
+
+export const amountLabel = (amount) => (amount.portion.amount === 1 && ['g', 'ml'].includes(amount.portion.label)
+    ? `${amount.quantity} ${amount.portion.label}`
+    : `${amount.quantity} × ${amount.portion.label}`);
+
+// Macros for one default serving of an entry in a food list ('items', 'recipes' or 'meals')
+export const listEntryMacros = (list, entry) => {
+    if (list === 'recipes') {
+        return recipeServingMacros(entry);
+    }
+    if (list === 'meals') {
+        return mealTotalMacros(entry);
+    }
+    return foodAmountMacros({ food: entry, ...defaultAmount(entry) });
+}
+
+export const ingredientNames = (list, entry) => {
+    if (list === 'recipes') {
+        return entry.ingredients.map(ing => ing.food.name);
+    }
+    if (list === 'meals') {
+        return entry.entries.map(el => (el.type === 'recipe' ? el.recipe.name : el.food.name));
+    }
+    return entry.ingredients;
+}
+
+// A portion described in the food's unit, e.g. "1 bottle (500 ml)"
+export const namedPortion = (label, amount, unit) => ({ label: `${label} (${amount} ${unit})`, amount });
+
+// A food typed in from a nutrition label, which lists macros per serving. The serving is
+// measured in g or ml when the label says so; otherwise the serving itself is the unit.
+export const customFood = ({ name, servingLabel, unit, servingAmount, calories, protein, carbs, fat, ingredients }) => {
+    const label = servingLabel || '1 serving';
+    const macros = { calories, protein, carbs, fat };
+    const food = { id: createId(), name, source: 'custom', unit, ingredients, missing: [] };
+
+    if (unit === 'serving') {
+        return { ...food, nutrients: scaleMacros(macros, 1), portions: [{ label, amount: 1 }] };
+    }
+    return { ...food, nutrients: scaleMacros(macros, BASE_AMOUNT[unit] / servingAmount), portions: [namedPortion(label, servingAmount, unit)] };
+}
+
+// ---- Loading saved data ----
+// Firebase drops empty arrays, so every list is defaulted on load. Records saved in older
+// formats are converted; converting a record that is already current changes nothing.
+
+const toNumber = (value) => (Number.isFinite(Number(value)) && value !== null ? Number(value) : 0);
+
+const GRAMS = { label: 'g', amount: 1 };
+
+// The previous format measured every portion in grams
+const migratePortion = (portion) => (portion.amount === undefined ? { label: portion.label, amount: portion.grams } : portion);
+
+const migrateFood = (food) => {
+    // Previous format: grams only, nutrients under per100g
+    const { per100g, ...rest } = food;
+    const current = food.nutrients ? food : { ...rest, unit: 'g', nutrients: per100g };
+    return {
+        ...current,
+        portions: (current.portions || []).map(migratePortion),
+        ingredients: current.ingredients || [],
+        missing: current.missing || [],
+    };
+}
+
+const migrateFoodAmount = (amount) => ({ ...amount, food: migrateFood(amount.food), portion: migratePortion(amount.portion) });
+
+const migrateCurrentRecipe = (recipe) => ({ ...recipe, ingredients: (recipe.ingredients || []).map(migrateFoodAmount) });
+
+const migrateMeal = (meal) => ({
+    ...meal,
+    entries: (meal.entries || []).map(el => (el.type === 'recipe'
+        ? { ...el, recipe: migrateCurrentRecipe(el.recipe) }
+        : migrateFoodAmount(el))),
+});
+
+// The original custom items held one serving's macros with no weight, so the serving is the unit
+const migrateOriginalItem = (item) => ({
+    id: createId(),
+    name: item.name,
+    source: 'custom',
+    unit: 'serving',
+    nutrients: { calories: toNumber(item.calories), protein: toNumber(item.tProtein), carbs: toNumber(item.tCarbs), fat: toNumber(item.tFat) },
+    portions: [{ label: '1 serving', amount: 1 }],
+    ingredients: (item.ingredients || []).filter(Boolean),
+    missing: [],
+});
+
+// The original USDA ingredients kept the search result's nutrients (per 100 g) under foodNutrients
+const migrateOriginalUsdaIngredient = (ing) => {
+    const nutrients = ing.foodNutrients || {};
+    const keys = ['calories', 'protein', 'carbs', 'fat'];
+    return {
+        food: {
+            id: createId(),
+            name: ing.description,
+            source: 'usda',
+            fdcId: ing.fdcId,
+            dataType: ing.dataType || '',
+            brand: ing.brandName || '',
+            unit: 'g',
+            nutrients: Object.fromEntries(keys.map(key => [key, Math.max(toNumber(nutrients[key]), 0)])),
+            portions: [],
+            ingredients: [],
+            missing: keys.filter(key => nutrients[key] === undefined || nutrients[key] === null),
+        },
+        quantity: toNumber(ing.calculatedData && ing.calculatedData.servingSize),
+        portion: GRAMS,
+    };
+}
+
+const migrateOriginalRecipe = (recipe) => ({
+    id: createId(),
+    name: recipe.name,
+    servings: 1,
+    instructions: recipe.instructions || '',
+    img: recipe.img || '',
+    ingredients: (recipe.ingredients || []).filter(ing => ing && ing.fdcId).map(migrateOriginalUsdaIngredient),
+});
+
+const isOriginalFood = (food) => !food.nutrients && !food.per100g;
+
+export const migrateRecipeObj = (recipeObj = {}) => ({
+    items: (recipeObj.items || []).map(item => (isOriginalFood(item) ? migrateOriginalItem(item) : migrateFood(item))),
+    recipes: (recipeObj.recipes || []).map(recipe => (recipe.servings ? migrateCurrentRecipe(recipe) : migrateOriginalRecipe(recipe))),
+    // Meals had no way to be created originally, so only current-format meals exist
+    meals: (recipeObj.meals || []).filter(meal => meal.entries).map(migrateMeal),
+});
+
+// Old diary entries were copies of the item or recipe, with t-prefixed totals
+const migrateDiaryEntry = (entry) => (entry.macros ? entry : {
+    id: createId(),
+    name: entry.name,
+    amount: '1 serving',
+    macros: { calories: toNumber(entry.calories), protein: toNumber(entry.tProtein), carbs: toNumber(entry.tCarbs), fat: toNumber(entry.tFat) },
+});
+
+export const migrateDiaryObj = (diaryObj = []) => diaryObj
+    .map(day => {
+        const food = (day.food || []).map(migrateDiaryEntry);
+        return { date: day.date, food, macros: sumMacros(food.map(entry => entry.macros)) };
+    })
+    .filter(day => day.food.length > 0);

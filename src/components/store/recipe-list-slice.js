@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const LISTS = ['items', 'recipes', 'meals'];
+
 const recipeListSlice = createSlice({
     name: 'recipes',
     initialState: {
@@ -15,27 +17,20 @@ const recipeListSlice = createSlice({
             state.recipeObj = action.payload.recipeObj
             state.changed = action.payload.changed
         },
-        updateRecipe(state, action) {
-            let recipeArray = '';
-            if (action.payload.type === "RECIPE") {
-                recipeArray = 'recipes';
-            }
-            else if (action.payload.type === "ITEM") {
-                recipeArray = 'items';
-            } else if (action.payload.type === 'MEAL') {
-                recipeArray = 'meals';
-            } else {
+        addEntry(state, action) {
+            if (!LISTS.includes(action.payload.list)) {
                 return;
             }
-
-            if (state.recipeObj[recipeArray].length > 0) {
-                state.recipeObj[recipeArray].push(action.payload.data)
-                state.changed = true;
+            state.recipeObj[action.payload.list].push(action.payload.data);
+            state.changed = true;
+        },
+        removeEntry(state, action) {
+            const { list, id } = action.payload;
+            if (!LISTS.includes(list)) {
+                return;
             }
-            else {
-                state.recipeObj[recipeArray] = [action.payload.data];
-                state.changed = true;
-            }
+            state.recipeObj[list] = state.recipeObj[list].filter(el => el.id !== id);
+            state.changed = true;
         }
     }
 })

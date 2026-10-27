@@ -1,21 +1,17 @@
-import { signInWithGoogle } from "../Firebase"
 import Button from "../components/UI/Button";
 import classes from "./SignIn.module.css"
 import Input from "../components/UI/Input"
 import { useState } from "react";
 import Form from '../components/Form/Form'
-import { GoogleIcon } from "../assets/Icons";
-import { createUser, signinUser } from "../Firebase";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import RadioInput from "../components/UI/RadioInput";
 import { useSelector, useDispatch } from "react-redux";
 import { uiActions } from "../components/store/ui-slice";
-import { getAgeFromBirthday, BMRImperialMen, TDEE, MacrosByDiceSplit } from "../assets/functions";
+import { LBS_PER_KG } from "../assets/functions";
 
 const currentDate = new Date().getFullYear();
-const Register = (props) => {
-    console.log(currentDate);
+const Register = () => {
     const validateBirthday = (value) => value.trim() !== '' && (currentDate - parseInt(value.split('-')[0]) > 16);
     const validateWeightGoal = (value) => {
         if (weightUnit === "lbs") {
@@ -30,6 +26,7 @@ const Register = (props) => {
     const [birthday, setBirthday] = useState({});
     const [heightState, setHeightUnitState] = useState('in');
     const [weightUnit, setWeightUnitState] = useState('lbs');
+    const [sex, setSex] = useState('male');
     const [heightCMS, setHeightCMS] = useState({});
     const navigate = useNavigate();
     const heightFeet = useRef();
@@ -46,16 +43,15 @@ const Register = (props) => {
 
     if (birthday.isValid && weightValue.isValid && (heightState === "cm" ? heightCMS.isValid : true)) {
         formIsValid = true;
-        // console.log(formIsValid, "Birthday:", birthday.value, "Weight:", weightValue.value, "Height:", heightFeet.current.value, "\"", heightInches.current.value, "\'")
     }
 
-    const onFormSubmitHandler = (e) => {
+    const onFormSubmitHandler = () => {
         if (formIsValid) {
-            const birthArray = birthday.value.split("-");
             let newUserObj = {
+                ...user,
                 activityLevel: parseFloat(activityLevel.current.value),
                 birthday: birthday.value,
-                age: parseInt(getAgeFromBirthday(birthArray[0], birthArray[1], birthArray[2])),
+                sex,
                 height: heightState === "in" ? {
                     in: ((parseInt(heightFeet.current.value) * 12) + parseInt(heightInches.current.value)),
                     cm: parseFloat((((heightFeet.current.value * 12) + parseInt(heightInches.current.value)) * 2.54).toFixed(2))
@@ -65,11 +61,11 @@ const Register = (props) => {
                 },
                 weightDeficit: weightUnit === 'lbs' ? {
                     lbs: parseFloat(weightValue.value),
-                    kgs: parseFloat((weightValue.value / 2.20462).toFixed(2))
+                    kgs: parseFloat((weightValue.value / LBS_PER_KG).toFixed(2))
                 } : {
                     kgs: parseFloat(weightValue.value),
-                    lbs: parseFloat((weightValue.value * 2.20462).toFixed(2))
-                }, ...user
+                    lbs: parseFloat((weightValue.value * LBS_PER_KG).toFixed(2))
+                }
             }
 
             dispatch(uiActions.replaceUserObjRegister(newUserObj))
@@ -85,10 +81,14 @@ const Register = (props) => {
         setWeightUnitState(target.value);
     }
 
+    const switchRadioSex = (target) => {
+        setSex(target.value);
+    }
+
 
     useEffect(() => {
         let authToken = sessionStorage.getItem('Auth Token')
-        if (authToken && user.height && user.activityLevel && user.age && user.weightDeficit) {
+        if (authToken && user.height && user.activityLevel && user.birthday && user.weightDeficit) {
             navigate('')
         }
     }, [user])
@@ -99,14 +99,18 @@ const Register = (props) => {
         <div className="signInScreen">
             <div className={classes.register}>
                 <Form className={classes.section} overloadFooter={true} onFormSubmit={onFormSubmitHandler}>
-                    {/* <SignInBG classes={classes.signInBg} /> */}
                     <div className={classes.signInContainer}>
                         <div className={classes.signinItem}><h1><span className={classes.fitColor}>Fit</span>Pad</h1></div>
-                        {/* <i>We just need a few things to  get started!</i> */}
                         <hr className={classes.hrText} data-content="Let's get started!"></hr>
                         <section className={classes.section}>
                             <div className={classes.signinItem}>
                                 <Input label="Birthday:" type="date" onValidate={validateBirthday} onPass={birthdayToForm}></Input>
+                            </div>
+                            <div className={classes.signinItem}>
+                                <li>
+                                    <label>Sex (used to estimate your calorie needs):</label>
+                                    <RadioInput onChange={switchRadioSex} radioBtnArray={{ name: 'sexRadioFilter', value: ['male', 'female'] }} />
+                                </li>
                             </div>
                             <div className={classes.signinItem}>
                                 <li>
@@ -152,7 +156,6 @@ const Register = (props) => {
                                         <option value={1.725}>Daily {`(6~7x / week)`}</option>
                                     </select>
                                 </li>
-                                {/* <i>* You can change this later!</i> */}
                             </div>
                             <div className={classes.signinItem}>
                                 <Input label={`How much weight do you want to lose? (0 ~ ${weightUnit == 'lbs' ? '2 lbs' : '0.9 kgs'} per week)`} type="number" onValidate={validateWeightGoal} onPass={weightToForm}></Input>

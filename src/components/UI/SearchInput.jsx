@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import inputClasses from './SearchInput.module.css'
 import classes from './Input.module.css'
 
 const SearchInput = (props) => {
@@ -10,9 +9,7 @@ const SearchInput = (props) => {
     }
     useEffect(() => {
         const timeout = setTimeout(() => {
-            if (searchValue) {
-                props.onSearch(searchValue);
-            }
+            props.onSearch(searchValue);
         }, 300);
         return () => {
             clearTimeout(timeout)

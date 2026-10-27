@@ -1,4 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { sumMacros } from '../../assets/food';
+
+const dayMacros = (day) => sumMacros(day.food.map(entry => entry.macros));
 
 const foodDiarySlice = createSlice({
     name: 'fDiary',
@@ -11,51 +14,32 @@ const foodDiarySlice = createSlice({
             state.diaryObj = action.payload.diaryObj;
             state.changed = false;
         },
-        srchDate(state, action) {
-            return state.diaryObj.findIndex(el => {
-                return el.date === action.payload.date;
-            })
-        },
-        updateDiary(state, action) {
-            if (!state.diaryObj) {
-                state.diaryObj.push({
-                    date: action.payload.date,
-                    food: [action.payload.data],
-                    macros: {
-                        calories: action.payload.data.calories,
-                        tProtein: action.payload.data.tProtein,
-                        tFat: action.payload.data.tFat,
-                        tCarbs: action.payload.data.tCarbs,
-                    }
-                })
-                state.changed = true;
-                return;
-            }
-            let dateExists = state.diaryObj.findIndex(el => {
-                return el.date === action.payload.date;
-            })
-            if (dateExists > -1) {
-                state.diaryObj[dateExists].food.push(action.payload.data);
-                state.diaryObj[dateExists].macros.calories = parseFloat((state.diaryObj[dateExists].macros.calories + action.payload.data.calories).toFixed(2));
-                state.diaryObj[dateExists].macros.tCarbs = parseFloat((state.diaryObj[dateExists].macros.tCarbs + action.payload.data.tCarbs).toFixed(2));
-                state.diaryObj[dateExists].macros.tProtein = parseFloat((state.diaryObj[dateExists].macros.tProtein + action.payload.data.tProtein).toFixed(2));
-                state.diaryObj[dateExists].macros.tFat = parseFloat((state.diaryObj[dateExists].macros.tFat + action.payload.data.tFat).toFixed(2));
-                state.changed = true;
-                return;
+        addFood(state, action) {
+            const { date, entry } = action.payload;
+            const day = state.diaryObj.find(el => el.date === date);
+            if (day) {
+                day.food.push(entry);
+                day.macros = dayMacros(day);
             } else {
-                state.diaryObj.push({
-                    date: action.payload.date,
-                    food: [action.payload.data],
-                    macros: {
-                        calories: action.payload.data.calories,
-                        tProtein: action.payload.data.tProtein,
-                        tFat: action.payload.data.tFat,
-                        tCarbs: action.payload.data.tCarbs,
-                    }
-                })
-                state.changed = true;
+                state.diaryObj.push({ date, food: [entry], macros: entry.macros });
+            }
+            state.changed = true;
+        },
+        removeFood(state, action) {
+            const dayIndex = state.diaryObj.findIndex(el => el.date === action.payload.date);
+            if (dayIndex === -1) {
                 return;
             }
+            const day = state.diaryObj[dayIndex];
+            day.food = day.food.filter(entry => entry.id !== action.payload.id);
+
+            // Recalculate from what's left rather than subtracting, so rounding can't drift
+            if (day.food.length === 0) {
+                state.diaryObj.splice(dayIndex, 1);
+            } else {
+                day.macros = dayMacros(day);
+            }
+            state.changed = true;
         }
     }
 })

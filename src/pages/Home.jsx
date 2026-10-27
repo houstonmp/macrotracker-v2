@@ -7,9 +7,7 @@ import FoodDiary from "../components/Entry/FoodDiary";
 import WeightChart from "../components/Weight/WeightChart";
 import classes from './Home.module.css';
 
-const Home = (props) => {
-
-  const dispatch = useDispatch();
+const Home = () => {  const dispatch = useDispatch();
 
   const showModalHandler = (e) => {
     dispatch(uiActions.showModal({

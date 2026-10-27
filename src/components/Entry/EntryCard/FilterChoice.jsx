@@ -1,31 +1,32 @@
-import { useState } from "react";
+import classes from './EntryCard.module.css'
+import { nutrientBasis } from '../../../assets/food';
 
 const FilterChoice = (props) => {
-    const [listItem, setList] = useState(props.food);
+    const food = props.food;
 
-    const onAddFoodHandler = () => {
-        props.onAddItemHandler(listItem);
+    const onSelectHandler = () => {
+        props.onSelect(food);
     }
     const onKeyUpHandler = (e) => {
         e.preventDefault();
         if (e.key === 'Enter') {
-            onAddFoodHandler();
+            onSelectHandler();
         }
     }
 
-    return (<li tabIndex={0} key={listItem.fdcId} onClick={onAddFoodHandler} onKeyUp={onKeyUpHandler}>
-        <h4>{listItem.description}</h4>
+    return (<li tabIndex={0} className={props.selected ? classes.selected : ''} onClick={onSelectHandler} onKeyUp={onKeyUpHandler}>
+        <h4>{food.name}</h4>
         <div className="itemData">
-            {<div>Brand: {listItem.brandName ? listItem.brandName : 'N/A'}</div>}
-            <div></div>
-            <div>Barcode: {listItem.gtinUpc ? listItem.gtinUpc : 'N/A'}</div>
+            <div>Brand: {food.brand || 'N/A'}</div>
+            <div>{food.dataType}</div>
         </div>
         <div>
-            <i>Serving: {listItem.servingSize ? `${listItem.servingSize}${listItem.servingSizeUnit}` : `1 unit`}</i>
-            <i>Protein: {listItem.foodNutrients.protein}</i>
-            <i>Carbs: {listItem.foodNutrients.carbs}</i>
-            <i>Fat: {listItem.foodNutrients.fat}</i>
-            <i>Calories: {listItem.foodNutrients.calories}</i>
+            <i>{nutrientBasis(food)}:</i>
+            <i>Calories: {food.nutrients.calories}</i>
+            <i>Protein: {food.nutrients.protein}</i>
+            <i>Carbs: {food.nutrients.carbs}</i>
+            <i>Fat: {food.nutrients.fat}</i>
+            {food.missing.length > 0 && <i>No data: {food.missing.join(', ')}</i>}
         </div>
     </li>)
 }

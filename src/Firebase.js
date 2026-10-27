@@ -1,13 +1,6 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import "firebase/auth";
-// import { getDatabase, ref, onValue } from 'firebase/database?
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, getAdditionalUserInfo } from 'firebase/auth'
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
     apiKey: "AIzaSyB8SIHEq_BakFqj7PkhWoeEUVl0S5bGpBg",
     authDomain: "health-app-c5571.firebaseapp.com",
@@ -19,7 +12,6 @@ const firebaseConfig = {
     measurementId: "G-C5KJ3V9E0N"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
@@ -29,30 +21,16 @@ provider.setCustomParameters({
 })
 
 export const signInWithGoogle = async () => {
-    signInWithPopup(auth, provider).then((response) => {
-    }).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-    })
+    signInWithPopup(auth, provider).catch(() => { })
 }
 
 export const createUser = async (email, password) => {
-    console.log(email, password)
     createUserWithEmailAndPassword(auth, email, password)
-        .then(response => response)
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-        });
+        .catch(() => { });
     return response
 }
 export const signinUser = async (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            // Signed in 
-            const user = userCredential.user;
-            // ...
-        })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -60,10 +38,7 @@ export const signinUser = async (email, password) => {
         });
 }
 
-
-
 export const signOutWithGoogle = async () => {
     auth.signOut();
 }
 
-// export const signInWithEmail;

@@ -3,7 +3,7 @@ import { useState } from 'react';
 const useInput = (validateValue, defaultValue, inputId) => {
     const [enteredValue, setEnteredValue] = useState(defaultValue ? defaultValue : '');
     const [isTouched, setIsTouched] = useState(false);
-    const [id, setId] = useState(inputId ? inputId : '');
+    const [id] = useState(inputId ? inputId : '');
 
     const valueIsValid = validateValue(enteredValue);
     const hasError = !valueIsValid && isTouched;

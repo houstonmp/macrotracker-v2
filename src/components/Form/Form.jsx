@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { useDispatch } from "react-redux";
 import Button from "../UI/Button";
 import { uiActions } from "../store/ui-slice";
@@ -9,8 +8,7 @@ const Form = props => {
 
     const formHandler = (e) => {
         e.preventDefault();
-        props.onFormSubmit();
-        if (props.formIsValid) {
+        if (props.onFormSubmit()) {
             dispatch(uiActions.closeModal());
         }
     }

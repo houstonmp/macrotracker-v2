@@ -1,11 +1,8 @@
 import Card from '../../UI/Card'
 import Button from '../../UI/Button';
 import classes from './EntryCard.module.css'
-import Form from '../../Form/Form'
 import { useDispatch } from 'react-redux';
-import { foodDiaryActions } from '../../store/food-diary-slice';
-import Input from '../../UI/Input';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import SearchInput from '../../UI/SearchInput';
 import MacroData from './MacroData';
 import IngredientData from './IngredientData'
@@ -13,275 +10,36 @@ import RadioInput from '../../UI/RadioInput';
 import formClasses from "../../Form/Form.module.css"
 import { recipeListActions } from '../../store/recipe-list-slice';
 import { uiActions } from '../../store/ui-slice';
+import { ingredientNames } from '../../../assets/food';
 
-
-import InputRecipeData from './InputRecipeData';
-import ModifyRecipeData from './ModifyRecipeData';
-import ConfirmRecipeData from './ConfirmRecipeData'
-
-export const RecipeForm = () => {
-    const [nameState, setName] = useState({});
-    const [instructions, setInstructions] = useState({});
-    const [imgUrl, setImage] = useState({});
-    const dispatch = useDispatch();
-    let formIsValid = false;
-
-    const nameToForm = (inputObj) => setName(inputObj);
-    const instructionsToForm = (inputObj) => setInstructions(inputObj);
-    const urlToForm = (inputObj) => setImage(inputObj);
-    const ingredientsToForm = (inputObj) => {
-        if (formData.data.ingredients.some(ing => ing.fdcId == inputObj.id) && inputObj.isValid) {
-            setFormData(prev => {
-                let ingredientsArray = prev.data.ingredients.length > 0 && prev.data.ingredients.map(ing => {
-                    if (ing.fdcId === inputObj.id) {
-
-                        const calculateData = (actualSize, nutrientValue, servingSize = 100) => parseFloat(((actualSize * nutrientValue / servingSize)).toFixed(2))
-                        let calculatedData = {
-                            servingSize: inputObj.value,
-                            cProtein: calculateData(inputObj.value, ing.foodNutrients.protein, ing.servingSize),
-                            cCarbs: calculateData(inputObj.value, ing.foodNutrients.carbs, ing.servingSize),
-                            cFat: calculateData(inputObj.value, ing.foodNutrients.fat, ing.servingSize),
-                            cCalories: calculateData(inputObj.value, ing.foodNutrients.calories, ing.servingSize)
-                        };
-
-                        return {
-                            ...ing, calculatedData
-                        }
-
-                    } else {
-                        return {
-                            ...ing
-                        }
-                    }
-
-                })
-                return {
-                    ...prev,
-                    data: {
-                        ...prev.data,
-                        ingredients: ingredientsArray || [...prev],
-                        calories: ingredientsArray ? parseFloat((ingredientsArray.reduce((a, b) => { return { calculatedData: { cCalories: (a.calculatedData.cCalories + b.calculatedData.cCalories) } } }, {
-                            calculatedData: {
-                                cCalories: 0,
-                            }
-                        }).calculatedData.cCalories).toFixed(2)) : prev.data.calories,
-                        tCarbs: ingredientsArray ? parseFloat((ingredientsArray.reduce((a, b) => { return { calculatedData: { cCarbs: (a.calculatedData.cCarbs + b.calculatedData.cCarbs) } } }, {
-                            calculatedData: {
-                                cCarbs: 0,
-                            }
-                        }).calculatedData.cCarbs).toFixed(2)) : prev.data.tCarbs,
-                        tFat: ingredientsArray ? parseFloat((ingredientsArray.reduce((a, b) => { return { calculatedData: { cFat: (a.calculatedData.cFat + b.calculatedData.cFat) } } }, {
-                            calculatedData: {
-                                cFat: 0,
-                            }
-                        }).calculatedData.cFat).toFixed(2)) : prev.data.tFat,
-                        tProtein: ingredientsArray ? parseFloat((ingredientsArray.reduce((a, b) => { return { calculatedData: { cProtein: (a.calculatedData.cProtein + b.calculatedData.cProtein) } } }, {
-                            calculatedData: {
-                                cProtein: 0,
-                            }
-                        }).calculatedData.cProtein).toFixed(2)) : prev.data.tProtein
-                    }
-                }
-            })
-        }
-        return
-    };
-
-    const [sectionState, setSectionState] = useState('enter');
-
-    const [formData, setFormData] = useState({
-        type: "RECIPE",
-        data: {
-            id: '',
-            name: '',
-            instructions: '',
-            img: '',
-            ingredients: []
-        }
-    });
-
-    useEffect(() => {
-        if (nameState.isValid) {
-            setFormData(prev => {
-                return {
-                    ...prev,
-                    data: {
-                        ...prev.data,
-                        id: nameState.value,
-                        name: nameState.value,
-                        instructions: instructions.value,
-                        img: imgUrl.value
-                    }
-                }
-            })
-        }
-    }, [nameState.value, imgUrl.value, instructions.value])
-
-    if (nameState.isValid) {
-        formIsValid = true;
-    }
-
-    const itemFormHandler = (e) => {
-        if (formIsValid && formData.data.ingredients.length > 0) {
-            dispatch(recipeListActions.updateRecipe(formData));
-            dispatch(uiActions.closeModal());
-            return true;
-        }
-        return false;
-    };
-
-
-    const onAddItemHandler = (listItem) => {
-        //Check if ingredient exists
-        if (!formData.data.ingredients.some(el => el.fdcId == listItem.fdcId)) {
-            setFormData(prev => {
-                listItem.calculatedData = {
-                    cCalories: 0,
-                    cCarbs: 0,
-                    cFat: 0,
-                    cProtein: 0
-                }
-                console.log(listItem.calculatedData)
-                return {
-                    ...prev,
-                    data: {
-                        ...prev.data,
-                        ingredients: [...prev.data.ingredients, listItem],
-                    }
-                }
-            })
-        }
-    }
-
-    const onDeleteIngHandler = (e) => {
-        setFormData(prev => {
-            let index = prev.data.ingredients.length > 0 && prev.data.ingredients.findIndex(el => el.fdcId == e.target.id);
-            return {
-                ...prev,
-                data: {
-                    ...prev.data,
-                    ingredients: index ? prev.data.ingredients.toSpliced(index - 1, 1) : prev.ingredients,
-                }
-            }
-        })
-    }
-    const onCloseHandler = (e) => {
-        e.preventDefault();
-        dispatch(uiActions.closeModal());
-    }
-
-    const onBackHandler = (e) => {
-        e.preventDefault();
-        setSectionState(prev => {
-            if (prev === 'modify') {
-                return 'enter';
-            }
-            else if (prev === 'confirm') {
-                return 'modify';
-            }
-        });
-    }
-
-    const onContinueHandler = (e) => {
-        e.preventDefault();
-        setSectionState(prev => {
-            console.log(e, prev)
-            if (prev === 'enter') {
-                return 'modify';
-            } else if (prev === 'modify') {
-                return 'confirm'
-            }
-        });
-        console.log("Switching:", formData)
-    }
-
-    return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit" overloadFooter={true}>
-        {sectionState === 'enter' && <InputRecipeData key={`input-recipe`} ingList={formData.data.ingredients} formData={formData.data} nameToForm={nameToForm} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onContinue={onContinueHandler} formIsValid={formIsValid} />}
-        {sectionState === 'modify' && <ModifyRecipeData key={`modify-recipe`} ingList={formData.data.ingredients} formData={formData.data} urlToForm={urlToForm} instructionsToForm={instructionsToForm} ingredientsToForm={ingredientsToForm} onDelete={onDeleteIngHandler} onClose={onCloseHandler} onBack={onBackHandler} onContinue={onContinueHandler} formIsValid={formIsValid} />}
-        {sectionState === 'confirm' && <ConfirmRecipeData key={`confirm-recipe`} ingList={formData.data.ingredients} formData={formData.data} onDelete={onDeleteIngHandler} onAdd={onAddItemHandler} onClose={onCloseHandler} onBack={onBackHandler} onSubmit={itemFormHandler} />}
-    </Form>
-}
-
-//Recipe Form - Passed to Modal as a Component
-export const ItemForm = () => {
-    const validateInput = (value) => value.trim() !== '';
-    const dispatch = useDispatch();
-    let formIsValid = false;
-
-    const [nameState, setName] = useState({});
-    const [proteinState, setProtein] = useState({});
-    const [carbsState, setCarbs] = useState({});
-    const [fatState, setFat] = useState({});
-    const [ingState, setIngredients] = useState({});
-
-    const nameToForm = (inputObj) => setName(inputObj);
-    const proteinToForm = (inputObj) => setProtein(inputObj);
-    const carbsToForm = (inputObj) => setCarbs(inputObj);
-    const fatToForm = (inputObj) => setFat(inputObj);
-    const ingToForm = (inputObj) => setIngredients(inputObj);
-
-    if (nameState.isValid && proteinState.isValid && carbsState.isValid && fatState.isValid) {
-        formIsValid = true;
-    }
-
-    const itemFormHandler = () => {
-        if (formIsValid) {
-            dispatch(recipeListActions.updateRecipe({
-                type: "ITEM",
-                data: {
-                    id: nameState.value,
-                    name: nameState.value,
-                    calories: ((proteinState.value * 4) + (fatState.value * 9) + (carbsState.value * 4)),
-                    tCarbs: +carbsState.value,
-                    tFat: +fatState.value,
-                    tProtein: +proteinState.value,
-                    ingredients: ingState.value.split(',')
-                }
-            }
-            ));
-            return true;
-        }
-        return false;
-    };
-
-    return <Form onFormSubmit={itemFormHandler} formIsValid={formIsValid} submitText="Submit">
-        <Input id="rName" key="rName" name="recipeName" type="text" label="Food Name:" onPass={nameToForm} onValidate={validateInput} isOptional={false} placeholder="Protein Bar" />
-        <Input id="pValue" key="pValue" name="proteinValue" type="number" label="Protein (g):" onPass={proteinToForm} onValidate={validateInput} isOptional={false} placeholder="(6)" />
-        <Input id="cValue" key="cValue" name="carbValue" type="number" label="Carbs (g):" onPass={carbsToForm} onValidate={validateInput} isOptional={false} placeholder="(15)" />
-        <Input id="fValue" key="fValue" name="fatValue" type="number" label="Fat (g):" onPass={fatToForm} onValidate={validateInput} isOptional={false} placeholder="(16)" />
-        <Input id="ingValue" key="ingValue" name="ingValue" type="text" label="Ingredients List: (Optional)" onPass={ingToForm} onValidate={validateInput} isOptional={true} placeholder="Almonds, Chicory, root fiber, honey, palm kernel oil, sugar, glucose syrup, rice flour... (Optional)" />
-    </Form>
-}
+const TABS = [
+    { id: 'items', title: 'Pantry', hint: 'Foods you keep on hand, from USDA or your own labels.', modal: 'item', createText: '+ Add to Pantry' },
+    { id: 'recipes', title: 'Recipes', hint: 'Select or create a new recipe!', modal: 'recipe', createText: '+ Create Recipe' },
+    { id: 'meals', title: 'Meals', hint: 'Pantry items and recipes eaten together.', modal: 'meal', createText: '+ Create Meal' },
+];
 
 const EntryCard = (props) => {
     const dispatch = useDispatch();
     const [navState, setNavState] = useState('recipes');
     const [filterState, setFilterState] = useState('Macros');
-    const [foodItems, setFoodItems] = useState(props.foodItems[navState]);
+    const [filterValue, setFilterValue] = useState('');
+    const tab = TABS.find(el => el.id === navState);
 
-    useEffect(() => {
-        setFoodItems(props.foodItems[navState])
-    }, [navState, props.foodItems])
+    const search = filterValue.toLowerCase();
+    const foodItems = props.foodItems[navState].filter(el => el.name.toLowerCase().includes(search) ||
+        ingredientNames(navState, el).some(name => name.toLowerCase().includes(search)));
 
-
-    const onClickHandler = (e) => {
-        const index = e.currentTarget.id;
-        dispatch(foodDiaryActions.updateDiary({
-            type: "UPDATE",
-            date: new Date().toJSON().slice(0, 10),
-            data: props.foodItems[navState][index]
-        })
-        )
+    const onLogHandler = (entry) => {
+        dispatch(uiActions.showModal({
+            title: `Log ${entry.name}`,
+            message: null,
+            componentName: 'log',
+            data: { list: navState, entry }
+        }));
     }
 
-    const onFilterHandler = (value) => {
-        const filterValue = value.toLowerCase();
-        const newArray = props.foodItems[navState].filter((el) => {
-            return el.name.toLowerCase().includes(filterValue) || el.ingredients.some(ing => {
-                return ing.fdcId ? ing.description.toLowerCase().includes(filterValue) : ing.toLowerCase().includes(filterValue);
-            })
-        })
-        setFoodItems(newArray);
+    const onDeleteHandler = (entry) => {
+        dispatch(recipeListActions.removeEntry({ list: navState, id: entry.id }));
     }
 
     const onNavChangeHandler = (e) => {
@@ -294,30 +52,25 @@ const EntryCard = (props) => {
 
     return <Card classes={classes.recipe} >
         <header className={classes.header}>
-            <a id="recipes" className={navState === 'recipes' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Recipes</h3></a>
-            <a id="items" className={navState === 'items' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Items</h3></a>
-            <a id="meals" className={navState === 'meals' ? classes.active : ''} onClick={onNavChangeHandler}><h3>Mealplan</h3></a>
+            {TABS.map(el => <a key={el.id} id={el.id} className={navState === el.id ? classes.active : ''} onClick={onNavChangeHandler}><h3>{el.title}</h3></a>)}
         </header>
         <article className={classes.article}>
-            {navState === 'recipes' && <i>Select or create a new recipe!</i>}
-            {navState === 'items' && <i>Select or add an individual item or ingredient!</i>}
-            {navState === 'meals' && <i>This weeks meals!</i>}
+            <i>{tab.hint}</i>
 
             <div className={formClasses.form}>
                 <ul>
-                    <SearchInput onSearch={onFilterHandler} label={`Filter ${navState}`} />
+                    <SearchInput onSearch={setFilterValue} label={`Filter ${tab.title.toLowerCase()}`} />
                     <RadioInput onChange={switchRadioFilter} radioBtnArray={{ name: 'recipeRadioFilter', value: ['Macros', 'Ingredients'] }} />
                 </ul>
             </div>
 
-            {/* <FilterInput /> */}
-            {filterState === 'Macros' && 0 < foodItems.length && <MacroData navName={navState} tableData={foodItems} onClickHandler={onClickHandler} />}
-            {filterState === 'Ingredients' && 0 < foodItems.length && <IngredientData navName={navState} tableData={foodItems} onClickHandler={onClickHandler} />}
-            {foodItems.length === 0 && <p>Click 'Create {navState}' to get started!</p>}
+            {filterState === 'Macros' && 0 < foodItems.length && <MacroData list={navState} tableData={foodItems} onLog={onLogHandler} onDelete={onDeleteHandler} />}
+            {filterState === 'Ingredients' && 0 < foodItems.length && <IngredientData list={navState} tableData={foodItems} onLog={onLogHandler} onDelete={onDeleteHandler} />}
+            {props.foodItems[navState].length === 0 && <p>Click &apos;{tab.createText.slice(2)}&apos; to get started!</p>}
+            {props.foodItems[navState].length > 0 && foodItems.length === 0 && <p>Nothing matches &apos;{filterValue}&apos;</p>}
 
             <footer className={classes.footer}>
-                {navState === 'recipes' && <Button name='recipe' onClick={props.onModal}>+ Create Recipe</Button>}
-                {navState === 'items' && < Button name='item' onClick={props.onModal}>+ Create Item</Button>}
+                <Button name={tab.modal} onClick={props.onModal}>{tab.createText}</Button>
             </footer>
         </article>
 

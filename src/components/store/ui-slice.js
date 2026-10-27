@@ -13,6 +13,7 @@ const uiSlice = createSlice({
                 themeName: 'teal',
                 lightMode: 'light'
             },
+            settings: {},
             user: {}
         },
         changed: false
@@ -20,7 +21,7 @@ const uiSlice = createSlice({
     reducers: {
         replaceUiObj(state, action) {
             state.userPreferences.theme = action.payload.userPreferences.theme;
-            state.userPreferences.settings = action.payload.userPreferences.settings;
+            state.userPreferences.settings = action.payload.userPreferences.settings || {};
             state.changed = action.payload.changed;
         },
         showNotification(state, action) {
@@ -56,6 +57,11 @@ const uiSlice = createSlice({
         },
         setLightMode(state, action) {
             state.userPreferences.theme.lightMode = action.payload;
+            state.changed = true;
+        },
+        // Display choices, e.g. { weightGoalView: 'levels' }
+        updateSettings(state, action) {
+            state.userPreferences.settings = { ...state.userPreferences.settings, ...action.payload };
             state.changed = true;
         },
         setTheme(state, action) {

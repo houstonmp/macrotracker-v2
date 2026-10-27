@@ -4,6 +4,18 @@
     gap: .4rem;
     max-height: 22rem;
     overflow-y: auto;
+    /* A slim scrollbar in the card's colours instead of the global dark one */
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gamma-300) transparent;
+}
+
+.list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.list::-webkit-scrollbar-thumb {
+    background-color: var(--color-gamma-300);
+    border: none;
 }
 
 .row {

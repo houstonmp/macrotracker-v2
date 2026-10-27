@@ -5,6 +5,7 @@ import classes from './EntryCard.module.css'
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import SearchInput from '../../UI/SearchInput';
+import SegmentedControl from '../../UI/SegmentedControl';
 import { BasketIcon } from '../../../assets/StatIcons';
 import { recipeListActions } from '../../store/recipe-list-slice';
 import { uiActions } from '../../store/ui-slice';
@@ -50,12 +51,8 @@ const EntryCard = (props) => {
             <button type="button" name={tab.modal} onClick={props.onModal}>{tab.createText}</button>
         </CardHeader>
 
-        <div className={classes.tabs} role="tablist">
-            {TABS.map(el => <button key={el.id} type="button" role="tab" aria-selected={navState === el.id}
-                className={navState === el.id ? classes.activeTab : ''} onClick={() => setNavState(el.id)}>
-                {el.title}<span className={classes.count}>{props.foodItems[el.id].length}</span>
-            </button>)}
-        </div>
+        <SegmentedControl label="Food lists" value={navState} onChange={setNavState}
+            options={TABS.map(el => ({ id: el.id, label: el.title, count: props.foodItems[el.id].length }))} />
 
         <ul className={classes.search}>
             <SearchInput onSearch={setFilterValue} label={`Search ${tab.title.toLowerCase()} by name or ingredient`} />

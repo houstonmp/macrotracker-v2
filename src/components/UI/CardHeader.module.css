@@ -38,13 +38,15 @@
     font-weight: 400;
 }
 
+/* Up to two lines, so a header button on a phone doesn't cut it short */
 .subtitle {
-    display: block;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
     font-size: .8rem;
     opacity: .7;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .actions {

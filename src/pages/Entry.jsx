@@ -1,6 +1,5 @@
 import PageContent from "../components/PageContent"
 import EntryCard from "../components/Entry/EntryCard/EntryCard"
-import classes from "./Entry.module.css"
 import MacroList from "../components/Entry/MacroList"
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -30,8 +29,8 @@ const Entry = () => {
 
     return <>
         <PageContent title="Entry">
-            <EntryCard classes={classes.check} onModal={showModalHandler} foodItems={recipeObj} />
-            <FoodDiary classes={classes.check} />
+            <EntryCard onModal={showModalHandler} foodItems={recipeObj} />
+            <FoodDiary />
             <MacroList />
         </PageContent >
     </>

@@ -14,8 +14,25 @@
     text-align: center;
 }
 
+/* Centre each cell's content vertically; the cell itself still fills the row so the
+   stripes line up. min-width: 0 lets long text shrink instead of widening the column. */
+.table td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    padding: .35rem .25rem;
+}
+
 .table tr:nth-child(2n) td {
     background-color: var(--color-gamma-300);
+}
+
+@media only screen and (max-width: 768px) {
+    .table {
+        font-size: .85rem;
+        margin-bottom: 1rem;
+    }
 }
 
 .table tr:hover td {

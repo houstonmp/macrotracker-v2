@@ -2,6 +2,7 @@ import 'chart.js/auto';
 import { Chart } from 'react-chartjs-2';
 import { Chart as ChartJS, Filler } from 'chart.js'
 import Card from '../UI/Card';
+import classes from './WeightChart.module.css';
 
 import { useSelector } from "react-redux";
 import { BMIBoundaries } from '../../assets/functions';
@@ -32,84 +33,87 @@ const WeightChart = (props) => {
 
     const referenceDataset = { pointRadius: 0, pointHitRadius: 0, borderWidth: 1 };
 
-    return <Card classes={props.classes}>
-        <Chart type='line' options={{
-            maintainAspectRatio: true,
-            responsive: true,
-            color: textColor,
-            interaction: {
-                mode: 'index',
-                intersect: false,
-            },
-            plugins: {
-                legend: {
-                    display: false
+    // The box sets the height; a fixed aspect ratio made the chart unreadably short on phones
+    return <Card classes={`${classes.chart} ${props.classes || ''}`}>
+        <div className={classes.chartBox}>
+            <Chart type='line' options={{
+                maintainAspectRatio: false,
+                responsive: true,
+                color: textColor,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
                 },
-                tooltip: {
-                    filter: (item) => !item.dataset.hideFromTooltip
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        filter: (item) => !item.dataset.hideFromTooltip
+                    },
                 },
-            },
-            scales: {
-                x: {
-                    grid: { color: gridColor },
-                    ticks: { color: textColor }
-                },
-                y: {
-                    grid: { color: gridColor },
-                    ticks: { color: textColor }
+                scales: {
+                    x: {
+                        grid: { color: gridColor },
+                        ticks: { color: textColor }
+                    },
+                    y: {
+                        grid: { color: gridColor },
+                        ticks: { color: textColor }
+                    }
                 }
-            }
-        }}
-            data={{
-                labels: weightObj.map((el) => el.date),
-                datasets: [
-                    {
-                        label: 'Weight (lbs)',
-                        data: weightObj.map((weight) => weight.lbs),
-                        borderColor: weightLine,
-                        backgroundColor: weightLine,
-                        borderWidth: 2,
-                    },
-                    {
-                        ...referenceDataset,
-                        label: 'Healthy range from (BMI 18.5)',
-                        data: boundary(18.5),
-                        borderColor: HEALTHY_LINE,
-                        backgroundColor: BELOW_FILL,
-                        fill: 'start',
-                    },
-                    {
-                        ...referenceDataset,
-                        label: 'Healthy range to (BMI 24.9)',
-                        data: boundary(25),
-                        borderColor: HEALTHY_LINE,
-                        backgroundColor: HEALTHY_FILL,
-                        // Fill down to the BMI 18.5 line, shading only the healthy range
-                        fill: '-1',
-                    },
-                    {
-                        ...referenceDataset,
-                        label: 'BMI 30',
-                        data: boundary(30),
-                        borderColor: referenceLine,
-                        borderDash: [4, 4],
-                        backgroundColor: ABOVE_FILL,
-                        // Fill down to the BMI 25 line
-                        fill: '-1',
-                    },
-                    {
-                        // A line can only fill one area, so an invisible copy of the
-                        // BMI 30 line tints everything above it
-                        ...referenceDataset,
-                        label: 'Above BMI 30',
-                        data: boundary(30),
-                        borderWidth: 0,
-                        backgroundColor: WELL_ABOVE_FILL,
-                        fill: 'end',
-                        hideFromTooltip: true,
-                    },
-                ]
-            }} />
+            }}
+                data={{
+                    labels: weightObj.map((el) => el.date),
+                    datasets: [
+                        {
+                            label: 'Weight (lbs)',
+                            data: weightObj.map((weight) => weight.lbs),
+                            borderColor: weightLine,
+                            backgroundColor: weightLine,
+                            borderWidth: 2,
+                        },
+                        {
+                            ...referenceDataset,
+                            label: 'Healthy range from (BMI 18.5)',
+                            data: boundary(18.5),
+                            borderColor: HEALTHY_LINE,
+                            backgroundColor: BELOW_FILL,
+                            fill: 'start',
+                        },
+                        {
+                            ...referenceDataset,
+                            label: 'Healthy range to (BMI 24.9)',
+                            data: boundary(25),
+                            borderColor: HEALTHY_LINE,
+                            backgroundColor: HEALTHY_FILL,
+                            // Fill down to the BMI 18.5 line, shading only the healthy range
+                            fill: '-1',
+                        },
+                        {
+                            ...referenceDataset,
+                            label: 'BMI 30',
+                            data: boundary(30),
+                            borderColor: referenceLine,
+                            borderDash: [4, 4],
+                            backgroundColor: ABOVE_FILL,
+                            // Fill down to the BMI 25 line
+                            fill: '-1',
+                        },
+                        {
+                            // A line can only fill one area, so an invisible copy of the
+                            // BMI 30 line tints everything above it
+                            ...referenceDataset,
+                            label: 'Above BMI 30',
+                            data: boundary(30),
+                            borderWidth: 0,
+                            backgroundColor: WELL_ABOVE_FILL,
+                            fill: 'end',
+                            hideFromTooltip: true,
+                        },
+                    ]
+                }} />
+        </div>
     </Card>
 
 }

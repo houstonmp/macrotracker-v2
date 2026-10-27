@@ -1,108 +1,71 @@
-.recipe {
+/* Pantry / Recipes / Meals as a segmented control */
+.tabs {
     display: flex;
-    flex: column;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    flex-grow: 1;
+    gap: .25rem;
+    padding: .25rem;
+    border-radius: 999px;
+    background-color: var(--color-gamma-200);
 }
 
-.header a {
-    flex-grow: 1;
-    border-radius: 15px 15px 4px 4px;
+.tabs button {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    padding: .45rem .5rem;
+    border: none;
+    border-radius: 999px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.tabs button:hover {
     background-color: var(--color-gamma-300);
+}
+
+.tabs button.activeTab {
+    background-color: var(--color-gamma);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+:global(.dark) .tabs button.activeTab {
+    background-color: var(--color-beta-100);
+}
+
+.count {
+    font-size: .75rem;
+    opacity: .65;
+}
+
+/* Full-width search box (SearchInput renders an <li>) */
+.search li {
+    display: block;
+}
+
+.search input {
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    margin: .75rem 0;
+    padding: .55rem .75rem;
+    border-radius: 999px;
+}
+
+.tip {
+    margin: .75rem 0 0;
+    font-size: .75rem;
     text-align: center;
-    box-shadow: inset 4px -4px var(--color-gamma-100);
-}
-
-.header a:first-of-type {
-    border-radius: 15px 15px 4px 4px;
-    box-shadow: inset -4px -4px var(--color-gamma-100);
-}
-
-.header a h3 {
-    margin: .6rem;
-}
-
-.header a.active {
-    border-radius: 15px 15px 0 0;
-    margin: 0;
-    background-color: var(--color-gamma-200);
-    box-shadow: none;
-}
-
-
-
-.recipe-table {
-    grid-template-columns: repeat(5, 1fr) 2.5rem;
-}
-
-.diary-table {
-    grid-template-columns: repeat(5, 1fr) 2.5rem;
-}
-
-.ingredient-table {
-    grid-template-columns: 30% 1fr 2.5rem;
-}
-
-:is(.ingredient-table, .recipe-table, .diary-table) {
-    overflow-y: scroll
-}
-
-.recipe :is(article, header, footer) {
-    min-width: 100%;
-    padding: 10px auto
-}
-
-.header,
-.footer {
-    display: flex;
-    justify-content: space-around;
-}
-
-.header {
-    padding: 0 0;
-    padding-right: 2rem;
-}
-
-.article {
-    background-color: var(--color-gamma-200);
-    border-radius: 2px 2px 5px 5px;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
-
-.header i {
-    padding-left: .4rem;
-}
-
-.article :is(p, i) {
-    text-align: center;
+    opacity: .6;
 }
 
 i {
     padding-left: 10px;
 }
 
-.footer>button {
-    margin: 10px;
-}
-
-.ingredient-table ul {
-    display: flex;
-    text-align: left;
-    padding-left: 10%;
-    flex-wrap: wrap;
-}
-
-.ingredient-table li {
-    white-space: normal;
-    padding-right: 4px;
-}
-
-.article .circle {
-    align-items: center;
-}
-
+/* Loading spinner (USDA search) */
 .circle {
     display: inline-block;
     width: 80px;
@@ -133,103 +96,6 @@ i {
     }
 }
 
-.ingList {
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    flex-basis: 100%;
-}
-
-.ingList div {
-    background-color: var(--color-alpha-300);
-    margin: .5rem;
-    padding: .5rem;
-    color: white;
-    /* overflow: hidden; */
-    flex-basis: 30%;
-    flex-grow: 1;
-    /* max-width: 30%; */
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-    border-radius: 3px;
-}
-
-.ingList div .ingItem {
-    /* flex-basis: 100%; */
-    flex-grow: 1;
-    /* margin: 0 auto; */
-    margin: 0;
-    padding: 0;
-    flex-wrap: nowrap;
-}
-
-.ingList div .ingExit {
-    /* flex-basis: 100%; */
-    flex-shrink: 1;
-    /* margin: 0 auto; */
-    max-width: 5rem;
-    ;
-    padding: 0;
-    margin: 0;
-    flex-wrap: nowrap;
-    justify-content: center;
-}
-
-.ingItem {
-    flex-grow: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    margin: 0;
-}
-
-.ingExit {
-    display: block;
-    flex-grow: 0;
-    flex-shrink: 0;
-    padding: 3rem;
-    min-width: min-content;
-    text-align: center;
-    justify-self: flex-end;
-    align-self: center;
-}
-
-.ingList div:hover {
-    background-color: var(--color-alpha-100);
-    cursor: pointer;
-}
-
-.ingList div:hover :is(.ingExit, .ingItem) {
-    background-color: transparent;
-    color: black;
-}
-
-.article p {
-    margin: 4rem;
-}
-
-.ingridientContainer {
-    display: grid !important;
-    grid-template-columns: 5% 65% 30%;
-    flex-basis: 100%;
-    align-items: center;
-}
-
-.inputIngContainer {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.inputIngContainer li {
-    max-width: 70%;
-    flex-shrink: 1;
-}
-
-.inputIngContainer li input {
-    max-width: 100%;
-}
-
 textarea {
     box-sizing: border-box;
     width: 100%;
@@ -238,25 +104,7 @@ textarea {
     white-space: pre-wrap;
 }
 
-.ingBtn {
-    display: flex;
-    flex-basis: 100%;
-    justify-content: center;
-}
-
-.img {
-    width: 30%;
-}
-
-.instructText {
-    word-wrap: break-word;
-    padding-left: 1rem;
-    ;
-}
-
-.instructText .instructBullet {
-    margin: 1rem;
-}
+/* Forms: USDA result picker, amount input and the recipe/meal builder */
 .selected {
     outline: 2px solid var(--color-beta-500);
 }

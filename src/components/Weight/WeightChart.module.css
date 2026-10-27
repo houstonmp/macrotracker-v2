@@ -1,0 +1,21 @@
+.chart {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.chartBox {
+    position: relative;
+    width: 100%;
+    height: clamp(16rem, 40vh, 26rem);
+}
+
+@media only screen and (max-width: 768px) {
+    .chart {
+        padding: .5rem;
+    }
+
+    .chartBox {
+        height: clamp(16rem, 45vh, 22rem);
+    }
+}

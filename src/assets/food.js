@@ -21,6 +21,9 @@ export const createId = () => Date.now().toString(36) + Math.random().toString(3
 
 export const round = (value) => parseFloat(value.toFixed(2));
 
+// Grams for display in tables: one decimal is plenty
+export const formatGrams = (value) => Math.round(value * 10) / 10;
+
 export const emptyMacros = () => ({ calories: 0, protein: 0, carbs: 0, fat: 0 });
 
 export const scaleMacros = (macros, factor) => ({
@@ -80,6 +83,17 @@ export const listEntryMacros = (list, entry) => {
         return mealTotalMacros(entry);
     }
     return foodAmountMacros({ food: entry, ...defaultAmount(entry) });
+}
+
+// What the listEntryMacros numbers are for, shown under the name
+export const listEntryBasis = (list, entry) => {
+    if (list === 'recipes') {
+        return 'per serving';
+    }
+    if (list === 'meals') {
+        return 'whole meal';
+    }
+    return amountLabel(defaultAmount(entry));
 }
 
 export const ingredientNames = (list, entry) => {

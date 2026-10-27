@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-    amountLabel, amountOptions, customFood, defaultAmount, foodAmountMacros, ingredientNames, listEntryMacros,
+    amountLabel, amountOptions, customFood, defaultAmount, foodAmountMacros, ingredientNames, listEntryBasis, listEntryMacros,
     mealTotalMacros, migrateDiaryObj, migrateRecipeObj, nutrientBasis, recipeServingMacros, recipeTotalMacros,
 } from './food';
 
@@ -53,6 +53,12 @@ describe('macro calculations', () => {
         expect(mealTotalMacros(meal).calories).toBe(461);
         expect(listEntryMacros('meals', meal).calories).toBe(461);
         expect(ingredientNames('meals', meal)).toEqual(['Breakfast bake', 'Protein Bar']);
+    });
+
+    it('describes what a list row\'s macros are for', () => {
+        expect(listEntryBasis('items', egg)).toBe('1 × 1 large egg (50 g)');
+        expect(listEntryBasis('recipes', recipe)).toBe('per serving');
+        expect(listEntryBasis('meals', { entries: [] })).toBe('whole meal');
     });
 
     it('labels amounts', () => {

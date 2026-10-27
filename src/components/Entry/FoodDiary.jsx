@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Card from "../UI/Card"
-import Table from "../UI/Table";
-import DeleteButton from "../UI/DeleteButton";
+import CardHeader from "../UI/CardHeader";
+import EntryRow, { EntryList, EmptyState, MacroChips } from "../UI/EntryList";
+import { BookIcon } from "../../assets/StatIcons";
+import { formatDay } from "../../assets/functions";
 import { foodDiaryActions } from "../store/food-diary-slice";
-import classes from "./EntryCard/EntryCard.module.css"
 
-const FoodDiary = () => {
+const FoodDiary = (props) => {
     const dispatch = useDispatch();
     const [date] = useState(new Date().toJSON().slice(0, 10));
     const foodDiary = useSelector(state => {
@@ -24,38 +26,21 @@ const FoodDiary = () => {
         dispatch(foodDiaryActions.removeFood({ date, id }));
     }
 
-    return <Card>
-        <h3>
-            Food Diary ({date})
-        </h3>
-        <Table tableClasses={classes['diary-table']} header={
-            <tr>
-                <th>Food</th>
-                <th>Calories</th>
-                <th>Protein (g)</th>
-                <th>Carbs (g)</th>
-                <th>Fat (g)</th>
-                <th></th>
-            </tr>
-        }>
-            {foodDiary && foodDiary.food.map((item) => {
-                return (<tr key={item.id}>
-                    <td title={item.amount}>{item.name} <i>({item.amount})</i></td>
-                    <td>{Math.round(item.macros.calories)}</td>
-                    <td>{item.macros.protein}</td>
-                    <td>{item.macros.carbs}</td>
-                    <td>{item.macros.fat}</td>
-                    <td>
-                        <DeleteButton label={`Remove ${item.name}`} onClick={() => onDeleteHandler(item.id)} />
-                    </td>
-                </tr>)
-            })}
+    const count = foodDiary ? foodDiary.food.length : 0;
 
-
-        </Table>
-        {!foodDiary && <p style={{ textAlign: 'center' }}>Add a recipe to get started</p>
-        }
-    </Card >
+    return <Card classes={props.classes}>
+        <CardHeader Icon={BookIcon} title="Food diary" subtitle={`${formatDay(date)} · ${count} ${count === 1 ? 'item' : 'items'}`}>
+            {props.showLogLink && <Link to="/food">+ Log food</Link>}
+        </CardHeader>
+        {foodDiary ? <EntryList>
+            {foodDiary.food.map(item => <EntryRow key={item.id}
+                name={item.name}
+                detail={item.amount}
+                extra={<MacroChips macros={item.macros} />}
+                value={Math.round(item.macros.calories)} unit="kcal"
+                onDelete={() => onDeleteHandler(item.id)} deleteLabel={`Remove ${item.name}`} />)}
+        </EntryList> : <EmptyState>Nothing logged yet today.</EmptyState>}
+    </Card>
 }
 
 export default FoodDiary;

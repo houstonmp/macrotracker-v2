@@ -53,3 +53,17 @@ export const MacrosByDiceSplit = (TDEE, goalDeficit) => {
         goalCalories: parseInt(goal)
     }
 }
+
+// 'YYYY-MM-DD' → "Tue, Oct 27", or "Oct 27" without the weekday (the year is added
+// when it isn't this year). Read as UTC so the day doesn't shift with the time zone.
+export const formatDay = (date, { weekday = true, today = new Date() } = {}) => {
+    const day = new Date(`${date}T00:00:00Z`);
+    const options = { month: 'short', day: 'numeric', timeZone: 'UTC' };
+    if (weekday) {
+        options.weekday = 'short';
+    }
+    if (day.getUTCFullYear() !== today.getUTCFullYear()) {
+        options.year = 'numeric';
+    }
+    return day.toLocaleDateString('en-US', options);
+}

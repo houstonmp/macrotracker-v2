@@ -6,10 +6,19 @@
 
   flex-basis: 40%;
   flex-grow: 1;
+  /* Lets wide tables scroll inside the card instead of stretching the page */
+  min-width: 0;
+}
+
+@media only screen and (max-width: 1100px) {
+  .card {
+    flex-basis: 100%;
+  }
 }
 
 @media only screen and (max-width: 768px) {
   .card {
-    width: 100%;
+    flex-basis: auto;
+    margin: .5rem 0;
   }
 }

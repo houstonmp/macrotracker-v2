@@ -1,0 +1,92 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    max-height: 22rem;
+    overflow-y: auto;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .6rem .75rem;
+    border-radius: 10px;
+    background-color: var(--color-gamma-200);
+}
+
+.clickable {
+    cursor: pointer;
+    transition: background-color .2s;
+}
+
+.clickable:hover {
+    background-color: var(--color-gamma-300);
+}
+
+.main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Long names get two lines, details one, so rows stay a similar height */
+.name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+.detail {
+    display: block;
+    font-size: .8rem;
+    opacity: .7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.value {
+    flex: 0 0 auto;
+    font-size: 1.15rem;
+    white-space: nowrap;
+}
+
+.unit {
+    font-size: .8rem;
+    padding-left: .2rem;
+    opacity: .75;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .2rem .75rem;
+    margin-top: .25rem;
+    font-size: .75rem;
+    opacity: .85;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    white-space: nowrap;
+}
+
+.dot {
+    width: .5rem;
+    height: .5rem;
+    border-radius: 50%;
+}
+
+.empty {
+    margin: 1rem 0;
+    padding: 1.5rem 1rem;
+    border-radius: 10px;
+    border: 1px dashed var(--color-gamma-300);
+    text-align: center;
+    opacity: .8;
+}

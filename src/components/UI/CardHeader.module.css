@@ -1,0 +1,78 @@
+.header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-bottom: 1rem;
+}
+
+.badge {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 10px;
+    background-color: var(--color-gamma-200);
+}
+
+/* Set in CSS so it beats the dark theme's `color: white` on every element */
+.badge svg {
+    width: 1.35rem;
+    height: 1.35rem;
+    stroke: var(--color-alpha-400);
+}
+
+:global(.dark) .badge svg {
+    stroke: var(--color-alpha);
+}
+
+.titles {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 400;
+}
+
+.subtitle {
+    display: block;
+    font-size: .8rem;
+    opacity: .7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: .5rem;
+}
+
+/* Small pill buttons and links in the header */
+.actions :is(button, a) {
+    margin: 0;
+    padding: .4rem .9rem;
+    border: none;
+    border-radius: 999px;
+    background-color: var(--color-gamma-300);
+    color: inherit;
+    font: inherit;
+    font-size: .85rem;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.actions :is(button, a):hover {
+    background-color: var(--color-beta-500);
+    color: white;
+}
+
+:global(.dark) .actions :is(button, a) {
+    background-color: rgba(255, 255, 255, 0.1);
+}

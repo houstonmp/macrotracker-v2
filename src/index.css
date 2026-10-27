@@ -72,6 +72,9 @@
   --color-light-teal-500: #00E0A5;
 
   --primary-gold-500: #F8F32B;
+
+  /* Height of the bottom navigation bar on phones */
+  --nav-height: 3.5rem;
   color: black;
 
   /* Purple Theme */
@@ -314,6 +317,7 @@ main {
   flex-grow: 2;
   flex-direction: column;
   justify-content: flex-start;
+  min-width: 0;
   /* overflow-x: hidden;
   overflow-y: scroll; */
 }
@@ -336,14 +340,27 @@ a {
 }
 
 
+/* Tablets and narrow windows: keep the sidebar, stack the cards */
+@media only screen and (max-width: 1100px) {
+  main {
+    padding: 1.5rem;
+  }
+}
+
 @media only screen and (max-width: 768px) {
   .root {
     flex-direction: column;
   }
 
+  /* Leave room for the fixed bottom bar (and the phone's home indicator) */
   main {
-    padding: 0;
     margin: 0;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0 .5rem calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 1rem);
+  }
+
+  .App form {
     max-width: 100%;
   }
 }

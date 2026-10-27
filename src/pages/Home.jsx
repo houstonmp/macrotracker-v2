@@ -21,7 +21,7 @@ const Home = () => {  const dispatch = useDispatch();
 
 
   return <PageContent title="Home">
-    <FoodDiary></FoodDiary>
+    <FoodDiary showLogLink />
     <MacroList></MacroList>
     <WeightEntry
       onModal={showModalHandler} ></WeightEntry>

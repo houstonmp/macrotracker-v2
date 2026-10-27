@@ -8,3 +8,16 @@
 .header {
     margin-left: 1rem;
 }
+
+@media only screen and (max-width: 768px) {
+    /* One column of full-width cards. Wrapping a column let a wide table stretch the page. */
+    .container {
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+
+    .header {
+        margin: 1rem .5rem .5rem;
+        font-size: 1.6rem;
+    }
+}

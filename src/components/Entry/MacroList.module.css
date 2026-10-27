@@ -1,31 +1,3 @@
-.macros {
-    display: flex;
-    justify-content: space-around;
-
-    text-align: center;
-}
-
 .display {
     flex-basis: 100%;
-}
-
-.macros div {
-    flex-grow: 1;
-    margin-bottom: 1rem;
-    align-items: center;
-}
-
-.macros div>h1 {
-    margin-bottom: .5rem;
-    font-size: 2rem;
-}
-
-@media only screen and (max-width: 768px) {
-    .macros div>h1 {
-        font-size: 1.25rem;
-    }
-
-    .macros {
-        flex-wrap: wrap;
-    }
 }

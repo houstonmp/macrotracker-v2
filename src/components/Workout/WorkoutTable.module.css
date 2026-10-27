@@ -33,8 +33,12 @@ td input:focus {
 }
 
 @media only screen and (max-width: 768px) {
+    /* Twelve columns don't fit a phone, so the table scrolls sideways */
     .cardFlex {
-        margin: 0;
-        padding: 0;
+        overflow-x: auto;
+    }
+
+    .table-classes {
+        min-width: 44rem;
     }
 }

@@ -16,12 +16,6 @@
 }
 
 @media only screen and (max-width: 768px) {
-    .workout {
-        font-size: 8px;
-        margin: 0;
-        padding: 0;
-    }
-
     .workoutPage {
         margin: 0;
     }

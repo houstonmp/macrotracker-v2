@@ -86,5 +86,29 @@
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 10;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .list {
+    align-items: stretch;
+  }
+
+  .list li {
+    flex: 1 1 0;
+    display: flex;
+  }
+
+  /* The spacer only matters in the vertical sidebar */
+  .list li:empty {
+    display: none;
+  }
+
+  .list a,
+  .list button {
+    height: var(--nav-height);
+    padding: 0;
+    align-items: center;
+    justify-content: center;
   }
 }

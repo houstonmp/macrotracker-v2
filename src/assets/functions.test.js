@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BMRMifflin, BodyFatMenImperial, BodyFatWomenImperial, MacrosByDiceSplit, TDEE, getAgeFromBirthday } from './functions';
+import { BMRMifflin, BodyFatMenImperial, BodyFatWomenImperial, MacrosByDiceSplit, TDEE, formatDay, getAgeFromBirthday } from './functions';
 
 describe('BMRMifflin', () => {
     it('uses the male constant by default', () => {
@@ -41,5 +41,14 @@ describe('Navy body fat (inches)', () => {
 
     it('matches the published formula for women', () => {
         expect(BodyFatWomenImperial(30, 38, 13, 65)).toBeCloseTo(28.56, 1);
+    });
+});
+
+describe('formatDay', () => {
+    const today = new Date('2026-10-27T12:00:00Z');
+    it('shows the weekday and date, adding the year only for other years', () => {
+        expect(formatDay('2026-10-27', { today })).toBe('Tue, Oct 27');
+        expect(formatDay('2026-10-27', { weekday: false, today })).toBe('Oct 27');
+        expect(formatDay('2025-12-31', { today })).toBe('Wed, Dec 31, 2025');
     });
 });

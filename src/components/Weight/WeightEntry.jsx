@@ -1,15 +1,16 @@
 import { useState } from "react";
 
 import Card from "../UI/Card"
-import Button from "../UI/Button"
 import classes from "./WeightEntry.module.css";
-import Table from "../UI/Table"
+import CardHeader from "../UI/CardHeader";
+import EntryRow, { EntryList, EmptyState } from "../UI/EntryList";
+import { ScaleIcon } from "../../assets/StatIcons";
+import { formatDay } from "../../assets/functions";
 import Form from '../Form/Form'
 import Input from "../UI/Input";
 import { useDispatch, useSelector } from "react-redux";
 import { weightActions } from "../store/weight-slice";
 import RadioInput from "../UI/RadioInput";
-import DeleteButton from "../UI/DeleteButton";
 
 export const WeightForm = () => {
 
@@ -57,6 +58,16 @@ export const WeightForm = () => {
     </Form>);
 }
 
+// "110.6 kg · −1.4 lbs vs Oct 20"
+const weightDetail = (entry, previous) => {
+    if (!previous) {
+        return `${entry.kgs} kg · first weigh-in`;
+    }
+    const change = Math.round((entry.lbs - previous.lbs) * 10) / 10;
+    const sign = change > 0 ? '+' : change < 0 ? '−' : '±';
+    return `${entry.kgs} kg · ${sign}${Math.abs(change)} lbs vs ${formatDay(previous.date, { weekday: false })}`;
+}
+
 const WeightEntry = (props) => {
     const dispatch = useDispatch();
     const weightObj = useSelector(state => state.weight.weightObj);
@@ -65,47 +76,22 @@ const WeightEntry = (props) => {
         dispatch(weightActions.removeWeight({ date }));
     }
 
-    return <Card >
-        <header className={classes.header}>
-            <h3>Weight</h3>
-        </header>
-        <article className={classes.article}>
-            <Table tableClasses={classes['workout-table']} header={
-                <tr>
-                    <th>
-                        Date
-                    </th>
-                    <th>
-                        lbs
-                    </th>
-                    <th>
-                        kgs
-                    </th>
-                    <th></th>
-                </tr>
-            }>
-                {weightObj.length > -1 && weightObj.map((item, index) => {
-                    return (<tr key={`${item.date}-${index}`} id={index}>
-                        <td key={`date-${item.date}`}>
-                            {item.date}
-                        </td>
-                        <td key={`lbs-${item.date}`}>
-                            {item.lbs}
-                        </td>
-                        <td key={`kgs-${item.date}`}>
-                            {item.kgs}
-                        </td>
-                        <td key={`delete-${item.date}`}>
-                            <DeleteButton label={`Delete weight for ${item.date}`} onClick={() => onDeleteHandler(item.date)} />
-                        </td>
-                    </tr>)
-                })}
-            </Table>
-            {weightObj.length === 0 && <p style={{ textAlign: 'center' }}>Add an entry to get started</p>}
-        </article>
-        <footer className={classes.footer}>
-            <Button name='workout' onClick={props.onModal}>+ Add</Button>
-        </footer>
+    // Stored oldest first; show the newest at the top
+    const entries = weightObj.map((entry, index) => ({ entry, previous: weightObj[index - 1] })).reverse();
+    const latest = weightObj[weightObj.length - 1];
+
+    return <Card classes={props.classes}>
+        <CardHeader Icon={ScaleIcon} title="Weight"
+            subtitle={latest ? `Latest ${latest.lbs} lbs on ${formatDay(latest.date)}` : 'Log a weigh-in to get your targets'}>
+            <button type="button" name="workout" onClick={props.onModal}>+ Add</button>
+        </CardHeader>
+        {entries.length > 0 ? <EntryList>
+            {entries.map(({ entry, previous }) => <EntryRow key={entry.date}
+                name={formatDay(entry.date)}
+                detail={weightDetail(entry, previous)}
+                value={entry.lbs} unit="lbs"
+                onDelete={() => onDeleteHandler(entry.date)} deleteLabel={`Delete weight for ${entry.date}`} />)}
+        </EntryList> : <EmptyState>No weigh-ins yet.</EmptyState>}
     </Card>
 }
 

@@ -4,20 +4,28 @@ import Input from "../components/UI/Input"
 import { useState } from "react";
 import Form from '../components/Form/Form'
 import { GoogleIcon } from "../assets/Icons";
-import { createUser, signinUser } from "../Firebase";
+import { createUser, signinUser, signInWithGoogle, isInFrame, authErrorMessage } from "../Firebase";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
-const SignIn = (props) => {
+const SignIn = () => {
     const validatePassword = (value) => value.trim() !== '';
     const validateEmail = (value) => value.trim() !== '' && value.includes('@');
     const [emailValue, setEmail] = useState({});
     const [passwordValue, setPassword] = useState({});
     const [signupState, setSignup] = useState(true);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
+    const showError = (err) => setError(authErrorMessage(err));
+
+    const onGoogleSignIn = () => {
+        setError('');
+        signInWithGoogle().catch(showError);
+    };
     const onGuestLogin = () => {
         if (signupState) {
-            signinUser("testEmail@gmail.com", "123456");
+            setError('');
+            signinUser("testEmail@gmail.com", "123456").catch(showError);
         }
     };
     const emailToForm = (inputObj) => setEmail(inputObj);
@@ -30,10 +38,11 @@ const SignIn = (props) => {
     }
 
     const onFormSubmitHandler = () => {
+        setError('');
         if (formIsValid && !signupState) {
-            createUser(emailValue.value, passwordValue.value);
+            createUser(emailValue.value, passwordValue.value).catch(showError);
         } else if (formIsValid && signupState) {
-            signinUser(emailValue.value, passwordValue.value);
+            signinUser(emailValue.value, passwordValue.value).catch(showError);
         }
     }
 
@@ -55,7 +64,12 @@ const SignIn = (props) => {
                     <div className={classes.signInContainer}>
                         <div className={classes.signinItem}><h1>{signupState ? 'Login to' : 'Sign up for'} <span className={classes.fitColor}>Fit</span>Pad</h1></div>
 
-                        <button type="button" className={`${classes.googleSignIn}`} onClick={props.onSignIn}><GoogleIcon /><span>Sign In With Google</span></button>
+                        <button type="button" className={`${classes.googleSignIn}`} onClick={onGoogleSignIn}><GoogleIcon /><span>Sign In With Google</span></button>
+
+                        {isInFrame &&
+                            <p className={classes.signinItem}>
+                                Google sign-in may not work inside another app like Home Assistant. Open FitPad in its own browser tab once, set a password under Settings, then sign in here with your email and password.
+                            </p>}
 
                         <hr className={classes.hrText} data-content="OR"></hr>
 
@@ -84,6 +98,8 @@ const SignIn = (props) => {
                                 <Button type="button" classes={classes.signinItem} onClick={onGuestLogin}>Guest User</Button>}
                         </div>
 
+
+                        {error && <p className={`${classes.signinItem} ${classes.error}`} role="alert">{error}</p>}
 
                         {signupState ?
                             <p>Don't have an account? <a onClick={toggleSignup}><i className={classes.fitColor}>Sign up here!</i></a></p> :

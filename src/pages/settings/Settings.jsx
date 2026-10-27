@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PageContent from "../../components/PageContent";
 import classes from "./Settings.module.css"
@@ -13,7 +14,7 @@ import blue from "../../assets/themes/blue.jpg"
 import red from "../../assets/themes/red.jpg"
 
 
-import { signOutWithGoogle } from "../../Firebase";
+import { signOutWithGoogle, hasPasswordSignIn, setAccountPassword, authErrorMessage } from "../../Firebase";
 import { getAgeFromBirthday } from "../../assets/functions";
 import Button from "../../components/UI/Button";
 
@@ -24,6 +25,40 @@ const Background = (props) => {
     </main>
 }
 
+
+// Google sign-in can't finish inside a Home Assistant frame, so a Google account can
+// add a password and sign in there with email instead
+const PasswordSignIn = () => {
+    const [enabled, setEnabled] = useState(hasPasswordSignIn());
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+
+    const onSubmitHandler = (e) => {
+        e.preventDefault();
+        setAccountPassword(password)
+            .then(() => {
+                setEnabled(true);
+                setPassword('');
+                setMessage('Saved. You can now sign in with your email and this password.');
+            })
+            .catch(error => setMessage(authErrorMessage(error)));
+    }
+
+    return <Card classes={classes.userProfile}>
+        <h1>Password sign-in</h1>
+        <p>
+            {enabled ?
+                'Password sign-in is on. Use it where Google sign-in doesn\'t work, like inside Home Assistant.' :
+                'Add a password to sign in with your email where Google sign-in doesn\'t work, like inside Home Assistant.'}
+        </p>
+        <form className={classes.passwordForm} onSubmit={onSubmitHandler}>
+            <label htmlFor="new-password">{enabled ? 'New password' : 'Password'}</label>
+            <input id="new-password" type="password" autoComplete="new-password" minLength={6} value={password} onChange={e => setPassword(e.target.value)} />
+            <Button type="submit" disable={password.length < 6}>{enabled ? 'Change password' : 'Add password'}</Button>
+        </form>
+        {message && <p role="status">{message}</p>}
+    </Card>
+}
 
 const SettingsContent = () => {
     const dispatch = useDispatch();
@@ -64,6 +99,7 @@ const SettingsContent = () => {
             <p>Preferred Unit: Imperial (lbs, in)</p>
 
         </Card>
+        {(userData.email || '').toLowerCase() !== 'testemail@gmail.com' && <PasswordSignIn />}
         <Card classes={classes.themes}>
             <h1>Themes</h1>
             <ul className={classes.themeCard}>

@@ -8,7 +8,7 @@ import Calendar from "./pages/Calendar";
 import Insights from "./pages/Insights";
 import Settings from "./pages/settings/Settings"
 import { useEffect } from 'react'
-import { signInWithGoogle, auth } from "./Firebase";
+import { auth } from "./Firebase";
 import { useNavigate } from "react-router-dom";
 
 import { Routes, Route } from "react-router-dom";
@@ -97,10 +97,6 @@ function App() {
 
 
 
-  const onSignInHandler = () => {
-    signInWithGoogle().catch(error => console.log("Error here:", error))
-  }
-
   useEffect(() => {
     const body = document.querySelector('body');
     body.classList = `${lightMode} ${themeName}`
@@ -141,7 +137,7 @@ function App() {
       <div className="App">
         <>
           <Routes>
-            <Route path="/signin" element={<SignIn onSignIn={onSignInHandler} />} />
+            <Route path="/signin" element={<SignIn />} />
             <Route path="/register" element={<Register />}></Route>
             <Route path="" element={<RootLayout />}>
               <Route path="" element={<Home />} />

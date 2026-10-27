@@ -253,3 +253,6 @@ li>input[type=radio] {
         background: none;
     }
 }
+.signin .error {
+    color: var(--color-light-red-500);
+}

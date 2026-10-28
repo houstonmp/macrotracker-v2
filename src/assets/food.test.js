@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
     amountLabel, amountOptions, customFood, defaultAmount, foodAmountMacros, ingredientNames, listEntryBasis, listEntryMacros,
-    mealTotalMacros, migrateDiaryObj, migrateRecipeObj, nutrientBasis, recipeServingMacros, recipeTotalMacros,
+    mealTotalMacros, migrateDiaryObj, migrateRecipeObj, nutrientBasis, recipeGramMacros, recipeRawWeight, recipeServingMacros,
+    recipeTotalMacros, recipeWeight,
 } from './food';
 
 const GRAM = { label: 'g', amount: 1 };
@@ -65,6 +66,35 @@ describe('macro calculations', () => {
         expect(amountLabel({ quantity: 150, portion: GRAM })).toBe('150 g');
         expect(amountLabel({ quantity: 250, portion: { label: 'ml', amount: 1 } })).toBe('250 ml');
         expect(amountLabel({ quantity: 2, portion: egg.portions[0] })).toBe('2 × 1 large egg (50 g)');
+    });
+});
+
+describe('recipes by weight', () => {
+    const rice = customFood({ name: 'Rice, dry', unit: 'g', servingAmount: 100, calories: 360, protein: 7, carbs: 80, fat: 1, ingredients: [] });
+    const broth = customFood({ name: 'Broth', unit: 'ml', servingAmount: 100, calories: 10, protein: 1, carbs: 1, fat: 0, ingredients: [] });
+    const bar = customFood({ name: 'Bar', unit: 'serving', calories: 200, protein: 10, carbs: 20, fat: 8, ingredients: [] });
+    const pilaf = {
+        servings: 4,
+        ingredients: [
+            { food: rice, quantity: 200, portion: { label: 'g', amount: 1 } },
+            { food: broth, quantity: 400, portion: { label: 'ml', amount: 1 } },
+        ],
+    };
+
+    it('adds up the raw ingredients, counting ml as grams', () => {
+        expect(recipeRawWeight(pilaf)).toEqual({ grams: 600, complete: true });
+        expect(recipeRawWeight({ ingredients: [...pilaf.ingredients, { food: bar, quantity: 1, portion: bar.portions[0] }] }).complete).toBe(false);
+    });
+
+    it('prefers the weighed cooked dish over the raw estimate', () => {
+        expect(recipeWeight(pilaf)).toBe(600);
+        expect(recipeWeight({ ...pilaf, cookedWeight: 900 })).toBe(900);
+    });
+
+    it('scales the whole recipe by the grams eaten', () => {
+        // 760 kcal in the pot; 900 g cooked, 300 g eaten is a third
+        expect(recipeGramMacros({ ...pilaf, cookedWeight: 900 }, 300).calories).toBeCloseTo(253.33, 1);
+        expect(recipeGramMacros(pilaf, 150, 0).calories).toBe(0);
     });
 });
 

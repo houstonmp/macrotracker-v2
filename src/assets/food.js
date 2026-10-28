@@ -59,6 +59,20 @@ export const recipeTotalMacros = (recipe) => sumMacros(recipe.ingredients.map(fo
 
 export const recipeServingMacros = (recipe) => scaleMacros(recipeTotalMacros(recipe), 1 / (recipe.servings || 1));
 
+// What a recipe's raw ingredients weigh together. Millilitres count as grams, close enough
+// for broth or milk; foods measured only in servings have no weight, so `complete` is false.
+export const recipeRawWeight = (recipe) => recipe.ingredients.reduce((total, ingredient) => (ingredient.food.unit === 'serving'
+    ? { ...total, complete: false }
+    : { ...total, grams: total.grams + portionAmount(ingredient) }), { grams: 0, complete: true });
+
+// The whole dish in grams: the cooked weight if it's been weighed, otherwise the raw
+// ingredients, which is only an estimate since cooking adds or loses water
+export const recipeWeight = (recipe) => recipe.cookedWeight || Math.round(recipeRawWeight(recipe).grams);
+
+export const recipeGramMacros = (recipe, grams, weight = recipeWeight(recipe)) => (weight > 0
+    ? scaleMacros(recipeTotalMacros(recipe), grams / weight)
+    : scaleMacros(recipeTotalMacros(recipe), 0));
+
 export const mealEntryMacros = (entry) => entry.type === 'recipe'
     ? scaleMacros(recipeServingMacros(entry.recipe), Number(entry.quantity))
     : foodAmountMacros(entry);

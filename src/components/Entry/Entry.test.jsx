@@ -48,6 +48,9 @@ describe('Entry screens', () => {
         expect(render(<BuilderForm kind="meal" />)).toContain('Omelette');
         const bar = customFood({ name: 'Bar', servingLabel: '1 bar', unit: 'g', servingAmount: 40, calories: 200, protein: 10, carbs: 20, fat: 8, ingredients: [] });
         expect(render(<LogForm list="items" entry={bar} />)).toContain('200<small>kcal</small>');
-        expect(render(<LogForm list="recipes" entry={recipeObj.recipes[0]} />)).toContain('servings');
+        // Recipes start in grams of the whole dish, estimated from the raw ingredients (150 g of egg)
+        const omelette = render(<LogForm list="recipes" entry={recipeObj.recipes[0]} />);
+        expect(omelette).toContain('Whole dish weighs');
+        expect(omelette).toContain('value="150"');
     });
 });

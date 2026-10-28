@@ -24,6 +24,17 @@ const recipeListSlice = createSlice({
             state.recipeObj[action.payload.list].push(action.payload.data);
             state.changed = true;
         },
+        updateEntry(state, action) {
+            const { list, id, changes } = action.payload;
+            if (!LISTS.includes(list)) {
+                return;
+            }
+            const entry = state.recipeObj[list].find(el => el.id === id);
+            if (entry) {
+                Object.assign(entry, changes);
+                state.changed = true;
+            }
+        },
         removeEntry(state, action) {
             const { list, id } = action.payload;
             if (!LISTS.includes(list)) {

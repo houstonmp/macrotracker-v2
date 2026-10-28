@@ -69,4 +69,9 @@ const TrendIcon = ({ color }) => <StatIcon color={color}>
     <path d="m7 14 4-4 3 3 5-6" />
 </StatIcon>
 
-export { TrendIcon, HeartIcon, BoltIcon, TargetIcon, EggIcon, WheatIcon, DropIcon, ScaleIcon, BookIcon, BasketIcon, CalendarCheckIcon, FlagIcon };
+const ChefHatIcon = ({ color }) => <StatIcon color={color}>
+    <path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.46.32-.84.73-1.04a4 4 0 0 0-2.14-7.59 5 5 0 0 0-9.18 0 4 4 0 0 0-2.14 7.59c.41.2.73.58.73 1.04V20a1 1 0 0 0 1 1Z" />
+    <path d="M6 17h12" />
+</StatIcon>
+
+export { ChefHatIcon, TrendIcon, HeartIcon, BoltIcon, TargetIcon, EggIcon, WheatIcon, DropIcon, ScaleIcon, BookIcon, BasketIcon, CalendarCheckIcon, FlagIcon };

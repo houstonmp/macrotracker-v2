@@ -17,6 +17,7 @@ import red from "../../assets/themes/red.jpg"
 import { signOutWithGoogle, hasPasswordSignIn, setAccountPassword, authErrorMessage } from "../../Firebase";
 import { getAgeFromBirthday } from "../../assets/functions";
 import Button from "../../components/UI/Button";
+import MealieSettings from "../../extensions/mealie/MealieSettings";
 
 
 const Background = (props) => {
@@ -100,6 +101,7 @@ const SettingsContent = () => {
 
         </Card>
         {(userData.email || '').toLowerCase() !== 'testemail@gmail.com' && <PasswordSignIn />}
+        <MealieSettings classes={classes.userProfile} />
         <Card classes={classes.themes}>
             <h1>Themes</h1>
             <ul className={classes.themeCard}>

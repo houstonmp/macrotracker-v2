@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dayNumber, dateFromDay, goalLevels, paceLines, weightView, yBounds } from './weightRange';
+import { dayNumber, dateFromDay, goalLevels, paceLines, periodBounds, periodTitle, weightView, yBounds } from './weightRange';
 
 const today = dayNumber('2026-10-27');
 const weights = [
@@ -15,11 +15,40 @@ describe('weightView', () => {
         expect(dateFromDay(dayNumber('2026-03-08'))).toBe('2026-03-08');
     });
 
-    it('keeps the range and the weigh-in just before it', () => {
-        const week = weightView(weights, 'week', today);
-        expect(week.inRange.map(el => el.date)).toEqual(['2026-10-24', '2026-10-27']);
+    it('runs weeks Sunday to Saturday', () => {
+        // Oct 27 2026 is a Tuesday
+        expect(periodBounds('week', today)).toEqual({ start: dayNumber('2026-10-25'), end: dayNumber('2026-11-01') });
+        expect(periodBounds('week', dayNumber('2026-10-25')).start).toBe(dayNumber('2026-10-25'));
+        expect(periodBounds('week', dayNumber('2026-10-31')).start).toBe(dayNumber('2026-10-25'));
+        expect(periodBounds('week', today, -1).start).toBe(dayNumber('2026-10-18'));
+    });
+
+    it('runs months from the 1st, across year ends', () => {
+        expect(periodBounds('month', today)).toEqual({ start: dayNumber('2026-10-01'), end: dayNumber('2026-11-01') });
+        expect(periodBounds('month', dayNumber('2026-01-15'), -1)).toEqual({ start: dayNumber('2025-12-01'), end: dayNumber('2026-01-01') });
+    });
+
+    it('titles periods', () => {
+        expect(periodTitle('week', dayNumber('2026-10-25'), dayNumber('2026-11-01'))).toBe('Oct 25 – 31');
+        expect(periodTitle('week', dayNumber('2026-09-27'), dayNumber('2026-10-04'))).toBe('Sep 27 – Oct 3');
+        expect(periodTitle('month', dayNumber('2026-10-01'), dayNumber('2026-11-01'))).toBe('October 2026');
+    });
+
+    it('keeps the period and the weigh-ins either side of it', () => {
+        const week = weightView(weights, 'week', today, -1);
+        expect(week.inRange.map(el => el.date)).toEqual(['2026-10-24']);
         expect(week.points.map(el => el.y)).toEqual([246.6, 244.5, 243.8]);
-        expect(week.change).toBe(-0.7);
+        expect(week).toMatchObject({ current: false, hasEarlier: true, phrase: 'last week', chartEnd: dayNumber('2026-10-25') });
+        const month = weightView(weights, 'month', today);
+        expect(month.inRange.map(el => el.date)).toEqual(['2026-10-13', '2026-10-24', '2026-10-27']);
+        expect(month.change).toBe(-2.8);
+        expect(month).toMatchObject({ current: true, phrase: 'this month' });
+    });
+
+    it('stops paging back at the first weigh-in', () => {
+        // The first weigh-in is Dec 1 2025, ten months back
+        expect(weightView(weights, 'month', today, -9).hasEarlier).toBe(true);
+        expect(weightView(weights, 'month', today, -10)).toMatchObject({ title: 'December 2025', hasEarlier: false });
     });
 
     it('has no change with fewer than two weigh-ins', () => {
@@ -39,13 +68,17 @@ describe('weightView averages', () => {
 });
 
 describe('paceLines', () => {
-    it('runs flat and goal-pace lines from the first weigh-in in the range', () => {
-        const week = weightView(weights, 'week', today);
-        const pace = paceLines(week, 2);
-        // First weigh-in in the week is 244.5 on Oct 24; three days at 2 lbs/week is 0.857
-        expect(pace.flat).toEqual([{ x: dayNumber('2026-10-24'), y: 244.5 }, { x: today, y: 244.5 }]);
-        expect(pace.goal[1].y).toBe(243.6);
-        expect(pace.goalAt(today)).toBe(243.6);
+    it('runs from the first weigh-in of the month to its end, with a fixed target', () => {
+        const pace = paceLines(weightView(weights, 'month', today), 2);
+        // From 246.6 on Oct 13 to Nov 1 is 19 days: 2 lbs/week takes off 5.4
+        expect(pace.flat).toEqual([{ x: dayNumber('2026-10-13'), y: 246.6 }, { x: dayNumber('2026-11-01'), y: 246.6 }]);
+        expect(pace.target).toBe(241.2);
+        expect(pace.goalAt(dayNumber('2026-10-20'))).toBe(244.6);
+    });
+
+    it('gives a full week of goal to a week starting on Sunday', () => {
+        const pace = paceLines(weightView([{ date: '2026-10-25', lbs: 240 }], 'week', today), 2);
+        expect(pace.target).toBe(238);
     });
 
     it('is off for the year, without a goal, or without weigh-ins', () => {
@@ -54,19 +87,16 @@ describe('paceLines', () => {
         expect(paceLines(weightView([], 'week', today), 2)).toBe(null);
     });
 
-    it('widens the week bounds to show the goal line', () => {
+    it('widens the bounds to show the goal line', () => {
         const view = weightView(weights, 'month', today);
         const pace = paceLines(view, 2);
-        expect(yBounds(view, 70, pace).min).toBeLessThan(pace.goalAt(today));
+        expect(yBounds(view, 70, pace).min).toBeLessThan(pace.target);
     });
 });
 
 describe('goalLevels', () => {
-    it('sets half and full goal levels for the period from its first weigh-in', () => {
-        // Week from 244.5: 2 lbs/week goal
-        expect(goalLevels(weightView(weights, 'week', today), 2)).toEqual({ start: 244.5, half: 243.5, full: 242.5 });
-        // Month from 246.6 (Oct 13 is the first in the past 30 days): 30/7 weeks
-        expect(goalLevels(weightView(weights, 'month', today), 2)).toEqual({ start: 246.6, half: 242.3, full: 238 });
+    it('puts the full goal at the target and the half goal halfway', () => {
+        expect(goalLevels(weightView(weights, 'month', today), 2)).toEqual({ start: 246.6, half: 243.9, full: 241.2 });
     });
 
     it('is off for the year and without a goal', () => {
@@ -77,7 +107,7 @@ describe('goalLevels', () => {
 
 describe('yBounds', () => {
     it('fits week and month to the weigh-ins', () => {
-        const bounds = yBounds(weightView(weights, 'week', today), 70);
+        const bounds = yBounds(weightView(weights, 'week', today, -1), 70);
         expect(bounds).toEqual({ min: 241, max: 249 });
     });
 

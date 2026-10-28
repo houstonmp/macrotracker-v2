@@ -2,6 +2,7 @@ import PageContent from "../components/PageContent"
 import Card from '../components/UI/Card'
 import classes from './Insights.module.css'
 
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { uiActions } from "../components/store/ui-slice";
 import { selectDailyTargets, selectLatestWeight } from "../components/store/selectors";
@@ -12,6 +13,7 @@ import { formatDay } from "../assets/functions";
 
 import WeightEntry from "../components/Weight/WeightEntry";
 import WeightChart from "../components/Weight/WeightChart";
+import WeightScore from "../components/Weight/WeightScore";
 
 // Hints say where each number comes from
 const TARGETS = [
@@ -27,6 +29,9 @@ const Insights = () => {
     const dispatch = useDispatch();
     const targets = useSelector(selectDailyTargets);
     const latestWeight = useSelector(selectLatestWeight);
+    // The score card follows whichever week or month the chart is showing
+    const [rangeId, setRangeId] = useState('month');
+    const [offset, setOffset] = useState(0);
 
     const showModalHandler = (e) => {
         dispatch(uiActions.showModal({
@@ -40,7 +45,8 @@ const Insights = () => {
 
     return <PageContent title="Insights">
         <WeightEntry onModal={showModalHandler} />
-        <WeightChart />
+        <WeightChart rangeId={rangeId} onRangeChange={setRangeId} offset={offset} onOffsetChange={setOffset} />
+        <WeightScore rangeId={rangeId} offset={offset} />
         <Card classes={classes.targets}>
             <CardHeader Icon={FlagIcon} title="Daily targets" subtitle={latestWeight
                 ? `From your ${latestWeight.lbs} lbs weigh-in on ${formatDay(latestWeight.date)}`

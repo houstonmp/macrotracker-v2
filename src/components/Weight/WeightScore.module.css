@@ -1,0 +1,136 @@
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+.summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.grade {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: white;
+}
+
+.miniGrade {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    font-weight: 600;
+    background-color: var(--color-gamma-300);
+    color: white;
+}
+
+/* Green, blue, purple, grey: same family as the chart's zones, no red */
+.gradeAPlus { background-color: #2f8f5f; }
+.gradeA { background-color: #3e9e6e; }
+.gradeB { background-color: #3f7fcb; }
+.gradeC { background-color: #8e6cc9; }
+.gradeD { background-color: #8a8f98; }
+
+.summaryText {
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+    font-size: .85rem;
+    min-width: 0;
+}
+
+.headline {
+    font-size: 1.15rem;
+}
+
+.streak {
+    align-self: flex-start;
+    margin-top: .25rem;
+    padding: .15rem .6rem;
+    border-radius: 999px;
+    background-color: rgba(76, 175, 120, 0.18);
+}
+
+.note {
+    margin: 0 0 1rem;
+    font-size: .9rem;
+    opacity: .8;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: .5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    padding: .6rem .75rem;
+    border-radius: 10px;
+    background-color: var(--color-gamma-200);
+    min-width: 0;
+}
+
+.statLabel {
+    font-size: .8rem;
+    opacity: .8;
+}
+
+.statValue {
+    font-size: 1.2rem;
+    white-space: nowrap;
+}
+
+.statHint {
+    font-size: .72rem;
+    opacity: .7;
+}
+
+.months {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    gap: .5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.month {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    column-gap: .6rem;
+    align-items: center;
+    padding: .5rem .75rem;
+    border-radius: 10px;
+    background-color: var(--color-gamma-200);
+}
+
+.month .miniGrade {
+    grid-row: span 2;
+}
+
+.monthName {
+    font-size: .9rem;
+}
+
+.monthChange {
+    font-size: .8rem;
+    opacity: .75;
+}

@@ -38,13 +38,13 @@ const tickLabel = (day, rangeId) => rangeId === 'year'
     ? new Date(`${dateFromDay(day)}T00:00:00Z`).toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' })
     : formatDay(dateFromDay(day), { weekday: false });
 
-// "−1.4 lbs over the past week · on goal pace" or "… · in the green"
+// "−1.4 lbs this week · on goal pace" or "… · in the green"
 const subtitleFor = (view, pace, levels) => {
     if (view.change === null) {
-        return view.inRange.length === 1 ? `1 weigh-in in the ${view.range.period}` : `No weigh-ins in the ${view.range.period}`;
+        return view.inRange.length === 1 ? `1 weigh-in ${view.phrase}` : `No weigh-ins ${view.phrase}`;
     }
     const sign = view.change > 0 ? '+' : view.change < 0 ? '−' : '±';
-    const summary = `${sign}${Math.abs(view.change)} lbs over the ${view.range.period}`;
+    const summary = `${sign}${Math.abs(view.change)} lbs ${view.phrase}`;
     const latest = view.inRange[view.inRange.length - 1];
     if (levels) {
         // Only ever says where you've got to, never how far behind
@@ -58,9 +58,20 @@ const subtitleFor = (view, pace, levels) => {
     return `${summary} · ${behind <= 0 ? 'on goal pace' : `${behind} lbs behind goal pace`}`;
 }
 
+// The range and period can be passed in, so Insights' score card follows the chart;
+// on its own (Home) the chart keeps them itself
 const WeightChart = (props) => {
     const dispatch = useDispatch();
-    const [rangeId, setRangeId] = useState('month');
+    const [ownRange, setOwnRange] = useState('month');
+    const [ownOffset, setOwnOffset] = useState(0);
+    const rangeId = props.rangeId || ownRange;
+    const offset = props.offset !== undefined ? props.offset : ownOffset;
+    const setOffset = props.onOffsetChange || setOwnOffset;
+    const setRangeId = (id) => {
+        (props.onRangeChange || setOwnRange)(id);
+        // A new range starts back at the current period
+        setOffset(0);
+    }
     const settings = useSelector(state => state.ui.userPreferences.settings) || {};
     const goalView = GOAL_VIEWS[settings.weightGoalView] ? settings.weightGoalView : 'pace';
     const theme = useSelector(state => state.ui.userPreferences.theme.lightMode);
@@ -73,7 +84,7 @@ const WeightChart = (props) => {
     const referenceLine = isDark ? 'rgba(230, 241, 248, 0.3)' : 'rgba(0, 11, 19, 0.25)';
     const weightLine = isDark ? '#E6F1F8' : '#005083';
 
-    const view = weightView(weightObj, rangeId, dayNumber(localDate()));
+    const view = weightView(weightObj, rangeId, dayNumber(localDate()), offset);
     const heightIn = user.height && user.height.in;
     const lbsPerWeek = user.weightDeficit && Number(user.weightDeficit.lbs);
     const pace = goalView === 'pace' ? paceLines(view, lbsPerWeek) : null;
@@ -81,7 +92,7 @@ const WeightChart = (props) => {
     const bounds = view.points.length > 0 ? yBounds(view, heightIn, pace, levels) : {};
 
     // Horizontal lines across the whole range, like the BMI lines
-    const across = (y) => [{ x: view.start, y }, { x: view.end, y }];
+    const across = (y) => [{ x: view.start, y }, { x: view.chartEnd, y }];
 
     const boundary = (bmi) => heightIn ? across(BMIBoundaries(bmi, heightIn)) : [];
     const bmiOf = (lbs) => Math.round((lbs / (heightIn * heightIn)) * 703 * 10) / 10;
@@ -200,7 +211,20 @@ const WeightChart = (props) => {
         <SegmentedControl label="Chart range" value={rangeId} onChange={setRangeId}
             options={RANGES.map(range => ({ id: range.id, label: range.label }))} />
 
-        {view.inRange.length === 0 ? <EmptyState>No weigh-ins in the {view.range.period}.</EmptyState> :
+        {view.range.calendar && <div className={classes.periodNav}>
+            <button type="button" aria-label={`Previous ${rangeId}`} disabled={!view.hasEarlier}
+                onClick={() => setOffset(offset - 1)}>‹</button>
+            <span className={classes.periodTitle}>
+                {view.title}
+                {offset !== 0 && <button type="button" className={classes.backToNow} onClick={() => setOffset(0)}>
+                    Back to this {rangeId}
+                </button>}
+            </span>
+            <button type="button" aria-label={`Next ${rangeId}`} disabled={view.current}
+                onClick={() => setOffset(offset + 1)}>›</button>
+        </div>}
+
+        {view.inRange.length === 0 ? <EmptyState>No weigh-ins {view.phrase}.</EmptyState> :
             // The box sets the height; a fixed aspect ratio made the chart unreadably short on phones
             <div className={classes.chartBox}>
                 <Chart type='line' options={{
@@ -234,13 +258,14 @@ const WeightChart = (props) => {
                             // Days, so weigh-ins are spaced by the time between them
                             type: 'linear',
                             min: view.start,
-                            max: view.end,
+                            max: view.chartEnd,
                             grid: { color: gridColor },
                             ticks: {
                                 color: textColor,
                                 maxTicksLimit: rangeId === 'week' ? 8 : 6,
                                 stepSize: rangeId === 'week' ? 1 : undefined,
-                                callback: (value) => tickLabel(value, rangeId),
+                                // A calendar period ends where the next begins; that day isn't in it
+                                callback: (value) => view.range.calendar && value === view.end ? '' : tickLabel(value, rangeId),
                             }
                         },
                         y: {

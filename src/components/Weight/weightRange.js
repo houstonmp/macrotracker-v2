@@ -1,11 +1,13 @@
 import { BMIBoundaries } from '../../assets/functions';
 
 export const RANGES = [
-    { id: 'week', label: 'Week', days: 7, period: 'past week' },
-    { id: 'month', label: 'Month', days: 30, period: 'past month' },
+    // Week and month are calendar periods (Sunday to Saturday, and the 1st to the end of
+    // the month) so each has one fixed target. They page back with the chart's arrows.
+    { id: 'week', label: 'Week', calendar: true },
+    { id: 'month', label: 'Month', calendar: true },
     // A year of daily weigh-ins is mostly noise, so it's drawn as weekly averages.
     // The year shows BMI zones; week and month show progress against the weekly goal.
-    { id: 'year', label: 'Year', days: 365, period: 'past year', averageDays: 7, bmiZones: true },
+    { id: 'year', label: 'Year', days: 365, averageDays: 7, bmiZones: true },
 ];
 
 const DAY_MS = 864e5;
@@ -28,15 +30,66 @@ const averageBy = (points, start, days) => {
     }));
 }
 
-// The weigh-ins for a range ending today. `points` also includes the last weigh-in
-// before the range so the line runs in from the left edge instead of starting mid-chart.
-export const weightView = (weights, rangeId, today) => {
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+// Day 0 (1970-01-01) was a Thursday, so a day's weekday is (day + 4) % 7 with Sunday as 0
+const weekStart = (day) => day - ((day + 4) % 7);
+
+// The days a period covers: `start` is its first day, `end` the day after its last.
+// `offset` counts back from the period holding today: -1 is last week or last month.
+export const periodBounds = (rangeId, today, offset = 0) => {
+    if (rangeId === 'week') {
+        const start = weekStart(today) + offset * 7;
+        return { start, end: start + 7 };
+    }
+    if (rangeId === 'month') {
+        const date = new Date(today * DAY_MS);
+        const month = date.getUTCMonth() + offset;
+        return {
+            start: Date.UTC(date.getUTCFullYear(), month, 1) / DAY_MS,
+            end: Date.UTC(date.getUTCFullYear(), month + 1, 1) / DAY_MS,
+        };
+    }
+    return { start: today - 365, end: today + 1 };
+}
+
+const shortDay = (day) => new Date(day * DAY_MS).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+
+// "Oct 19 – 25", "Sep 28 – Oct 4" or "October 2026"
+export const periodTitle = (rangeId, start, end) => {
+    if (rangeId === 'week') {
+        const first = new Date(start * DAY_MS);
+        const last = new Date((end - 1) * DAY_MS);
+        const lastLabel = first.getUTCMonth() === last.getUTCMonth() ? last.getUTCDate() : shortDay(end - 1);
+        return `${shortDay(start)} – ${lastLabel}`;
+    }
+    if (rangeId === 'month') {
+        const date = new Date(start * DAY_MS);
+        return `${MONTH_NAMES[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+    }
+    return 'Past year';
+}
+
+// How a sentence refers to the period: "−1.4 lbs this week", "… last month", "… that week"
+const periodPhrase = (rangeId, offset) => {
+    if (rangeId === 'year') {
+        return 'over the past year';
+    }
+    if (offset === 0) {
+        return `this ${rangeId}`;
+    }
+    return offset === -1 ? `last ${rangeId}` : `that ${rangeId}`;
+}
+
+// The weigh-ins for one period. `points` also includes the last weigh-in before it and
+// the first after it, so the line runs in from the edges instead of starting mid-chart.
+export const weightView = (weights, rangeId, today, offset = 0) => {
     const range = RANGES.find(el => el.id === rangeId);
-    const end = today;
-    const start = today - range.days;
+    const { start, end } = periodBounds(rangeId, today, offset);
     const sorted = [...weights].sort((a, b) => (a.date < b.date ? -1 : 1));
-    const inRange = sorted.filter(el => dayNumber(el.date) >= start && dayNumber(el.date) <= end);
+    const inRange = sorted.filter(el => dayNumber(el.date) >= start && dayNumber(el.date) < end);
     const before = sorted.filter(el => dayNumber(el.date) < start).pop();
+    const after = sorted.find(el => dayNumber(el.date) >= end);
     const toPoint = el => ({ x: dayNumber(el.date), y: Number(el.lbs) });
     let points = inRange.map(toPoint);
     if (range.averageDays) {
@@ -45,15 +98,28 @@ export const weightView = (weights, rangeId, today) => {
     if (before) {
         points = [toPoint(before), ...points];
     }
+    if (after) {
+        points = [...points, toPoint(after)];
+    }
     const change = inRange.length > 1
         ? Math.round((inRange[inRange.length - 1].lbs - inRange[0].lbs) * 10) / 10
         : null;
-    return { range, start, end, inRange, points, change };
+    return {
+        range, offset, start, end, inRange, points, change,
+        // The chart runs to the period's end so the target shows; the year ends today
+        chartEnd: range.calendar ? end : today,
+        current: today < end,
+        // Nothing to page back to before the first weigh-in
+        hasEarlier: Boolean(range.calendar && sorted.length > 0 && dayNumber(sorted[0].date) < start),
+        title: periodTitle(rangeId, start, end),
+        phrase: periodPhrase(rangeId, offset),
+    };
 }
 
-// Two lines from the first weigh-in in the range to its end: "no change" (flat) and
+// Two lines from the first weigh-in in the period to its end: "no change" (flat) and
 // "goal pace" (dropping by the weekly goal). Between them you're losing, below the
-// goal line you're on or ahead of pace. Null when there's nothing to anchor to.
+// goal line you're on or ahead of pace. `target` is where goal pace ends the period,
+// fixed from that first weigh-in. Null when there's nothing to anchor to.
 export const paceLines = (view, lbsPerWeek) => {
     if (view.range.bmiZones || !(lbsPerWeek > 0) || view.inRange.length === 0) {
         return null;
@@ -61,22 +127,22 @@ export const paceLines = (view, lbsPerWeek) => {
     const start = { x: dayNumber(view.inRange[0].date), y: Number(view.inRange[0].lbs) };
     const goalAt = (x) => Math.round((start.y - lbsPerWeek * (x - start.x) / 7) * 10) / 10;
     return {
-        flat: [start, { x: view.end, y: start.y }],
-        goal: [start, { x: view.end, y: goalAt(view.end) }],
+        flat: [start, { x: view.chartEnd, y: start.y }],
+        goal: [start, { x: view.chartEnd, y: goalAt(view.chartEnd) }],
         goalAt,
+        target: goalAt(view.end),
     };
 }
 
-// Fixed targets for the period from its first weigh-in: `half` is half the goal loss
-// for the period, `full` the whole of it. Null when there's nothing to anchor to.
+// Fixed levels for the period from its first weigh-in: `full` is the period's target,
+// `half` halfway to it. Null when there's nothing to anchor to.
 export const goalLevels = (view, lbsPerWeek) => {
-    if (view.range.bmiZones || !(lbsPerWeek > 0) || view.inRange.length === 0) {
+    const pace = paceLines(view, lbsPerWeek);
+    if (!pace) {
         return null;
     }
-    const start = Number(view.inRange[0].lbs);
-    const goal = lbsPerWeek * view.range.days / 7;
-    const level = (loss) => Math.round((start - loss) * 10) / 10;
-    return { start, half: level(goal / 2), full: level(goal) };
+    const start = pace.flat[0].y;
+    return { start, half: Math.round((start + pace.target) / 2 * 10) / 10, full: pace.target };
 }
 
 // Week and month zoom in on your weigh-ins (and the goal lines) so small changes

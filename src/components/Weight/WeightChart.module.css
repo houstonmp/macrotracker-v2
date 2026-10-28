@@ -15,3 +15,61 @@
         height: clamp(16rem, 45vh, 22rem);
     }
 }
+
+/* ‹ Oct 19 – 25 › above the plot */
+.periodNav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    margin-top: .75rem;
+}
+
+.periodNav > button {
+    flex: 0 0 auto;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: var(--color-gamma-300);
+    color: inherit;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.periodNav > button:hover:not(:disabled) {
+    background-color: var(--color-beta-500);
+    color: white;
+}
+
+.periodNav > button:disabled {
+    opacity: .3;
+    cursor: default;
+}
+
+:global(.dark) .periodNav > button {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.periodTitle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.backToNow {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: .75rem;
+    opacity: .7;
+    text-decoration: underline;
+    cursor: pointer;
+}

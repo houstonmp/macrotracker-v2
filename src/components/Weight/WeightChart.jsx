@@ -11,7 +11,7 @@ import classes from './WeightChart.module.css';
 
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from '../store/ui-slice';
-import { BMIBoundaries, formatDay } from '../../assets/functions';
+import { BMIBoundaries, formatDay, localDate } from '../../assets/functions';
 import { RANGES, dateFromDay, dayNumber, goalLevels, paceLines, weightView, yBounds } from './weightRange';
 
 ChartJS.register(Filler);
@@ -73,7 +73,7 @@ const WeightChart = (props) => {
     const referenceLine = isDark ? 'rgba(230, 241, 248, 0.3)' : 'rgba(0, 11, 19, 0.25)';
     const weightLine = isDark ? '#E6F1F8' : '#005083';
 
-    const view = weightView(weightObj, rangeId, dayNumber(new Date().toJSON().slice(0, 10)));
+    const view = weightView(weightObj, rangeId, dayNumber(localDate()));
     const heightIn = user.height && user.height.in;
     const lbsPerWeek = user.weightDeficit && Number(user.weightDeficit.lbs);
     const pace = goalView === 'pace' ? paceLines(view, lbsPerWeek) : null;

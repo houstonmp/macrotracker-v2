@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BMRMifflin, BodyFatMenImperial, BodyFatWomenImperial, MacrosByDiceSplit, TDEE, formatDay, getAgeFromBirthday } from './functions';
+import { BMRMifflin, BodyFatMenImperial, BodyFatWomenImperial, MacrosByDiceSplit, TDEE, formatDay, getAgeFromBirthday, localDate } from './functions';
 
 describe('BMRMifflin', () => {
     it('uses the male constant by default', () => {
@@ -50,5 +50,17 @@ describe('formatDay', () => {
         expect(formatDay('2026-10-27', { today })).toBe('Tue, Oct 27');
         expect(formatDay('2026-10-27', { weekday: false, today })).toBe('Oct 27');
         expect(formatDay('2025-12-31', { today })).toBe('Wed, Dec 31, 2025');
+    });
+});
+
+describe('localDate', () => {
+    it('uses the local calendar day, not UTC', () => {
+        // 11pm local time is already tomorrow in UTC for anyone west of Greenwich
+        expect(localDate(new Date(2026, 9, 27, 23, 30))).toBe('2026-10-27');
+        expect(localDate(new Date(2026, 9, 28, 0, 5))).toBe('2026-10-28');
+    });
+
+    it('pads months and days', () => {
+        expect(localDate(new Date(2026, 0, 5))).toBe('2026-01-05');
     });
 });

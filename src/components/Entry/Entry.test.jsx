@@ -7,6 +7,7 @@ import weightSlice from '../store/weight-slice';
 import foodDiarySlice from '../store/food-diary-slice';
 import recipeListSlice from '../store/recipe-list-slice';
 import { customFood, migrateDiaryObj, migrateRecipeObj } from '../../assets/food';
+import { localDate } from '../../assets/functions';
 import EntryCard from './EntryCard/EntryCard';
 import FoodDiary from './FoodDiary';
 import MacroList from './MacroList';
@@ -15,7 +16,7 @@ import BuilderForm from './EntryCard/BuilderForm';
 import LogForm from './EntryCard/LogForm';
 
 // Smoke tests: each screen renders with converted old data without throwing
-const today = new Date().toJSON().slice(0, 10);
+const today = localDate();
 const recipeObj = migrateRecipeObj({
     items: [{ id: 'Bar', name: 'Bar', calories: 200, tProtein: 10, tCarbs: 20, tFat: 8, ingredients: ['oats'] }],
     recipes: [{ id: 'Omelette', name: 'Omelette', ingredients: [{ fdcId: 1, description: 'Eggs, whole', foodNutrients: { protein: 12.6, fat: 9.5, carbs: 0.7, calories: 143 }, calculatedData: { servingSize: 150 } }] }],

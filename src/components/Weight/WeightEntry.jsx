@@ -5,7 +5,7 @@ import classes from "./WeightEntry.module.css";
 import CardHeader from "../UI/CardHeader";
 import EntryRow, { EntryList, EmptyState } from "../UI/EntryList";
 import { ScaleIcon } from "../../assets/StatIcons";
-import { formatDay } from "../../assets/functions";
+import { formatDay, localDate } from "../../assets/functions";
 import Form from '../Form/Form'
 import Input from "../UI/Input";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,7 +52,7 @@ export const WeightForm = () => {
 
 
     return (<Form onFormSubmit={workoutFormHandler} formIsValid={formIsValid}>
-        <Input id="dateValue" key="DateValue" name="date" type="date" label="Date:" onPass={dateToForm} onValidate={validateDateInput} defaultValue={new Date().toJSON().slice(0, 10)} />
+        <Input id="dateValue" key="DateValue" name="date" type="date" label="Date:" onPass={dateToForm} onValidate={validateDateInput} defaultValue={localDate()} />
         <Input id="weightValue" key="weightValue" name="weightValue" type="number" label="Weight:" onPass={weightToForm} onValidate={validateInput} />
         <RadioInput liClass={classes.radio} onChange={switchRadioFilter} radioBtnArray={{ name: 'lbsKgs', value: ['lbs', 'kgs'] }} />
     </Form>);

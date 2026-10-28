@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import Form from '../../Form/Form'
 import AmountInput from './AmountInput';
 import { foodDiaryActions } from '../../store/food-diary-slice';
+import { localDate } from '../../../assets/functions';
 import { amountLabel, createId, defaultAmount, foodAmountMacros, listEntryMacros, scaleMacros } from '../../../assets/food';
 
 // Log Form - adds a pantry food, recipe or meal to today's food diary
@@ -22,7 +23,7 @@ const LogForm = (props) => {
         }
         const quantity = Number(amount.quantity);
         dispatch(foodDiaryActions.addFood({
-            date: new Date().toJSON().slice(0, 10),
+            date: localDate(),
             entry: {
                 id: createId(),
                 name: props.entry.name,

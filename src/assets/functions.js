@@ -54,6 +54,13 @@ export const MacrosByDiceSplit = (TDEE, goalDeficit) => {
     }
 }
 
+// Today (or the given time) as 'YYYY-MM-DD' in the user's own time zone. toJSON() is UTC,
+// which made evening entries land on tomorrow's diary.
+export const localDate = (date = new Date()) => {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
 // 'YYYY-MM-DD' → "Tue, Oct 27", or "Oct 27" without the weekday (the year is added
 // when it isn't this year). Read as UTC so the day doesn't shift with the time zone.
 export const formatDay = (date, { weekday = true, today = new Date() } = {}) => {
@@ -62,7 +69,7 @@ export const formatDay = (date, { weekday = true, today = new Date() } = {}) => 
     if (weekday) {
         options.weekday = 'short';
     }
-    if (day.getUTCFullYear() !== today.getUTCFullYear()) {
+    if (day.getUTCFullYear() !== today.getFullYear()) {
         options.year = 'numeric';
     }
     return day.toLocaleDateString('en-US', options);

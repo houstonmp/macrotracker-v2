@@ -1,16 +1,16 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Card from "../UI/Card"
 import CardHeader from "../UI/CardHeader";
 import EntryRow, { EntryList, EmptyState, MacroChips } from "../UI/EntryList";
 import { BookIcon } from "../../assets/StatIcons";
-import { formatDay } from "../../assets/functions";
+import { formatDay, localDate } from "../../assets/functions";
 import { foodDiaryActions } from "../store/food-diary-slice";
 
 const FoodDiary = (props) => {
     const dispatch = useDispatch();
-    const [date] = useState(new Date().toJSON().slice(0, 10));
+    // Worked out each render so the diary moves on to the new day after midnight
+    const date = localDate();
     const foodDiary = useSelector(state => {
         const index = state.fDiary.diaryObj.findIndex(el => {
             return el.date === date;

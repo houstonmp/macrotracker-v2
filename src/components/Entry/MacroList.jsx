@@ -4,9 +4,8 @@ import Card from "../UI/Card"
 import CardHeader from "../UI/CardHeader";
 import StatTile, { StatGrid } from "../UI/StatTile";
 import { CalendarCheckIcon } from "../../assets/StatIcons";
-import { formatDay } from "../../assets/functions";
+import { formatDay, localDate } from "../../assets/functions";
 import { useSelector } from "react-redux";
-import { useState } from "react";
 import { selectDailyTargets } from "../store/selectors";
 
 const MACROS = [
@@ -22,7 +21,8 @@ const remaining = (value, goal) => {
 }
 
 const MacroList = () => {
-    const [date] = useState(new Date().toJSON().slice(0, 10));
+    // Worked out each render so the diary moves on to the new day after midnight
+    const date = localDate();
     const targets = useSelector(selectDailyTargets);
     const goals = targets && targets.dailyMacros;
     const foodDiary = useSelector(state => {

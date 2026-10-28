@@ -68,3 +68,44 @@ export const checkMealie = async () => {
         return { status: kind || 'error' };
     }
 }
+
+// ---- Recipes ----
+
+export const listRecipes = async (search = '') => {
+    const params = new URLSearchParams({ perPage: '200', orderBy: 'name', orderDirection: 'asc' });
+    if (search) {
+        params.set('search', search);
+    }
+    const data = await mealieFetch(`/recipes?${params}`);
+    return data.items || [];
+}
+
+export const getRecipe = (slug) => mealieFetch(`/recipes/${encodeURIComponent(slug)}`);
+
+// Mealie's parser splits lines into amount, unit and food; it saves nothing
+export const parseIngredients = (lines) => mealieFetch('/parser/ingredients', {
+    method: 'POST',
+    body: { parser: 'nlp', ingredients: lines },
+});
+
+// The food or unit with this name, created if Mealie doesn't have it yet. A recipe line
+// can only point at foods and units that already exist. `alternatives` are other spellings
+// to look for first ("parsley" for "parsleys"); the name itself is what gets created.
+export const findOrCreate = async (kind, name, alternatives = []) => {
+    for (const candidate of [name, ...alternatives].filter(Boolean)) {
+        const wanted = candidate.trim().toLowerCase();
+        const data = await mealieFetch(`/${kind}?${new URLSearchParams({ search: candidate, perPage: '50' })}`);
+        const existing = (data.items || []).find(item => [item.name, item.pluralName, item.abbreviation, item.pluralAbbreviation]
+            .some(value => value && value.toLowerCase() === wanted));
+        if (existing) {
+            return existing;
+        }
+    }
+    return mealieFetch(`/${kind}`, { method: 'POST', body: { name: name.trim() } });
+}
+
+// Replaces only the recipe's ingredient list; steps, photos and everything else stay
+export const saveIngredients = (slug, recipeIngredient) => mealieFetch(`/recipes/${encodeURIComponent(slug)}`, {
+    method: 'PATCH',
+    body: { recipeIngredient },
+});

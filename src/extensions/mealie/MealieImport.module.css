@@ -1,0 +1,155 @@
+.lines {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+}
+
+/* One ingredient: what the recipe says, the food FitPad will count, and how much */
+.line {
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+    padding: .75rem .9rem;
+    border-radius: 12px;
+    border-left: 4px solid transparent;
+    background-color: var(--color-gamma-200);
+}
+
+/* Amber and green as in the stat tiles, never red: a line to check isn't a mistake */
+.line.needs {
+    border-left-color: #d9962b;
+}
+
+.line.ok {
+    border-left-color: #3e9e6e;
+}
+
+.line.skipped {
+    opacity: .6;
+}
+
+.lineHead {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+}
+
+.original {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.chip {
+    flex: 0 0 auto;
+    padding: .15rem .55rem;
+    border-radius: 999px;
+    font-size: .72rem;
+    white-space: nowrap;
+    background-color: var(--color-gamma-300);
+}
+
+.needs .chip {
+    background-color: rgba(217, 150, 43, 0.2);
+}
+
+.ok .chip {
+    background-color: rgba(62, 158, 110, 0.2);
+}
+
+:global(.dark) .chip {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.foodRow {
+    display: flex;
+    align-items: baseline;
+    gap: .75rem;
+}
+
+.foodName {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: .9rem;
+    overflow-wrap: anywhere;
+}
+
+.foodName small {
+    padding-left: .4rem;
+    font-size: .75rem;
+    opacity: .65;
+}
+
+.amountRow {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
+.amountRow > :first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.calories {
+    flex: 0 0 auto;
+    font-size: .85rem;
+    white-space: nowrap;
+    opacity: .85;
+}
+
+.hint {
+    margin: 0;
+    font-size: .8rem;
+    opacity: .8;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: .5rem;
+}
+
+.textButton {
+    align-self: flex-start;
+    padding: .3rem .75rem;
+    border: 1px solid var(--color-gamma-300);
+    border-radius: 999px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: .8rem;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.textButton:hover {
+    background-color: var(--color-gamma-300);
+}
+
+/* Searching for a different food, inside the line */
+.picker {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    padding: .75rem;
+    border-radius: 10px;
+    background-color: var(--color-gamma-100);
+}
+
+.pickerFields {
+    display: flex;
+    flex-direction: column;
+}
+
+.pickerFields input {
+    width: 100%;
+}
+
+.error {
+    margin: 0;
+    padding: .75rem 1rem;
+    border-radius: 10px;
+    background-color: rgba(217, 150, 43, 0.15);
+    font-size: .85rem;
+}

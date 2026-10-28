@@ -11,6 +11,7 @@ const MODAL_TITLES = {
     item: 'Add to Pantry',
     recipe: 'New Recipe',
     meal: 'New Meal',
+    'mealie-import': 'Import from Mealie',
 };
 
 const Entry = () => {

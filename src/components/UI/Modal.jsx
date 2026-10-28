@@ -11,6 +11,10 @@ import PantryForm from '../Entry/EntryCard/PantryForm';
 import BuilderForm from '../Entry/EntryCard/BuilderForm';
 import LogForm from '../Entry/EntryCard/LogForm';
 import { WeightForm } from '../Weight/WeightEntry';
+import MealieImport from '../../extensions/mealie/MealieImport';
+
+// Forms with a lot side by side get a wider card on desktop
+const WIDE = ['mealie-import'];
 
 const Backdrop = props => {
     const dispatch = useDispatch();
@@ -64,11 +68,14 @@ const ModalOverlay = () => {
         case 'workout':
             modalData = <WeightForm></WeightForm>
             break;
+        case 'mealie-import':
+            modalData = <MealieImport />;
+            break;
         default:
             modalData = <p>Sorry nothing to show at this time...</p>
     }
 
-    return <Card classes={styles.modal}>
+    return <Card classes={`${styles.modal} ${WIDE.includes(modalObj.componentName) ? styles.wide : ''}`}>
         <div role="dialog" aria-modal="true" aria-labelledby="modal-title" className={styles.dialog}>
             <header className={styles.header}>
                 <h2 id="modal-title">{modalObj.title}</h2>

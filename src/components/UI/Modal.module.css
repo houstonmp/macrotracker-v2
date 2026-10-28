@@ -31,6 +31,10 @@
   animation: slide-down 250ms ease-out forwards;
 }
 
+.modal.wide {
+  width: min(46rem, 100%);
+}
+
 .dialog {
   display: flex;
   flex-direction: column;

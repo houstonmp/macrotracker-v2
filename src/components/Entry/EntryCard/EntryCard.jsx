@@ -9,6 +9,7 @@ import SegmentedControl from '../../UI/SegmentedControl';
 import { BasketIcon } from '../../../assets/StatIcons';
 import { recipeListActions } from '../../store/recipe-list-slice';
 import { uiActions } from '../../store/ui-slice';
+import useMealie from '../../../extensions/mealie/useMealie';
 import { ingredientNames, listEntryBasis, listEntryMacros } from '../../../assets/food';
 
 const TABS = [
@@ -28,6 +29,7 @@ const EntryCard = (props) => {
     const [navState, setNavState] = useState('recipes');
     const [filterValue, setFilterValue] = useState('');
     const tab = TABS.find(el => el.id === navState);
+    const mealie = useMealie();
 
     const search = filterValue.toLowerCase();
     const foodItems = props.foodItems[navState].filter(el => el.name.toLowerCase().includes(search) ||
@@ -48,6 +50,7 @@ const EntryCard = (props) => {
 
     return <Card classes={props.classes}>
         <CardHeader Icon={BasketIcon} title="Foods" subtitle={tab.hint}>
+            {navState === 'recipes' && mealie.ready && <button type="button" name="mealie-import" onClick={props.onModal}>Import</button>}
             <button type="button" name={tab.modal} onClick={props.onModal}>{tab.createText}</button>
         </CardHeader>
 

@@ -30,7 +30,7 @@ const Insights = () => {
 
     const showModalHandler = (e) => {
         dispatch(uiActions.showModal({
-            title: 'Entry',
+            title: 'Log weight',
             message: null,
             componentName: e.target.name,
             disableExit: false

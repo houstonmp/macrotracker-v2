@@ -11,7 +11,7 @@ const Home = () => {  const dispatch = useDispatch();
 
   const showModalHandler = (e) => {
     dispatch(uiActions.showModal({
-      title: 'Home',
+      title: 'Log weight',
       message: null,
       componentName: e.target.name,
       disableExit: false

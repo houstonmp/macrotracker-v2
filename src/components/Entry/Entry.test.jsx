@@ -47,7 +47,7 @@ describe('Entry screens', () => {
         expect(render(<BuilderForm kind="recipe" />)).toContain('Servings');
         expect(render(<BuilderForm kind="meal" />)).toContain('Omelette');
         const bar = customFood({ name: 'Bar', servingLabel: '1 bar', unit: 'g', servingAmount: 40, calories: 200, protein: 10, carbs: 20, fat: 8, ingredients: [] });
-        expect(render(<LogForm list="items" entry={bar} />)).toContain('200 kcal');
+        expect(render(<LogForm list="items" entry={bar} />)).toContain('200<small>kcal</small>');
         expect(render(<LogForm list="recipes" entry={recipeObj.recipes[0]} />)).toContain('servings');
     });
 });

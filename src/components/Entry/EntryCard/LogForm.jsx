@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Form from '../../Form/Form'
 import AmountInput from './AmountInput';
+import MacroSummary from '../../Form/MacroSummary';
+import formClasses from '../../Form/Form.module.css';
 import { foodDiaryActions } from '../../store/food-diary-slice';
 import { localDate } from '../../../assets/functions';
 import { amountLabel, createId, defaultAmount, foodAmountMacros, listEntryMacros, scaleMacros } from '../../../assets/food';
@@ -34,15 +36,15 @@ const LogForm = (props) => {
         return true;
     }
 
-    return <Form onFormSubmit={submitHandler} formIsValid={formIsValid}>
+    return <Form onFormSubmit={submitHandler} formIsValid={formIsValid} submitText="Log food">
         <li>
             <label>How much did you have?</label>
             {isFood
                 ? <AmountInput food={props.entry} value={amount} onChange={setAmount} />
                 : <AmountInput unit="servings" value={amount} onChange={setAmount} />}
         </li>
-        <li>{Math.round(macros.calories)} kcal · Protein {macros.protein} g · Carbs {macros.carbs} g · Fat {macros.fat} g</li>
-        {isFood && props.entry.missing.length > 0 && <li><i>USDA has no {props.entry.missing.join(', ')} data for this food, so it counts as 0.</i></li>}
+        <li><MacroSummary label="Adds to today" macros={macros} /></li>
+        {isFood && props.entry.missing.length > 0 && <li><p className={formClasses.note}>USDA has no {props.entry.missing.join(', ')} data for this food, so it counts as 0.</p></li>}
     </Form>
 }
 

@@ -1,5 +1,6 @@
 import styles from './Modal.module.css';
 import ReactDOM from 'react-dom';
+import { useEffect } from 'react';
 import Card from './Card';
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -26,7 +27,24 @@ const Backdrop = props => {
 }
 
 const ModalOverlay = () => {
+    const dispatch = useDispatch();
     const modalObj = useSelector(state => state.ui.modal.modalInformation);
+
+    const onCloseHandler = () => {
+        dispatch(uiActions.closeModal());
+    }
+
+    useEffect(() => {
+        const onKeyDown = (e) => e.key === 'Escape' && dispatch(uiActions.closeModal());
+        document.addEventListener('keydown', onKeyDown);
+        // Keep the page behind from scrolling along with the modal
+        const overflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.removeEventListener('keydown', onKeyDown);
+            document.body.style.overflow = overflow;
+        }
+    }, [dispatch]);
 
     let modalData = null;
 
@@ -51,10 +69,16 @@ const ModalOverlay = () => {
     }
 
     return <Card classes={styles.modal}>
-        <h1>{modalObj.title}</h1>
-        <div className={styles.content}>
-            {modalObj.message && <p>{modalObj.message}</p>}
-            {modalObj.componentName && modalData}
+        <div role="dialog" aria-modal="true" aria-labelledby="modal-title" className={styles.dialog}>
+            <header className={styles.header}>
+                <h2 id="modal-title">{modalObj.title}</h2>
+                <button type="button" className={styles.close} onClick={onCloseHandler} aria-label="Close" title="Close">✕</button>
+            </header>
+            {/* Scrolls on its own so the title and the form's buttons stay in view */}
+            <div className={styles.body}>
+                {modalObj.message && <p>{modalObj.message}</p>}
+                {modalObj.componentName && modalData}
+            </div>
         </div>
     </Card>
 }

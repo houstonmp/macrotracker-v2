@@ -3,6 +3,8 @@ import Button from "../UI/Button";
 import { uiActions } from "../store/ui-slice";
 import classes from './Form.module.css';
 
+// With overloadFooter the page lays the form out itself (sign in, register). Otherwise
+// it's a modal form: stacked fields and a Cancel / submit footer that stays in view.
 const Form = props => {
     const dispatch = useDispatch();
 
@@ -18,15 +20,22 @@ const Form = props => {
         dispatch(uiActions.closeModal());
     }
 
+    if (props.overloadFooter) {
+        return <form onSubmit={formHandler} className={classes.form}>
+            <ul>
+                {props.children}
+            </ul>
+        </form>
+    }
 
-    return <form onSubmit={formHandler} className={`${classes.form}`}>
-        <ul>
+    return <form onSubmit={formHandler} className={classes.dialog}>
+        <ul className={classes.fields}>
             {props.children}
-            {!props.overloadFooter && <footer className={classes.footer}>
-                <Button type='button' onClick={onCloseHandler}>Cancel</Button>
-                <Button type='submit' disable={!props.formIsValid}>Submit</Button>
-            </footer>}
         </ul>
+        <footer className={classes.footer}>
+            <Button type='button' classes={classes.cancel} onClick={onCloseHandler}>Cancel</Button>
+            <Button type='submit' classes={classes.submit} disable={!props.formIsValid}>{props.submitText || 'Save'}</Button>
+        </footer>
     </form>
 
 }

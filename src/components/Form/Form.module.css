@@ -1,3 +1,4 @@
+/* Sign in and register lay out their own forms; these are the old shared rules they use */
 .form {
     display: flex;
     flex-wrap: wrap;
@@ -24,7 +25,6 @@
 }
 
 .form input {
-    /* height: 1.5rem; */
     border-radius: 3px;
     margin: 0;
 }
@@ -34,59 +34,196 @@
 }
 
 .form button {
-    /* padding: 1rem 2rem */
     align-self: flex-end;
 }
 
-.article {
-    max-height: 50vh;
-    overflow: scroll;
-    flex-grow: 1;
-    border-radius: 5px;
-    margin-bottom: 1.3rem;
-}
+/* ---- Modal forms ---- */
 
-.article ul li {
-    margin: 0;
-    padding: .4rem;
-    display: flex;
-    justify-content: space-around;
-}
-
-.article ul li * {
+.dialog {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    align-content: center;
-    flex-basis: 33%;
 }
 
-.article li:nth-child(2n) {
-    background-color: var(--color-gamma-300);
-}
-
-.article .serverInfo li:hover {
-    background-color: var(--color-gamma-500);
-    cursor: pointer;
-}
-
-.article {
-    overflow: auto;
-}
-
-.footer {
+/* One field per row: label on top, control full width underneath */
+.fields,
+.group {
     display: flex;
-    flex-basis: 100%;
-    flex-grow: 1;
-    justify-content: space-between;
-    /* Keeps Cancel/Submit in view while a long form scrolls inside the modal */
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.fields>li,
+.group>li {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    min-width: 0;
+}
+
+/* Short fields that sit side by side (protein / carbs / fat), wrapping on phones */
+.group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+    gap: 1.1rem 1rem;
+}
+
+.dialog label {
+    font-size: .85rem;
+    opacity: .85;
+}
+
+.dialog :is(input:not([type="radio"]), select, textarea) {
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: .6rem .75rem;
+    border: 1px solid var(--color-gamma-300);
+    border-radius: 10px;
+    background-color: var(--color-gamma);
+    color: inherit;
+    font: inherit;
+}
+
+:global(.dark) .dialog :is(input:not([type="radio"]), select, textarea) {
+    background-color: var(--color-beta-200);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.dialog :is(input, select, textarea):focus {
+    outline: 2px solid var(--color-beta-400);
+    outline-offset: 1px;
+}
+
+:global(.dark) .dialog :is(input, select, textarea):focus {
+    outline-color: rgba(255, 255, 255, 0.5);
+}
+
+.dialog [aria-invalid="true"] {
+    outline: none;
+    border-color: #d9667a;
+}
+
+/* Small headings that split a long form into parts */
+.section {
+    margin: .25rem 0 -.5rem;
+    font-size: .75rem;
+    font-weight: 500;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    opacity: .65;
+}
+
+.note {
+    margin: 0;
+    font-size: .8rem;
+    opacity: .7;
+}
+
+/* Calories in big type with the macro chips, for totals and "what you're logging" */
+.summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: .75rem 1rem;
+    border-radius: 12px;
+    background-color: var(--color-gamma-200);
+}
+
+.summaryMain {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.summaryLabel {
+    font-size: .8rem;
+    opacity: .7;
+}
+
+.summaryValue {
+    flex: 0 0 auto;
+    font-size: 1.5rem;
+    white-space: nowrap;
+}
+
+.summaryValue small {
+    padding-left: .2rem;
+    font-size: .8rem;
+    opacity: .75;
+}
+
+/* Stays at the bottom of the modal while a long form scrolls */
+.footer {
     position: sticky;
     bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: .6rem;
+    margin: 1.5rem -1.5rem 0;
+    padding: .9rem 1.5rem;
+    border-top: 1px solid var(--color-gamma-200);
     background-color: var(--color-gamma-100);
 }
 
+.footer .cancel,
+.footer .submit {
+    margin: 0;
+    padding: .6rem 1.3rem;
+    border-radius: 999px;
+    font: inherit;
+}
+
+.footer .cancel {
+    border: 1px solid var(--color-gamma-300);
+    background-color: transparent;
+}
+
+.footer .cancel:hover {
+    background-color: var(--color-gamma-200);
+    color: inherit;
+}
+
+.footer .submit {
+    border: none;
+    background-color: var(--color-beta-500);
+    color: white;
+}
+
+.footer .submit:hover {
+    background-color: var(--color-beta-400);
+}
+
+.footer .submit:disabled {
+    background-color: var(--color-beta-500);
+    color: white;
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+/* The dark theme's darkest shade disappears into the card, so its lightest is the accent */
+:global(.dark) .footer .submit,
+:global(.dark) .footer .submit:disabled {
+    background-color: var(--color-beta);
+    color: var(--color-beta-500);
+}
+
+:global(.dark) .footer .submit:hover:enabled {
+    background-color: white;
+}
+
 @media only screen and (max-width: 768px) {
-    .article {
-        max-height: 45vh;
+    .footer {
+        margin: 1.5rem -1rem 0;
+        padding: .75rem 1rem calc(.75rem + env(safe-area-inset-bottom, 0px));
     }
+
+    .footer .cancel,
+    .footer .submit {
+        flex: 1 1 0;
+    }
+}
+
+/* A control above the form itself, e.g. Search USDA / From a label */
+.lead {
+    margin-bottom: 1.25rem;
 }

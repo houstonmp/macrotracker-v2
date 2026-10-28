@@ -62,11 +62,7 @@ textarea {
     white-space: pre-wrap;
 }
 
-/* Forms: USDA result picker, amount input and the recipe/meal builder */
-.selected {
-    outline: 2px solid var(--color-beta-500);
-}
-
+/* Forms: amount input and the recipe/meal builder */
 .amount {
     display: flex;
     align-items: center;
@@ -74,22 +70,44 @@ textarea {
 }
 
 .amount .quantity {
-    flex-basis: 6rem;
-    flex-grow: 0;
+    flex: 0 0 6rem;
 }
 
 /* Portion labels can be long ("1 egg whole without shell (50.3 g)") */
 .amount select {
     min-width: 0;
-    max-width: 100%;
     flex: 1 1 auto;
 }
 
-.builderRow {
-    align-items: center;
+.builderList {
+    display: flex;
+    flex-direction: column;
     gap: .5rem;
 }
 
+.builderRow {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    padding: .6rem .75rem;
+    border-radius: 10px;
+    background-color: var(--color-gamma-200);
+}
+
+.builderTop {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
 .builderName {
-    flex-grow: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.builderCalories {
+    flex: 0 0 auto;
+    font-size: .9rem;
+    opacity: .85;
 }

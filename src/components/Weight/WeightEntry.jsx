@@ -1,16 +1,16 @@
 import { useState } from "react";
 
 import Card from "../UI/Card"
-import classes from "./WeightEntry.module.css";
 import CardHeader from "../UI/CardHeader";
 import EntryRow, { EntryList, EmptyState } from "../UI/EntryList";
 import { ScaleIcon } from "../../assets/StatIcons";
 import { formatDay, localDate } from "../../assets/functions";
 import Form from '../Form/Form'
+import formClasses from '../Form/Form.module.css';
 import Input from "../UI/Input";
 import { useDispatch, useSelector } from "react-redux";
 import { weightActions } from "../store/weight-slice";
-import RadioInput from "../UI/RadioInput";
+import SegmentedControl from "../UI/SegmentedControl";
 
 export const WeightForm = () => {
 
@@ -46,15 +46,18 @@ export const WeightForm = () => {
         return false;
     };
 
-    const switchRadioFilter = (target) => {
-        setRadioState(target.value);
-    }
-
-
-    return (<Form onFormSubmit={workoutFormHandler} formIsValid={formIsValid}>
-        <Input id="dateValue" key="DateValue" name="date" type="date" label="Date:" onPass={dateToForm} onValidate={validateDateInput} defaultValue={localDate()} />
-        <Input id="weightValue" key="weightValue" name="weightValue" type="number" label="Weight:" onPass={weightToForm} onValidate={validateInput} />
-        <RadioInput liClass={classes.radio} onChange={switchRadioFilter} radioBtnArray={{ name: 'lbsKgs', value: ['lbs', 'kgs'] }} />
+    return (<Form onFormSubmit={workoutFormHandler} formIsValid={formIsValid} submitText="Save weight">
+        <Input id="dateValue" key="DateValue" name="date" type="date" label="Date" onPass={dateToForm} onValidate={validateDateInput} defaultValue={localDate()} />
+        <li>
+            <ul className={formClasses.group}>
+                <Input id="weightValue" key="weightValue" name="weightValue" type="number" label="Weight" placeholder="180" onPass={weightToForm} onValidate={validateInput} />
+                <li>
+                    <label>Unit</label>
+                    <SegmentedControl label="Weight unit" value={radioState} onChange={setRadioState}
+                        options={[{ id: 'lbs', label: 'lbs' }, { id: 'kgs', label: 'kg' }]} />
+                </li>
+            </ul>
+        </li>
     </Form>);
 }
 

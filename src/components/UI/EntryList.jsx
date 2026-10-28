@@ -17,8 +17,16 @@ export const MacroChips = ({ macros }) => <span className={classes.chips}>
 
 // One row: name and detail on the left, a headline number on the right.
 // Clicking the row (when onClick is given) opens it; the delete button doesn't.
-const EntryRow = ({ name, detail, extra, value, unit, onClick, onDelete, deleteLabel }) => {
-    return <li className={`${classes.row} ${onClick ? classes.clickable : ''}`} onClick={onClick}>
+const EntryRow = ({ name, detail, extra, value, unit, onClick, onDelete, deleteLabel, selected }) => {
+    const onKeyDown = (e) => {
+        if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            onClick();
+        }
+    }
+
+    return <li className={`${classes.row} ${onClick ? classes.clickable : ''} ${selected ? classes.selected : ''}`} onClick={onClick}
+        tabIndex={onClick ? 0 : undefined} onKeyDown={onClick ? onKeyDown : undefined} aria-selected={selected}>
         <span className={classes.main}>
             <span className={classes.name} title={name}>{name}</span>
             {detail && <span className={classes.detail} title={detail}>{detail}</span>}

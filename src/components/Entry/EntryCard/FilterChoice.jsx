@@ -1,34 +1,16 @@
-import classes from './EntryCard.module.css'
+import EntryRow, { MacroChips } from '../../UI/EntryList';
 import { nutrientBasis } from '../../../assets/food';
 
-const FilterChoice = (props) => {
-    const food = props.food;
+const DATA_TYPE_LABELS = { 'SR Legacy': 'USDA', Foundation: 'USDA', Branded: 'Branded', 'Survey (FNDDS)': 'Survey' };
 
-    const onSelectHandler = () => {
-        props.onSelect(food);
-    }
-    const onKeyUpHandler = (e) => {
-        e.preventDefault();
-        if (e.key === 'Enter') {
-            onSelectHandler();
-        }
-    }
+// One USDA search result: "USDA · per 100 g" with its macros
+const FilterChoice = ({ food, selected, onSelect, onDelete }) => {
+    const detail = [food.brand || DATA_TYPE_LABELS[food.dataType] || food.dataType, nutrientBasis(food),
+        food.missing.length > 0 && `no ${food.missing.join(', ')} data`].filter(Boolean).join(' · ');
 
-    return (<li tabIndex={0} className={props.selected ? classes.selected : ''} onClick={onSelectHandler} onKeyUp={onKeyUpHandler}>
-        <h4>{food.name}</h4>
-        <div className="itemData">
-            <div>Brand: {food.brand || 'N/A'}</div>
-            <div>{food.dataType}</div>
-        </div>
-        <div>
-            <i>{nutrientBasis(food)}:</i>
-            <i>Calories: {food.nutrients.calories}</i>
-            <i>Protein: {food.nutrients.protein}</i>
-            <i>Carbs: {food.nutrients.carbs}</i>
-            <i>Fat: {food.nutrients.fat}</i>
-            {food.missing.length > 0 && <i>No data: {food.missing.join(', ')}</i>}
-        </div>
-    </li>)
+    return <EntryRow name={food.name} detail={detail} extra={<MacroChips macros={food.nutrients} />}
+        value={Math.round(food.nutrients.calories)} unit="kcal" selected={selected}
+        onClick={onSelect && (() => onSelect(food))} onDelete={onDelete} deleteLabel="Choose a different food" />
 }
 
 export default FilterChoice;

@@ -3,17 +3,21 @@
     border: 2px solid var(--color-alpha-100);
 }
 
-/* .input[type="date"] {
-    padding: 
-} */
-
 .error {
     outline: 1px solid red;
 }
 
 .error-text {
-    color: red;
-    margin-top: 5px;
+    margin: 0;
+    color: #d9667a;
+    font-size: .8rem;
+}
+
+/* "Optional" and similar, quieter than the label itself */
+.note {
+    padding-left: .4rem;
+    font-size: .75rem;
+    opacity: .7;
 }
 
 .radio {

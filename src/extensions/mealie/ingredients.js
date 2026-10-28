@@ -232,7 +232,7 @@ export const mealieMeasure = ({ line, food, amount }) => {
 // ingredient up front and loses for being a different kind of thing altogether.
 
 // How a recipe describes an ingredient rather than what it is
-const PREP_WORDS = /\b(fresh|freshly|diced|chopped|minced|sliced|grated|shredded|crushed|large|small|medium|finely|roughly|thinly|toasted|cooked|uncooked|boneless|skinless|organic|plain|whole|mild|hot)\b/gi;
+const PREP_WORDS = /\b(fresh|freshly|diced|chopped|minced|sliced|grated|shredded|crushed|large|small|medium|finely|roughly|thinly|toasted|cooked|uncooked|boneless|skinless|organic|plain|whole)\b/gi;
 
 export const usdaQuery = (foodName) => (foodName || '').replace(PREP_WORDS, ' ').replace(/[^a-zA-Z\s]/g, ' ').replace(/\s+/g, ' ').trim();
 

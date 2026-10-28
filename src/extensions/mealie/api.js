@@ -71,6 +71,19 @@ export const checkMealie = async () => {
 
 // ---- Recipes ----
 
+// Why FitPad won't touch this recipe in Mealie, or null if it may. Recipes typed in by hand
+// (no source website) are family recipes and the like, with no copy anywhere else.
+export const protectedReason = (recipe) => {
+    if (recipe.settings && recipe.settings.locked) {
+        return "It's locked in Mealie, so FitPad only reads it.";
+    }
+    if (!recipe.orgURL) {
+        return "It was typed in rather than saved from a website, so FitPad only reads it. Its ingredients in Mealie stay exactly as written.";
+    }
+    return null;
+}
+
+
 export const listRecipes = async (search = '') => {
     const params = new URLSearchParams({ perPage: '200', orderBy: 'name', orderDirection: 'asc' });
     if (search) {

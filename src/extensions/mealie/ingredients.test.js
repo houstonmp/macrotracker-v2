@@ -151,5 +151,6 @@ describe('rankUsda', () => {
     it('searches without the prep words', () => {
         expect(usdaQuery('fresh garlic, minced')).toBe('garlic');
         expect(usdaQuery('ground beef')).toBe('ground beef');
+        expect(usdaQuery('hot sauce')).toBe('hot sauce');
     });
 });

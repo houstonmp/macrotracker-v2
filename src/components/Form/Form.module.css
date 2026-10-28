@@ -72,7 +72,7 @@
     opacity: .85;
 }
 
-.dialog :is(input:not([type="radio"]), select, textarea) {
+.dialog :is(input:not([type="radio"], [type="checkbox"]), select, textarea) {
     box-sizing: border-box;
     width: 100%;
     height: auto;
@@ -85,7 +85,7 @@
     font: inherit;
 }
 
-:global(.dark) .dialog :is(input:not([type="radio"]), select, textarea) {
+:global(.dark) .dialog :is(input:not([type="radio"], [type="checkbox"]), select, textarea) {
     background-color: var(--color-beta-200);
     border-color: rgba(255, 255, 255, 0.12);
 }

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { checkMealie } from './api';
+import { checkMealie, protectedReason } from './api';
 
 const json = (body, status = 200) => ({ ok: status < 400, status, headers: new Headers({ 'content-type': 'application/json' }), json: async () => body });
 const html = () => ({ ok: true, status: 200, headers: new Headers({ 'content-type': 'text/html' }), json: async () => { throw new Error('not json'); } });
@@ -41,5 +41,20 @@ describe('checkMealie', () => {
         expect((await checkMealie()).status).toBe('unreachable');
         stubFetch({ '/app/about': new TypeError('Failed to fetch') });
         expect((await checkMealie()).status).toBe('unreachable');
+    });
+});
+
+describe('protectedReason', () => {
+    it('never lets FitPad change recipes typed in by hand', () => {
+        expect(protectedReason({ name: "Nana's Spaghetti Pie", orgURL: null, settings: { locked: false } })).toMatch(/typed in/);
+        expect(protectedReason({ orgURL: '', settings: {} })).toMatch(/typed in/);
+    });
+
+    it('respects a lock set in Mealie', () => {
+        expect(protectedReason({ orgURL: 'https://example.com/shakshuka', settings: { locked: true } })).toMatch(/locked/);
+    });
+
+    it('allows tidying recipes saved from a website', () => {
+        expect(protectedReason({ orgURL: 'https://example.com/shakshuka', settings: { locked: false } })).toBeNull();
     });
 });

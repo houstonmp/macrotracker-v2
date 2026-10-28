@@ -11,8 +11,9 @@ import FilterChoice from '../../components/Entry/EntryCard/FilterChoice';
 import { recipeListActions } from '../../components/store/recipe-list-slice';
 import { uiActions } from '../../components/store/ui-slice';
 import { createId, defaultAmount, foodAmountMacros, scaleMacros, sumMacros } from '../../assets/food';
+import { formatDay, localDate } from '../../assets/functions';
 import { fetchUsdaPortions, searchUsda } from '../../assets/usda';
-import { findOrCreate, getRecipe, listRecipes, parseIngredients, saveIngredients } from './api';
+import { findOrCreate, getRecipe, listRecipes, parseIngredients, protectedReason, saveIngredients } from './api';
 import { matchesAll, mealieMeasure, singular, normalizeFractions, pantryMatch, parseNumber, rankUsda, readLine, suggestAmount, usdaQuery } from './ingredients';
 import classes from './MealieImport.module.css';
 
@@ -109,6 +110,10 @@ const RecipePicker = ({ onPick }) => {
 }
 
 // ---- Step 2: check each ingredient ----
+
+// "425 gram chickpea, drained" — how a tidied line will read in Mealie
+const measureText = (measure) => [measure.quantity || '', measure.unitName, measure.foodName].filter(Boolean).join(' ')
+    + (measure.note ? `, ${measure.note}` : '');
 
 // 'skipped', 'needs' (no food, no amount, or not looked at yet) or 'ok'
 const lineStatus = (line) => {
@@ -234,9 +239,16 @@ const IngredientMatcher = ({ summary, onBack }) => {
     const [servings, setServings] = useState(String(summary.recipeServings || parseNumber(summary.recipeYield || '') || 1));
     const [status, setStatus] = useState('loading');
     const [message, setMessage] = useState('');
+    // Mealie is only changed when this is ticked for this import
+    const [tidy, setTidy] = useState(false);
+    // Bumped after a restore so the lines are read again from Mealie
+    const [reloads, setReloads] = useState(0);
+    const existing = recipeObj.recipes.find(el => el.mealie && el.mealie.slug === summary.slug);
+    const backup = existing && existing.mealie.backup;
 
     useEffect(() => {
         let live = true;
+        setStatus('loading');
         const updateLine = (index, changes) => live && setLines(prev => prev.map((el, n) => (n === index ? { ...el, ...changes } : el)));
 
         (async () => {
@@ -289,7 +301,7 @@ const IngredientMatcher = ({ summary, onBack }) => {
         // Matches against the pantry as it was when the recipe opened; adding foods
         // while checking lines shouldn't start the matching over
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [summary.slug]);
+    }, [summary.slug, reloads]);
 
     const onLineChange = (index, changes) => {
         setLines(prev => prev.map((el, n) => (n === index ? { ...el, ...changes } : el)));
@@ -300,6 +312,12 @@ const IngredientMatcher = ({ summary, onBack }) => {
     const servingCount = Number(servings);
     const totals = sumMacros(counted.map(line => foodAmountMacros({ food: line.food, ...line.amount })));
     const formIsValid = status === 'ready' && needs === 0 && counted.length > 0 && name.trim() !== '' && servingCount > 0;
+
+    // The counted lines as they'd read in Mealie, for the preview and the save
+    const tidyPlan = lines.map((line, n) => (lineStatus(line) === 'ok'
+        ? { n, text: line.text, measure: mealieMeasure({ line: line.read, food: line.food, amount: line.amount }) }
+        : null)).filter(Boolean);
+    const lockedReason = recipe && protectedReason(recipe);
 
     const saveToMealie = async () => {
         // One lookup per name, so two lines of "garlic" don't create two foods
@@ -314,14 +332,15 @@ const IngredientMatcher = ({ summary, onBack }) => {
             }
             return cache.get(key);
         }
+        const planFor = Object.fromEntries(tidyPlan.map(el => [el.n, el]));
         const original = recipe.recipeIngredient || [];
         const updated = await Promise.all(original.map(async (ingredient, n) => {
-            const line = lines[n];
+            const plan = planFor[n];
             // Lines that aren't counted stay exactly as they were
-            if (!line || lineStatus(line) !== 'ok') {
+            if (!plan) {
                 return ingredient;
             }
-            const measure = mealieMeasure({ line: line.read, food: line.food, amount: line.amount });
+            const { measure } = plan;
             const [food, unit] = await Promise.all([
                 lookup('foods', measure.foodName),
                 measure.unitName ? lookup('units', measure.unitName) : null,
@@ -333,16 +352,37 @@ const IngredientMatcher = ({ summary, onBack }) => {
                 food,
                 note: measure.note,
                 // Keep the recipe's own wording alongside the tidy version
-                originalText: ingredient.originalText || line.text,
+                originalText: ingredient.originalText || plan.text,
             };
         }));
         await saveIngredients(recipe.slug, updated);
+    }
+
+    const onRestoreHandler = () => {
+        setStatus('saving');
+        setMessage('');
+        saveIngredients(summary.slug, backup.ingredients)
+            .then(() => {
+                // The copy has done its job; Mealie has the originals again
+                const mealie = { ...existing.mealie };
+                delete mealie.backup;
+                dispatch(recipeListActions.removeEntry({ list: 'recipes', id: existing.id }));
+                dispatch(recipeListActions.addEntry({ list: 'recipes', data: { ...existing, mealie } }));
+                setTidy(false);
+                setMessage('The original ingredients are back in Mealie.');
+                setReloads(count => count + 1);
+            })
+            .catch(() => {
+                setStatus('ready');
+                setMessage("Couldn't reach Mealie, so nothing changed. Try again in a moment.");
+            });
     }
 
     const submitHandler = () => {
         if (!formIsValid) {
             return false;
         }
+        const willTidy = tidy && !lockedReason;
         setStatus('saving');
         setMessage('');
 
@@ -365,15 +405,24 @@ const IngredientMatcher = ({ summary, onBack }) => {
                 instructions: '',
                 img: '',
                 ingredients: counted.map(line => ({ food: line.food, quantity: Number(line.amount.quantity), portion: line.amount.portion })),
-                mealie: { slug: recipe.slug, id: recipe.id },
+                mealie: {
+                    slug: recipe.slug,
+                    id: recipe.id,
+                    // A copy of Mealie's ingredients from before FitPad first changed them,
+                    // so they can be put back. Tidying again keeps the oldest copy.
+                    ...(backup ? { backup } : willTidy ? { backup: { date: localDate(), ingredients: recipe.recipeIngredient || [] } } : {}),
+                },
             }
         }));
 
+        if (!willTidy) {
+            return true;
+        }
         saveToMealie()
             .then(() => dispatch(uiActions.closeModal()))
             .catch(() => {
                 setStatus('ready');
-                setMessage("Saved in FitPad, but Mealie couldn't be updated. Its ingredients are unchanged; you can import again later to tidy them.");
+                setMessage("Saved in FitPad, but Mealie couldn't be updated. Its ingredients are unchanged.");
             });
         // The modal closes once Mealie has been updated
         return false;
@@ -390,7 +439,7 @@ const IngredientMatcher = ({ summary, onBack }) => {
     }
 
     return <Form onFormSubmit={submitHandler} formIsValid={formIsValid}
-        submitText={status === 'saving' ? 'Saving…' : 'Save to FitPad & Mealie'}>
+        submitText={status === 'saving' ? 'Saving…' : tidy && !lockedReason ? 'Save to FitPad & Mealie' : 'Save to FitPad'}>
         <li>
             <button type="button" className={classes.textButton} onClick={onBack}>← All recipes</button>
         </li>
@@ -418,6 +467,30 @@ const IngredientMatcher = ({ summary, onBack }) => {
         {counted.length > 0 && <li>
             <MacroSummary label="Total" detail={servingCount > 1 ? `${Math.round(scaleMacros(totals, 1 / servingCount).calories)} kcal per serving` : null} macros={totals} />
         </li>}
+
+        <li className={formClasses.section}>In Mealie</li>
+        {backup && <li className={classes.mealieBox}>
+            <p>FitPad tidied this recipe&apos;s ingredients in Mealie on {formatDay(backup.date)} and kept a copy of the originals.</p>
+            <button type="button" className={classes.textButton} onClick={onRestoreHandler} disabled={status === 'saving'}>Put the original ingredients back</button>
+        </li>}
+        {lockedReason ? <li><p className={formClasses.note}>Nothing in Mealie will change. {lockedReason}</p></li> : <>
+            <li>
+                <label className={classes.tidyToggle}>
+                    <input type="checkbox" checked={tidy} onChange={e => setTidy(e.target.checked)} />
+                    <span>Also tidy this recipe&apos;s ingredients in Mealie</span>
+                </label>
+                {!tidy && <p className={formClasses.note}>Off: Mealie stays exactly as it is. Only FitPad saves the recipe.</p>}
+            </li>
+            {tidy && <li className={classes.mealieBox}>
+                <p>These {tidyPlan.length} lines will change in Mealie. Everything else (steps, photos and the lines that aren&apos;t counted) stays as it is, and each line keeps its original wording.{backup ? '' : ' FitPad keeps a copy of the current ingredients so you can put them back.'}</p>
+                <ul className={classes.preview}>
+                    {tidyPlan.map(el => <li key={el.n}>
+                        <span className={classes.before}>{el.text}</span>
+                        <span className={classes.after}>→ {measureText(el.measure)}</span>
+                    </li>)}
+                </ul>
+            </li>}
+        </>}
         {message && <li><p className={classes.error} role="alert">{message}</p></li>}
     </Form>
 }

@@ -52,53 +52,74 @@
     font-size: .8rem;
 }
 
-/* − 3 cups + */
-.cups {
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-    margin-top: .6rem;
+/* Coffee cups and water glasses side by side, stacked when narrow */
+.steppers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: .5rem;
+    margin-top: 1rem;
 }
 
-.cups button {
+.stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .5rem .6rem .5rem .85rem;
+    border-radius: 10px;
+    background-color: var(--color-gamma-200);
+}
+
+.stepperName {
+    display: flex;
+    flex-direction: column;
+    font-size: .9rem;
+}
+
+.stepperName small {
+    font-size: .72rem;
+    opacity: .7;
+}
+
+.stepperControls {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+}
+
+.stepperControls button {
     flex: 0 0 auto;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
     margin: 0;
     padding: 0;
     border: none;
     border-radius: 50%;
     background-color: var(--color-gamma-300);
     color: inherit;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     line-height: 1;
     cursor: pointer;
 }
 
-.cups button:hover:not(:disabled) {
+.stepperControls button:hover:not(:disabled) {
     background-color: var(--color-beta-500);
     color: white;
 }
 
-.cups button:disabled {
+.stepperControls button:disabled {
     opacity: .35;
     cursor: default;
 }
 
-:global(.dark) .cups button {
+:global(.dark) .stepperControls button {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.cupCount {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 4.5rem;
-}
-
-.cupCount small {
-    font-size: .72rem;
-    opacity: .7;
+.count {
+    min-width: 1.5rem;
+    text-align: center;
+    font-size: 1.1rem;
 }
 
 .exact {

@@ -13,9 +13,9 @@ import WaterCard from './WaterCard';
 const reduce = (actions, state = foodDiarySlice.getInitialState()) => actions.reduce(foodDiarySlice.reducer, state);
 
 describe('water goal', () => {
-    it('is 33 ml per kg, rounded to 50 ml', () => {
+    it('is 26 ml per kg for drinks, rounded to 50 ml', () => {
         // 244 lbs is 110.7 kg
-        expect(waterGoal(110.7)).toBe(3650);
+        expect(waterGoal(110.7)).toBe(2900);
         expect(waterGoal(undefined)).toBe(null);
     });
 
@@ -63,14 +63,16 @@ describe('WaterCard', () => {
         return renderToString(<Provider store={store}><WaterCard /></Provider>).replace(/<!-- -->/g, '');
     }
 
-    it('shows the share of the goal, the cups and exact amounts', () => {
+    it('shows the share of the goal, cups, glasses and exact amounts', () => {
         const html = render([{ date: localDate(), food: [], macros: {}, water: [
-            { id: 'a', kind: 'cup', ml: 240 }, { id: 'b', kind: 'cup', ml: 240 }, { id: 'c', kind: 'exact', ml: 500, label: '16.9 fl oz' },
+            { id: 'a', kind: 'cup', ml: 240 }, { id: 'b', kind: 'cup', ml: 240 }, { id: 'g', kind: 'glass', ml: 355 },
+            { id: 'c', kind: 'exact', ml: 500, label: '16.9 fl oz' },
         ] }], [{ date: '2026-10-01', lbs: 244, kgs: 110.7 }]);
-        // 980 of 3650 ml
-        expect(html).toContain('27%');
-        expect(html).toContain('0.98 L of 3.65 L');
-        expect(html).toContain('2 cups');
+        // 1335 of 2900 ml
+        expect(html).toContain('46%');
+        expect(html).toContain('1.34 L of 2.9 L');
+        expect(html).toContain('Coffee cups');
+        expect(html).toContain('Water glass<');
         expect(html).toContain('16.9 fl oz');
     });
 

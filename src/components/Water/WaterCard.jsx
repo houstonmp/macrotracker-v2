@@ -9,7 +9,7 @@ import { createId } from '../../assets/food';
 import { foodDiaryActions } from '../store/food-diary-slice';
 import { uiActions } from '../store/ui-slice';
 import { selectLatestWeight } from '../store/selectors';
-import { CUP_ML, ML_PER_KG, litres, toMl, waterGoal, waterTotal } from './water';
+import { ML_PER_KG, SERVINGS, litres, toMl, waterGoal, waterTotal } from './water';
 import classes from './WaterCard.module.css';
 
 const UNITS = [{ id: 'oz', label: 'fl oz' }, { id: 'ml', label: 'ml' }];
@@ -34,7 +34,17 @@ const WaterGlass = ({ share }) => {
     </svg>
 }
 
-// Today's water: quick cups for an estimate, or an exact amount from a bottle's label
+// − 3 + for one kind of quick add
+const Stepper = ({ serving, count, onAdd, onRemove }) => <div className={classes.stepper}>
+    <span className={classes.stepperName}>{count === 1 ? serving.label : serving.plural}<small>{serving.size} each</small></span>
+    <div className={classes.stepperControls}>
+        <button type="button" aria-label={`Remove a ${serving.label.toLowerCase()}`} disabled={count === 0} onClick={onRemove}>−</button>
+        <span className={classes.count}>{count}</span>
+        <button type="button" aria-label={`Add a ${serving.label.toLowerCase()}`} onClick={onAdd}>+</button>
+    </div>
+</div>
+
+// Today's drinks: quick cups and glasses for an estimate, or an exact amount from a bottle's label
 const WaterCard = (props) => {
     const dispatch = useDispatch();
     const date = localDate();
@@ -48,8 +58,8 @@ const WaterCard = (props) => {
     const total = waterTotal(day);
     const share = goal ? total / goal : 0;
     const entries = day && day.water ? day.water : [];
-    const cups = entries.filter(el => el.kind === 'cup');
-    const exact = entries.filter(el => el.kind !== 'cup');
+    const quickKinds = SERVINGS.map(el => el.kind);
+    const exact = entries.filter(el => !quickKinds.includes(el.kind));
 
     const add = (entry) => dispatch(foodDiaryActions.addWater({ date, entry: { id: createId(), ...entry } }));
     const remove = (id) => dispatch(foodDiaryActions.removeWater({ date, id }));
@@ -66,7 +76,7 @@ const WaterCard = (props) => {
 
     return <Card classes={props.classes}>
         <CardHeader Icon={GlassIcon} title="Water" subtitle={goal
-            ? `Goal ${litres(goal)} · ${ML_PER_KG} ml per kg of your weight`
+            ? `Goal ${litres(goal)} of drinks · ${ML_PER_KG} ml per kg of your weight`
             : 'Log a weigh-in to get a goal from your weight'} />
         <div className={classes.layout}>
             <WaterGlass share={share} />
@@ -74,17 +84,16 @@ const WaterCard = (props) => {
                 {goal && <span className={classes.percent}>{Math.round(share * 100)}%</span>}
                 <span>{litres(total)}{goal && ` of ${litres(goal)}`}</span>
                 {goal && share >= 1 && <span className={classes.done}>Goal reached today</span>}
-
-                <div className={classes.cups}>
-                    <button type="button" aria-label="Remove a cup" disabled={cups.length === 0}
-                        onClick={() => remove(cups[cups.length - 1].id)}>−</button>
-                    <span className={classes.cupCount}>
-                        {cups.length} {cups.length === 1 ? 'cup' : 'cups'}
-                        <small>8 fl oz each</small>
-                    </span>
-                    <button type="button" aria-label="Add a cup" onClick={() => add({ kind: 'cup', ml: CUP_ML })}>+</button>
-                </div>
             </div>
+        </div>
+
+        <div className={classes.steppers}>
+            {SERVINGS.map(serving => {
+                const added = entries.filter(el => el.kind === serving.kind);
+                return <Stepper key={serving.kind} serving={serving} count={added.length}
+                    onAdd={() => add({ kind: serving.kind, ml: serving.ml })}
+                    onRemove={() => remove(added[added.length - 1].id)} />
+            })}
         </div>
 
         <form className={classes.exact} onSubmit={onExactHandler}>

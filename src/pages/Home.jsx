@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { uiActions } from "../components/store/ui-slice";
 import FoodDiary from "../components/Entry/FoodDiary";
 import WeightChart from "../components/Weight/WeightChart";
+import WaterCard from "../components/Water/WaterCard";
 import classes from './Home.module.css';
 
 const Home = () => {  const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const Home = () => {  const dispatch = useDispatch();
   return <PageContent title="Home">
     <FoodDiary showLogLink />
     <MacroList></MacroList>
+    <WaterCard />
     <WeightEntry
       onModal={showModalHandler} ></WeightEntry>
     <WeightChart classes={classes.chart} />

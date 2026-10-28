@@ -2,6 +2,15 @@ import { createSlice } from '@reduxjs/toolkit'
 import { sumMacros } from '../../assets/food';
 
 const dayMacros = (day) => sumMacros(day.food.map(entry => entry.macros));
+const emptyDay = (date) => ({ date, food: [], water: [], macros: sumMacros([]) });
+
+// A day stays while it has any food or water logged
+const removeIfEmpty = (state, dayIndex) => {
+    const day = state.diaryObj[dayIndex];
+    if (day.food.length === 0 && day.water.length === 0) {
+        state.diaryObj.splice(dayIndex, 1);
+    }
+}
 
 const foodDiarySlice = createSlice({
     name: 'fDiary',
@@ -21,7 +30,7 @@ const foodDiarySlice = createSlice({
                 day.food.push(entry);
                 day.macros = dayMacros(day);
             } else {
-                state.diaryObj.push({ date, food: [entry], macros: entry.macros });
+                state.diaryObj.push({ ...emptyDay(date), food: [entry], macros: entry.macros });
             }
             state.changed = true;
         },
@@ -34,11 +43,29 @@ const foodDiarySlice = createSlice({
             day.food = day.food.filter(entry => entry.id !== action.payload.id);
 
             // Recalculate from what's left rather than subtracting, so rounding can't drift
-            if (day.food.length === 0) {
-                state.diaryObj.splice(dayIndex, 1);
-            } else {
-                day.macros = dayMacros(day);
+            day.macros = dayMacros(day);
+            removeIfEmpty(state, dayIndex);
+            state.changed = true;
+        },
+        // entry: { id, ml, kind: 'cup' | 'exact', label }
+        addWater(state, action) {
+            const { date, entry } = action.payload;
+            let day = state.diaryObj.find(el => el.date === date);
+            if (!day) {
+                state.diaryObj.push(emptyDay(date));
+                day = state.diaryObj[state.diaryObj.length - 1];
             }
+            day.water.push(entry);
+            state.changed = true;
+        },
+        removeWater(state, action) {
+            const dayIndex = state.diaryObj.findIndex(el => el.date === action.payload.date);
+            if (dayIndex === -1) {
+                return;
+            }
+            const day = state.diaryObj[dayIndex];
+            day.water = day.water.filter(entry => entry.id !== action.payload.id);
+            removeIfEmpty(state, dayIndex);
             state.changed = true;
         }
     }

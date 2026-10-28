@@ -32,7 +32,7 @@ const FoodDiary = (props) => {
         <CardHeader Icon={BookIcon} title="Food diary" subtitle={`${formatDay(date)} · ${count} ${count === 1 ? 'item' : 'items'}`}>
             {props.showLogLink && <Link to="/food">+ Log food</Link>}
         </CardHeader>
-        {foodDiary ? <EntryList>
+        {count > 0 ? <EntryList>
             {foodDiary.food.map(item => <EntryRow key={item.id}
                 name={item.name}
                 detail={item.amount}

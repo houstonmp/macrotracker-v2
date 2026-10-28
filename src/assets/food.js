@@ -234,6 +234,8 @@ const migrateDiaryEntry = (entry) => (entry.macros ? entry : {
 export const migrateDiaryObj = (diaryObj = []) => diaryObj
     .map(day => {
         const food = (day.food || []).map(migrateDiaryEntry);
-        return { date: day.date, food, macros: sumMacros(food.map(entry => entry.macros)) };
+        // Firebase drops empty arrays, so a day without water comes back without the key
+        const water = (day.water || []).filter(entry => entry && entry.ml > 0);
+        return { date: day.date, food, water, macros: sumMacros(food.map(entry => entry.macros)) };
     })
-    .filter(day => day.food.length > 0);
+    .filter(day => day.food.length > 0 || day.water.length > 0);

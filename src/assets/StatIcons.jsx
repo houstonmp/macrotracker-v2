@@ -79,4 +79,9 @@ const AwardIcon = ({ color }) => <StatIcon color={color}>
     <path d="M15.5 13.2 17 22l-5-3-5 3 1.5-8.8" />
 </StatIcon>
 
-export { AwardIcon, ChefHatIcon, TrendIcon, HeartIcon, BoltIcon, TargetIcon, EggIcon, WheatIcon, DropIcon, ScaleIcon, BookIcon, BasketIcon, CalendarCheckIcon, FlagIcon };
+const GlassIcon = ({ color }) => <StatIcon color={color}>
+    <path d="M5 3h14l-1.6 16.2A2 2 0 0 1 15.4 21H8.6a2 2 0 0 1-2-1.8Z" />
+    <path d="M5.6 9h12.8" />
+</StatIcon>
+
+export { AwardIcon, GlassIcon, ChefHatIcon, TrendIcon, HeartIcon, BoltIcon, TargetIcon, EggIcon, WheatIcon, DropIcon, ScaleIcon, BookIcon, BasketIcon, CalendarCheckIcon, FlagIcon };

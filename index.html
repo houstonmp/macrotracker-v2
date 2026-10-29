@@ -8,7 +8,19 @@
   <title>Health App</title>
 </head>
 
-<body class="dark">
+<body>
+  <!-- Apply the saved theme before anything draws; see src/assets/themeCache.js -->
+  <script>
+    (function () {
+      var theme = null;
+      try { theme = JSON.parse(localStorage.getItem('fitpad-theme')); } catch (error) { }
+      if (!theme || !theme.lightMode || !theme.themeName) {
+        var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        theme = { lightMode: dark ? 'dark' : 'light', themeName: 'teal' };
+      }
+      document.body.className = theme.lightMode + ' ' + theme.themeName;
+    })();
+  </script>
   <div id="root"></div>
   <div id="overlays"></div>
   <script type="module" src="/src/main.jsx"></script>

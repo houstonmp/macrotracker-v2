@@ -7,7 +7,7 @@ import Waves from "./assets/Waves";
 import Calendar from "./pages/Calendar";
 import Insights from "./pages/Insights";
 import Settings from "./pages/settings/Settings"
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { auth } from "./Firebase";
 import { useNavigate } from "react-router-dom";
 
@@ -22,6 +22,11 @@ import { weightActions } from "./components/store/weight-slice";
 import { foodDiaryActions } from "./components/store/food-diary-slice";
 import { recipeListActions } from "./components/store/recipe-list-slice";
 import { migrateDiaryObj, migrateRecipeObj } from "./assets/food";
+import { cacheTheme } from "./assets/themeCache";
+import LoadingScreen from "./components/UI/LoadingScreen";
+
+// Pages you can be on while signed out
+const SIGNED_OUT_PAGES = ['/signin', '/register'];
 
 
 function App() {
@@ -34,16 +39,21 @@ function App() {
   const recipeSelector = useSelector(state => state.recipes)
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-
+  // 'auth' until Firebase has restored any saved sign-in from the device, then 'loading'
+  // while your data comes down. Nothing else shows until then, so there's no sign-in
+  // page flash and nothing can save an empty app over your data.
+  const [startup, setStartup] = useState('auth');
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    auth.onAuthStateChanged((userAuth) => {
+    return auth.onAuthStateChanged((userAuth) => {
       try {
         if (userAuth) {
           sessionStorage.setItem('Auth Token', userAuth.accessToken)
+          setStartup('loading');
 
           dispatch(fetchData({
+            onError: () => setStartup('error'),
             url: 'users/' + userAuth.uid + '/healthApp.json?auth=',
             saveData: (data) => {
               try {
@@ -71,9 +81,11 @@ function App() {
 
               if (!savedUser.height || !savedUser.activityLevel || !savedUser.birthday || !savedUser.weightDeficit) {
                 navigate('/register');
-              } else {
+              } else if (SIGNED_OUT_PAGES.includes(window.location.pathname)) {
                 navigate('');
               }
+              // Otherwise stay put, so a refresh on Insights stays on Insights
+              setStartup('ready');
             },
             header: {
               method: 'GET',
@@ -86,6 +98,10 @@ function App() {
 
         } else {
           sessionStorage.removeItem("Auth Token");
+          setStartup('signedOut');
+          if (!SIGNED_OUT_PAGES.includes(window.location.pathname)) {
+            navigate('/signin');
+          }
         }
       } catch (error) {
         console.log("Error", error.message)
@@ -93,14 +109,15 @@ function App() {
 
     }
     )
-  }, [auth])
+  }, [attempt])
 
 
 
   useEffect(() => {
     const body = document.querySelector('body');
     body.classList = `${lightMode} ${themeName}`
-  }, [uiSelector.userPreferences])
+    cacheTheme({ lightMode, themeName });
+  }, [lightMode, themeName])
 
   useEffect(() => {
     if ((weightSelector.changed || diarySelector.changed || uiSelector.changed || recipeSelector.changed) && user.uid) {
@@ -122,15 +139,12 @@ function App() {
     }
   }, [weightSelector.weightObj, diarySelector.diaryObj, uiSelector.userPreferences, recipeSelector.recipeObj, dispatch]);
 
-  useEffect(() => {
-    let authToken = sessionStorage.getItem('Auth Token')
-    if (authToken) {
-      navigate('')
-    }
-    if (!authToken) {
-      navigate('/signin')
-    }
-  }, [])
+  if (startup === 'auth' || startup === 'loading' || startup === 'error') {
+    return <LoadingScreen failed={startup === 'error'} onRetry={() => {
+      setStartup('auth');
+      setAttempt(attempt + 1);
+    }} />
+  }
 
   return (
     <>

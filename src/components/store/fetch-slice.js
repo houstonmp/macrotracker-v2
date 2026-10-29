@@ -40,6 +40,7 @@ export const fetchData = (fetchObj) => {
                 title: 'Upload Failed',
                 message: error.message
             }));
+            fetchObj.onError && fetchObj.onError(error);
         }
     }
 }

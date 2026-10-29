@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { cachedTheme } from '../../assets/themeCache';
 
 const uiSlice = createSlice({
     name: 'ui',
@@ -9,10 +10,8 @@ const uiSlice = createSlice({
             modalInformation: null,
         },
         userPreferences: {
-            theme: {
-                themeName: 'teal',
-                lightMode: 'light'
-            },
+            // Starts from the device's copy so the app doesn't flash another theme
+            theme: cachedTheme(),
             settings: {},
             user: {}
         },

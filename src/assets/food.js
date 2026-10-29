@@ -237,9 +237,13 @@ export const migrateDiaryObj = (diaryObj = []) => diaryObj
         // Firebase drops empty arrays, so a day without water comes back without the key
         const water = (day.water || []).filter(entry => entry && entry.ml > 0);
         const migrated = { date: day.date, food, water, macros: sumMacros(food.map(entry => entry.macros)) };
+        const exercise = (day.exercise || []).filter(entry => entry && entry.name);
+        if (exercise.length > 0) {
+            migrated.exercise = exercise;
+        }
         return day.untracked ? { ...migrated, untracked: true } : migrated;
     })
-    .filter(day => day.food.length > 0 || day.water.length > 0 || day.untracked);
+    .filter(day => day.food.length > 0 || day.water.length > 0 || day.exercise || day.untracked);
 
 // Typical shares of calories from protein, carbs and fat for food you can't weigh, so a
 // quick estimate still lands in your macros. Rough averages of common takeout.

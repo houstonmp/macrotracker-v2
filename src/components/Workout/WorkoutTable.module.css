@@ -1,44 +1,68 @@
-.table-classes {
-    grid-template-columns: 12% 12% 12% 12% 5.7% 5.7% 5.7% 5.7% 5.7% 5.7% 5.7% 5.7%;
-    max-height: fit-content;
-    height: fit-content;
-    /* height: max-content; */
-    justify-content: center;
-}
-
+/* The checklist is the widest card, so it gets the whole row */
 .cardFlex {
-    /* flex-basis: 100%; */
-    /* flex-grow: 1; */
-    height: fit-content;
+    flex-basis: 100%;
 }
 
-.cardFlex td:nth-child(6n),
-.cardFlex td:nth-child(7n),
-.cardFlex td:nth-child(8n),
-.cardFlex td:nth-child(9n),
-.cardFlex td:nth-child(10n),
-.cardFlex td:nth-child(11n),
-.cardFlex td:nth-child(12n) {
-    border-left: 1px solid black;
+/* Twelve columns are wider than a phone: the table scrolls inside the card */
+.scroll {
+    overflow-x: auto;
 }
 
-td input {
+.table-classes {
+    grid-template-columns: minmax(10rem, 2fr) minmax(5rem, 1fr) 5.5rem 5.5rem 3.5rem repeat(7, minmax(2.5rem, .5fr));
+    min-width: 46rem;
+    max-height: none;
+    margin: 0;
+}
+
+.table-classes th {
+    padding: .5rem .25rem;
+    border-bottom: 1px solid var(--color-gamma-300);
+    font-size: .75rem;
+    font-weight: 600;
+    text-align: center;
+    opacity: .8;
+}
+
+.table-classes th.left,
+.table-classes td.left {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+/* A soft line between the details and the days, instead of a black border on every day */
+.table-classes .dayHead:nth-of-type(6),
+.table-classes .dayCell:nth-of-type(6) {
+    border-left: 1px solid var(--color-gamma-300);
+}
+
+.table-classes td input:not([type="checkbox"]) {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: .3rem .4rem;
+    border: 1px solid transparent;
+    border-radius: 6px;
     background-color: transparent;
-    border: none;
-    max-width: 100%;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
 }
 
-td input:focus {
-    background-color: white;
+.table-classes td input:not([type="checkbox"]):hover {
+    border-color: var(--color-gamma-300);
 }
 
-@media only screen and (max-width: 768px) {
-    /* Twelve columns don't fit a phone, so the table scrolls sideways */
-    .cardFlex {
-        overflow-x: auto;
-    }
+.table-classes td input:not([type="checkbox"]):focus {
+    border-color: var(--color-beta-500);
+    background-color: var(--color-gamma);
+    outline: none;
+}
 
-    .table-classes {
-        min-width: 44rem;
-    }
+.table-classes td input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0;
+    accent-color: #3e9e6e;
+    cursor: pointer;
 }

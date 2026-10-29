@@ -24,6 +24,7 @@ import { recipeListActions } from "./components/store/recipe-list-slice";
 import { migrateDiaryObj, migrateRecipeObj } from "./assets/food";
 import { cacheTheme } from "./assets/themeCache";
 import LoadingScreen from "./components/UI/LoadingScreen";
+import useBikeRides from "./components/Exercise/useBikeRides";
 
 // Pages you can be on while signed out
 const SIGNED_OUT_PAGES = ['/signin', '/register'];
@@ -44,6 +45,7 @@ function App() {
   // page flash and nothing can save an empty app over your data.
   const [startup, setStartup] = useState('auth');
   const [attempt, setAttempt] = useState(0);
+  useBikeRides(startup === 'ready');
 
   useEffect(() => {
     return auth.onAuthStateChanged((userAuth) => {

@@ -1,6 +1,7 @@
 import Table from "../UI/Table";
 import Card from "../UI/Card";
-import Button from "../UI/Button";
+import CardHeader from "../UI/CardHeader";
+import { FlagIcon } from "../../assets/StatIcons";
 import classes from './WorkoutTable.module.css'
 import ReactToPrint from "react-to-print";
 import { useRef } from "react";
@@ -208,70 +209,39 @@ const DUMMY_DATA = [
     },
 ]
 
+// Same Sunday-first week as the exercise week card
+const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
 const WorkoutTable = () => {
     const componentRef = useRef();
 
     return <Card classes={classes.cardFlex}>
-
-        <Table ref={componentRef} tableClasses={classes['table-classes']} header={
-            <tr>
-                <th>
-                    Workout Name
-                </th>
-                <th>
-                    Area
-                </th>
-                <th>
-                    lbs
-                </th>
-                <th>
-                    reps
-                </th>
-                <th>
-                    sets
-                </th>
-                <th>
-                    Mo
-                </th>
-                <th>
-                    Tu
-                </th>
-                <th>
-                    We
-                </th>
-                <th>
-                    Thu
-                </th>
-                <th>
-                    Fr
-                </th>
-                <th>
-                    Sa
-                </th>
-                <th>
-                    Su
-                </th>
-            </tr>
-        }>
-            {DUMMY_DATA.map(el => {
-                return <tr>
-                    <td><input defaultValue={el.name} /></td>
-                    <td><input defaultValue={el.area} /></td>
-                    <td><input defaultValue={`${el.wght}${el.unit}`} /></td>
-                    <td><input defaultValue={el.reps} /></td>
-                    <td><input defaultValue={el.sets} /></td>
-                    <td><input type="checkbox"></input></td>
-                    <td><input type="checkbox"></input></td>
-                    <td><input type="checkbox"></input></td>
-                    <td><input type="checkbox"></input></td>
-                    <td><input type="checkbox"></input></td>
-                    <td><input type="checkbox"></input></td>
-                    <td><input type="checkbox"></input></td>
+        <CardHeader Icon={FlagIcon} title="Workout checklist" subtitle={`${DUMMY_DATA.length} exercises from your trainer · check off the days you do each`}>
+            <ReactToPrint trigger={() => <button type="button">Print</button>} content={() => componentRef.current} />
+        </CardHeader>
+        <div className={classes.scroll}>
+            <Table ref={componentRef} tableClasses={classes['table-classes']} header={
+                <tr>
+                    <th className={classes.left}>Exercise</th>
+                    <th className={classes.left}>Area</th>
+                    <th>Weight</th>
+                    <th>Reps</th>
+                    <th>Sets</th>
+                    {DAYS.map(day => <th key={day} className={classes.dayHead}>{day}</th>)}
                 </tr>
-            })
-            }
-        </Table>
-        <ReactToPrint trigger={() => <Button>Print!</Button>} content={() => componentRef.current} />
+            }>
+                {DUMMY_DATA.map((el, i) => <tr key={`${el.name}-${i}`}>
+                    <td className={classes.left}><input aria-label="Exercise" defaultValue={el.name} /></td>
+                    <td className={classes.left}><input aria-label="Area" defaultValue={el.area} /></td>
+                    <td><input aria-label="Weight" defaultValue={`${el.wght} ${el.unit}`} /></td>
+                    <td><input aria-label="Reps" defaultValue={el.reps} /></td>
+                    <td><input aria-label="Sets" defaultValue={el.sets} /></td>
+                    {DAYS.map(day => <td key={day} className={classes.dayCell}>
+                        <input type="checkbox" aria-label={`${el.name} on ${day}`} />
+                    </td>)}
+                </tr>)}
+            </Table>
+        </div>
     </Card>
 }
 

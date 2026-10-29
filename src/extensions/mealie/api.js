@@ -1,5 +1,5 @@
 // Mealie extension. FitPad works without it; it only switches on where the proxy on the
-// home server answers (~/fitpad/nginx on hera). The proxy holds the API token and adds it
+// home server's proxy answers. The proxy holds the API token and adds it
 // to each call, so nothing in the browser ever sees it. On Netlify there's no proxy, the
 // check comes back 'unavailable', and FitPad doesn't show anything Mealie related.
 

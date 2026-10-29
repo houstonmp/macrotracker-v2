@@ -14,6 +14,7 @@ import { formatDay } from "../assets/functions";
 import WeightEntry from "../components/Weight/WeightEntry";
 import WeightChart from "../components/Weight/WeightChart";
 import WeightScore from "../components/Weight/WeightScore";
+import ReportCard from "../components/Insights/ReportCard";
 
 // Hints say where each number comes from
 const TARGETS = [
@@ -29,7 +30,7 @@ const Insights = () => {
     const dispatch = useDispatch();
     const targets = useSelector(selectDailyTargets);
     const latestWeight = useSelector(selectLatestWeight);
-    // The score card follows whichever week or month the chart is showing
+    // The report card and weight score follow whichever week, month or year the chart is showing
     const [rangeId, setRangeId] = useState('month');
     const [offset, setOffset] = useState(0);
 
@@ -46,6 +47,7 @@ const Insights = () => {
     return <PageContent title="Insights">
         <WeightEntry onModal={showModalHandler} />
         <WeightChart rangeId={rangeId} onRangeChange={setRangeId} offset={offset} onOffsetChange={setOffset} />
+        <ReportCard rangeId={rangeId} offset={offset} classes={classes.report} />
         <WeightScore rangeId={rangeId} offset={offset} />
         <Card classes={classes.targets}>
             <CardHeader Icon={FlagIcon} title="Daily targets" subtitle={latestWeight

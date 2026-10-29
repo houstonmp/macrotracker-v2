@@ -4,10 +4,10 @@ import { sumMacros } from '../../assets/food';
 const dayMacros = (day) => sumMacros(day.food.map(entry => entry.macros));
 const emptyDay = (date) => ({ date, food: [], water: [], macros: sumMacros([]) });
 
-// A day stays while it has any food or water logged, or is marked untracked
+// A day stays while it has any food, water or exercise logged, or is marked untracked
 const removeIfEmpty = (state, dayIndex) => {
     const day = state.diaryObj[dayIndex];
-    if (day.food.length === 0 && day.water.length === 0 && !day.untracked) {
+    if (day.food.length === 0 && day.water.length === 0 && !(day.exercise && day.exercise.length) && !day.untracked) {
         state.diaryObj.splice(dayIndex, 1);
     }
 }
@@ -72,6 +72,36 @@ const foodDiarySlice = createSlice({
                 day.untracked = true;
             } else {
                 delete day.untracked;
+            }
+            removeIfEmpty(state, dayIndex);
+            state.changed = true;
+        },
+        // entry: { id, name, minutes, calories (null when unknown), source: 'manual' | 'bike', stats? }
+        // Kept only on days that have some, so older days and tests keep their shape
+        addExercise(state, action) {
+            const { date, entry } = action.payload;
+            let day = state.diaryObj.find(el => el.date === date);
+            if (!day) {
+                state.diaryObj.push(emptyDay(date));
+                day = state.diaryObj[state.diaryObj.length - 1];
+            }
+            if (!day.exercise) {
+                day.exercise = [];
+            }
+            if (!day.exercise.some(el => el.id === entry.id)) {
+                day.exercise.push(entry);
+            }
+            state.changed = true;
+        },
+        removeExercise(state, action) {
+            const dayIndex = state.diaryObj.findIndex(el => el.date === action.payload.date);
+            if (dayIndex === -1) {
+                return;
+            }
+            const day = state.diaryObj[dayIndex];
+            day.exercise = (day.exercise || []).filter(entry => entry.id !== action.payload.id);
+            if (day.exercise.length === 0) {
+                delete day.exercise;
             }
             removeIfEmpty(state, dayIndex);
             state.changed = true;

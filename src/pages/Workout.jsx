@@ -1,10 +1,14 @@
 import PageContent from "../components/PageContent"
 import WorkoutTable from "../components/Workout/WorkoutTable";
-import classes from './Workout.module.css';
-const Workout = () => {
+import ExerciseWeek from "../components/Exercise/ExerciseWeek";
+import ExerciseDiary from "../components/Exercise/ExerciseDiary";
 
-    return <PageContent title="Workout" pageClass={classes.workout}>
-        <WorkoutTable className={classes.workoutPage} />
+// Laid out like Home: cards side by side where there's room, the checklist across the full width
+const Workout = () => {
+    return <PageContent title="Workout">
+        <ExerciseWeek />
+        <ExerciseDiary />
+        <WorkoutTable />
     </PageContent>
 }
 

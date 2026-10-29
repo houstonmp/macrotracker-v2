@@ -84,4 +84,10 @@ const GlassIcon = ({ color }) => <StatIcon color={color}>
     <path d="M5.6 9h12.8" />
 </StatIcon>
 
-export { AwardIcon, GlassIcon, ChefHatIcon, TrendIcon, HeartIcon, BoltIcon, TargetIcon, EggIcon, WheatIcon, DropIcon, ScaleIcon, BookIcon, BasketIcon, CalendarCheckIcon, FlagIcon };
+const BikeIcon = ({ color }) => <StatIcon color={color}>
+    <circle cx="5.5" cy="17.5" r="3.5" />
+    <circle cx="18.5" cy="17.5" r="3.5" />
+    <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm-3 11.5V14l-3-3 4-3 2 3h2" />
+</StatIcon>
+
+export { AwardIcon, GlassIcon, ChefHatIcon, TrendIcon, HeartIcon, BoltIcon, TargetIcon, EggIcon, WheatIcon, DropIcon, ScaleIcon, BookIcon, BasketIcon, CalendarCheckIcon, FlagIcon, BikeIcon };

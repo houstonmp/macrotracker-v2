@@ -1,0 +1,32 @@
+/* Four circles in a row, each with its name, like the month-by-month weight list */
+.row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: .5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    min-width: 0;
+    padding: .5rem .75rem;
+    border-radius: 10px;
+    background-color: var(--color-gamma-200);
+}
+
+.label {
+    font-size: .9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media only screen and (max-width: 520px) {
+    .row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

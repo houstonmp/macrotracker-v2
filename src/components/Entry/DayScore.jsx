@@ -8,6 +8,7 @@ import { selectDailyTargets, selectDiaryDate, selectDiaryDay, selectLatestWeight
 import { splitEstimateCalories, unsplitCalories } from '../../assets/food';
 import { waterGoal, waterTotal } from '../Water/water';
 import { dayScore } from './dayScore';
+import { dayExercise, exerciseTotals, formatMinutes } from '../Exercise/exercise';
 import ScoreStat from '../UI/ScoreStat';
 import { toneFor } from '../UI/scoreTone';
 // Same layout and grade colours as the weight score card
@@ -61,6 +62,7 @@ const DayScore = (props) => {
     const water = waterTotal(day);
     const waterTarget = latestWeight && waterGoal(latestWeight.kgs);
     const waterShare = waterTarget ? water / waterTarget : 0;
+    const exercise = exerciseTotals(dayExercise(day));
     // Today's water is still filling up, so it's only marked once the goal is met
     let waterTone = null;
     if (waterTarget && (!isToday || waterShare >= 1)) {
@@ -88,6 +90,9 @@ const DayScore = (props) => {
                 hint={estimated > 0 ? `≈ ${kcal(estimated)} kcal estimated` : 'Nothing estimated'} />
             <ScoreStat label="Foods logged" value={day.food.length} />
             {waterTarget && <ScoreStat label="Water" value={`${Math.round(waterShare * 100)}%`} hint="of your drinks goal" tone={waterTone} />}
+            {/* Shown, not scored: your calorie goal already assumes your usual activity */}
+            {exercise.count > 0 && <ScoreStat label="Exercise" value={exercise.burned ? `${kcal(exercise.burned)} kcal` : formatMinutes(exercise.minutes)}
+                hint={exercise.burned ? `${formatMinutes(exercise.minutes)} · not taken off your goal` : `${exercise.count} logged`} />}
         </ul>
     </Card>
 }

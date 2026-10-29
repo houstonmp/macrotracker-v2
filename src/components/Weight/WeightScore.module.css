@@ -71,35 +71,11 @@
 
 .stats {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
-    gap: .5rem;
+    grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+    gap: .6rem;
     margin: 0;
     padding: 0;
     list-style: none;
-}
-
-.stat {
-    display: flex;
-    flex-direction: column;
-    padding: .6rem .75rem;
-    border-radius: 10px;
-    background-color: var(--color-gamma-200);
-    min-width: 0;
-}
-
-.statLabel {
-    font-size: .8rem;
-    opacity: .8;
-}
-
-.statValue {
-    font-size: 1.2rem;
-    white-space: nowrap;
-}
-
-.statHint {
-    font-size: .72rem;
-    opacity: .7;
 }
 
 .months {

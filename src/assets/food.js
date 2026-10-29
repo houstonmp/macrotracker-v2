@@ -236,6 +236,45 @@ export const migrateDiaryObj = (diaryObj = []) => diaryObj
         const food = (day.food || []).map(migrateDiaryEntry);
         // Firebase drops empty arrays, so a day without water comes back without the key
         const water = (day.water || []).filter(entry => entry && entry.ml > 0);
-        return { date: day.date, food, water, macros: sumMacros(food.map(entry => entry.macros)) };
+        const migrated = { date: day.date, food, water, macros: sumMacros(food.map(entry => entry.macros)) };
+        return day.untracked ? { ...migrated, untracked: true } : migrated;
     })
-    .filter(day => day.food.length > 0 || day.water.length > 0);
+    .filter(day => day.food.length > 0 || day.water.length > 0 || day.untracked);
+
+// Typical shares of calories from protein, carbs and fat for food you can't weigh, so a
+// quick estimate still lands in your macros. Rough averages of common takeout.
+export const ESTIMATE_TYPES = [
+    { id: 'pizza', label: 'Pizza', split: { protein: 0.17, carbs: 0.45, fat: 0.38 } },
+    { id: 'burger', label: 'Burger & fries', split: { protein: 0.15, carbs: 0.4, fat: 0.45 } },
+    { id: 'mexican', label: 'Mexican', split: { protein: 0.18, carbs: 0.47, fat: 0.35 } },
+    { id: 'asian', label: 'Asian takeout', split: { protein: 0.15, carbs: 0.55, fat: 0.3 } },
+    { id: 'fried', label: 'Fried chicken & wings', split: { protein: 0.3, carbs: 0.2, fat: 0.5 } },
+    { id: 'pasta', label: 'Pasta', split: { protein: 0.15, carbs: 0.55, fat: 0.3 } },
+    { id: 'dessert', label: 'Dessert & sweets', split: { protein: 0.05, carbs: 0.55, fat: 0.4 } },
+    { id: 'drinks', label: 'Drinks', split: { protein: 0, carbs: 1, fat: 0 } },
+];
+
+// Grams from a share of calories: 4 kcal per gram of protein or carbs, 9 of fat
+export const estimateMacros = (calories, typeId) => {
+    const type = ESTIMATE_TYPES.find(el => el.id === typeId);
+    if (!type) {
+        return { calories, protein: 0, carbs: 0, fat: 0 };
+    }
+    return {
+        calories,
+        protein: Math.round(calories * type.split.protein / 4),
+        carbs: Math.round(calories * type.split.carbs / 4),
+        fat: Math.round(calories * type.split.fat / 9),
+    };
+}
+
+// Calories in a day's diary that have no protein, carbs or fat behind them: estimates
+// logged without a food type. The macro totals are short by this much.
+export const unsplitCalories = (day) => (day ? day.food : [])
+    .filter(entry => entry.estimate && !entry.estimateType)
+    .reduce((sum, entry) => sum + entry.macros.calories, 0);
+
+// Calories from estimates with a food type: their macros are a rough split
+export const splitEstimateCalories = (day) => (day ? day.food : [])
+    .filter(entry => entry.estimate && entry.estimateType)
+    .reduce((sum, entry) => sum + entry.macros.calories, 0);

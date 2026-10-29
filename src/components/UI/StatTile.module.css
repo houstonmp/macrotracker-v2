@@ -82,6 +82,17 @@
     opacity: .7;
 }
 
+/* Soft amber, not a warning red: "this total is missing something" */
+.note {
+    display: inline-block;
+    margin-top: .3rem;
+    padding: .1rem .45rem;
+    border-radius: 999px;
+    background-color: rgba(217, 150, 43, 0.18);
+    font-size: .7rem;
+    line-height: 1.3;
+}
+
 /* Sized by the card, not the screen: the same tiles sit in a half-width card on
    Home and a full-width one on Food and Insights */
 @container stats (max-width: 40rem) {

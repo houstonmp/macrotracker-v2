@@ -63,6 +63,13 @@ export const localDate = (date = new Date()) => {
 
 // 'YYYY-MM-DD' → "Tue, Oct 27", or "Oct 27" without the weekday (the year is added
 // when it isn't this year). Read as UTC so the day doesn't shift with the time zone.
+// '2026-10-28' moved by whole days: shiftDate('2026-10-01', -1) is '2026-09-30'
+export const shiftDate = (date, days) => {
+    const day = new Date(`${date}T00:00:00Z`);
+    day.setUTCDate(day.getUTCDate() + days);
+    return day.toJSON().slice(0, 10);
+}
+
 export const formatDay = (date, { weekday = true, today = new Date() } = {}) => {
     const day = new Date(`${date}T00:00:00Z`);
     const options = { month: 'short', day: 'numeric', timeZone: 'UTC' };

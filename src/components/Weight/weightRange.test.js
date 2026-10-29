@@ -38,11 +38,20 @@ describe('weightView', () => {
         const week = weightView(weights, 'week', today, -1);
         expect(week.inRange.map(el => el.date)).toEqual(['2026-10-24']);
         expect(week.points.map(el => el.y)).toEqual([246.6, 244.5, 243.8]);
-        expect(week).toMatchObject({ current: false, hasEarlier: true, phrase: 'last week', chartEnd: dayNumber('2026-10-25') });
+        expect(week).toMatchObject({ current: false, hasEarlier: true, phrase: 'last week' });
+        // A past week is drawn whole: Sunday to Saturday, half a day either side
+        expect(week.axis).toEqual({ min: dayNumber('2026-10-18') - 0.5, max: dayNumber('2026-10-24') + 0.5 });
         const month = weightView(weights, 'month', today);
         expect(month.inRange.map(el => el.date)).toEqual(['2026-10-13', '2026-10-24', '2026-10-27']);
         expect(month.change).toBe(-2.8);
         expect(month).toMatchObject({ current: true, phrase: 'this month' });
+        // The current month stops at today
+        expect(month.axis).toEqual({ min: dayNumber('2026-10-01') - 0.5, max: today + 0.5 });
+    });
+
+    it('draws at least two days on the first day of a period', () => {
+        const sunday = dayNumber('2026-10-25');
+        expect(weightView(weights, 'week', sunday).axis).toEqual({ min: sunday - 0.5, max: sunday + 1.5 });
     });
 
     it('stops paging back at the first weigh-in', () => {
@@ -70,8 +79,9 @@ describe('weightView averages', () => {
 describe('paceLines', () => {
     it('runs from the first weigh-in of the month to its end, with a fixed target', () => {
         const pace = paceLines(weightView(weights, 'month', today), 2);
-        // From 246.6 on Oct 13 to Nov 1 is 19 days: 2 lbs/week takes off 5.4
-        expect(pace.flat).toEqual([{ x: dayNumber('2026-10-13'), y: 246.6 }, { x: dayNumber('2026-11-01'), y: 246.6 }]);
+        // From 246.6 on Oct 13 to Nov 1 is 19 days: 2 lbs/week takes off 5.4. The lines
+        // stop at today with the chart, but the target is still the month's end.
+        expect(pace.flat).toEqual([{ x: dayNumber('2026-10-13'), y: 246.6 }, { x: today + 0.5, y: 246.6 }]);
         expect(pace.target).toBe(241.2);
         expect(pace.goalAt(dayNumber('2026-10-20'))).toBe(244.6);
     });

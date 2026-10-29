@@ -38,6 +38,62 @@ const tickLabel = (day, rangeId) => rangeId === 'year'
     ? new Date(`${dateFromDay(day)}T00:00:00Z`).toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' })
     : formatDay(dateFromDay(day), { weekday: false });
 
+// Tick days for the x axis: every day for a week, about six for longer ranges. Today is
+// always one, labelled "Today", with any tick crowding it dropped.
+const tickDays = (view) => {
+    const first = view.start;
+    const last = Math.floor(view.lastDay);
+    let days;
+    if (view.range.id === 'week') {
+        days = Array.from({ length: last - first + 1 }, (_, i) => first + i);
+    } else if (view.range.id === 'year') {
+        days = [];
+        const date = new Date(first * 864e5);
+        for (let month = 1; month <= 13; month++) {
+            const day = Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + month, 1) / 864e5;
+            day <= last && days.push(day);
+        }
+    } else {
+        const step = Math.max(1, Math.ceil((last - first) / 5));
+        days = [];
+        for (let day = first; day <= last; day += step) {
+            days.push(day);
+        }
+    }
+    if (view.current) {
+        const gap = view.range.id === 'week' ? 1 : view.range.id === 'year' ? 20 : 2;
+        days = [...days.filter(day => Math.abs(day - view.today) >= gap), view.today];
+    }
+    return days;
+}
+
+const shortWeekday = (day) => new Date(day * 864e5).toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' });
+
+// Under the arrows: how far through the period you are and what it's aiming for.
+// "Day 4 of 7 · Target 241.2 lbs by Sat · pace today 243.6"
+const PeriodProgress = ({ view, pace }) => {
+    const length = view.end - view.start;
+    const day = view.current ? view.today - view.start + 1 : length;
+    const endLabel = view.range.id === 'week'
+        ? shortWeekday(view.end - 1)
+        : formatDay(dateFromDay(view.end - 1), { weekday: false });
+    let target = null;
+    if (pace && view.current) {
+        target = `Target ${pace.target} lbs by ${endLabel} · pace today ${pace.goalAt(view.today)}`;
+    } else if (pace) {
+        target = `Target was ${pace.target} lbs`;
+    }
+    return <div className={classes.progress}>
+        <span className={classes.progressText}>
+            <span>{view.current ? `Day ${day} of ${length}` : 'Final'}</span>
+            {target && <span>{target}</span>}
+        </span>
+        <span className={classes.progressTrack}>
+            <span className={classes.progressFill} style={{ width: `${day / length * 100}%` }} />
+        </span>
+    </div>
+}
+
 // "−1.4 lbs this week · on goal pace" or "… · in the green"
 const subtitleFor = (view, pace, levels) => {
     if (view.change === null) {
@@ -83,6 +139,9 @@ const WeightChart = (props) => {
     const gridColor = isDark ? 'rgba(230, 241, 248, 0.1)' : 'rgba(0, 11, 19, 0.08)';
     const referenceLine = isDark ? 'rgba(230, 241, 248, 0.3)' : 'rgba(0, 11, 19, 0.25)';
     const weightLine = isDark ? '#E6F1F8' : '#005083';
+    // The latest dot is a ring: the card's colour inside, the line's around
+    const cardColor = (typeof document !== 'undefined'
+        && getComputedStyle(document.body).getPropertyValue('--color-gamma-100').trim()) || (isDark ? '#16202a' : '#ffffff');
 
     const view = weightView(weightObj, rangeId, dayNumber(localDate()), offset);
     const heightIn = user.height && user.height.in;
@@ -92,7 +151,19 @@ const WeightChart = (props) => {
     const bounds = view.points.length > 0 ? yBounds(view, heightIn, pace, levels) : {};
 
     // Horizontal lines across the whole range, like the BMI lines
-    const across = (y) => [{ x: view.start, y }, { x: view.chartEnd, y }];
+    const across = (y) => [{ x: view.axis.min, y }, { x: view.axis.max, y }];
+    // For the target text, whichever goal view is showing
+    const targetPace = paceLines(view, lbsPerWeek);
+    const ticks = tickDays(view);
+    // Where you are now: the latest weigh-in of the current period, drawn a little larger
+    const latestX = view.current && view.inRange.length > 0
+        ? Math.max(...view.points.filter(point => point.x <= view.today).map(point => point.x))
+        : null;
+    const pointRadius = view.points.length > 40 ? 0 : 3;
+    const weighInMarks = view.range.calendar && bounds.min !== undefined
+        ? [...new Set(view.inRange.map(el => dayNumber(el.date)))]
+            .map(x => ({ x, y: bounds.min + (bounds.max - bounds.min) * 0.02 }))
+        : [];
 
     const boundary = (bmi) => heightIn ? across(BMIBoundaries(bmi, heightIn)) : [];
     const bmiOf = (lbs) => Math.round((lbs / (heightIn * heightIn)) * 703 * 10) / 10;
@@ -223,6 +294,7 @@ const WeightChart = (props) => {
             <button type="button" aria-label={`Next ${rangeId}`} disabled={view.current}
                 onClick={() => setOffset(offset + 1)}>›</button>
         </div>}
+        {view.range.calendar && <PeriodProgress view={view} pace={targetPace} />}
 
         {view.inRange.length === 0 ? <EmptyState>No weigh-ins {view.phrase}.</EmptyState> :
             // The box sets the height; a fixed aspect ratio made the chart unreadably short on phones
@@ -257,15 +329,20 @@ const WeightChart = (props) => {
                         x: {
                             // Days, so weigh-ins are spaced by the time between them
                             type: 'linear',
-                            min: view.start,
-                            max: view.chartEnd,
+                            min: view.axis.min,
+                            max: view.axis.max,
                             grid: { color: gridColor },
+                            afterBuildTicks: (scale) => {
+                                scale.ticks = ticks.map(value => ({ value }));
+                            },
                             ticks: {
                                 color: textColor,
-                                maxTicksLimit: rangeId === 'week' ? 8 : 6,
-                                stepSize: rangeId === 'week' ? 1 : undefined,
-                                // A calendar period ends where the next begins; that day isn't in it
-                                callback: (value) => view.range.calendar && value === view.end ? '' : tickLabel(value, rangeId),
+                                autoSkip: false,
+                                maxRotation: 0,
+                                callback: (value) => view.current && value === view.today ? 'Today' : tickLabel(value, rangeId),
+                                font: (context) => context.tick && view.current && context.tick.value === view.today
+                                    ? { weight: 'bold' }
+                                    : {},
                             }
                         },
                         y: {
@@ -286,11 +363,27 @@ const WeightChart = (props) => {
                                 borderWidth: 2,
                                 // Smooth, but never curving past a real weigh-in
                                 cubicInterpolationMode: 'monotone',
-                                // Dots get crowded with lots of weigh-ins
-                                pointRadius: view.points.length > 40 ? 0 : 3,
-                                pointHoverRadius: 5,
+                                // Dots get crowded with lots of weigh-ins; the latest stays visible
+                                pointRadius: (context) => context.raw && context.raw.x === latestX ? 6 : pointRadius,
+                                pointBorderWidth: (context) => context.raw && context.raw.x === latestX ? 3 : 1,
+                                pointBackgroundColor: (context) => context.raw && context.raw.x === latestX ? cardColor : weightLine,
+                                pointHoverRadius: 6,
                             },
                             ...(paceDatasets || levelDatasets || bmiDatasets),
+                            {
+                                // A faint mark along the bottom for each day with a weigh-in,
+                                // so days without one read as gaps. Last, so the
+                                // fills above can keep pointing at the dataset before them
+                                label: 'Weigh-in days',
+                                data: weighInMarks,
+                                showLine: false,
+                                pointStyle: 'rectRounded',
+                                pointRadius: 3,
+                                pointHoverRadius: 3,
+                                pointHitRadius: 0,
+                                borderWidth: 0,
+                                backgroundColor: referenceLine,
+                            },
                         ]
                     }} />
             </div>}

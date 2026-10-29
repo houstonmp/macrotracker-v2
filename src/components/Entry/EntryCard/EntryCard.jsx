@@ -2,7 +2,7 @@ import Card from '../../UI/Card'
 import CardHeader from '../../UI/CardHeader';
 import EntryRow, { EntryList, EmptyState, MacroChips } from '../../UI/EntryList';
 import classes from './EntryCard.module.css'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import SearchInput from '../../UI/SearchInput';
 import SegmentedControl from '../../UI/SegmentedControl';
@@ -11,6 +11,9 @@ import { recipeListActions } from '../../store/recipe-list-slice';
 import { uiActions } from '../../store/ui-slice';
 import useMealie from '../../../extensions/mealie/useMealie';
 import { ingredientNames, listEntryBasis, listEntryMacros } from '../../../assets/food';
+import { formatDay, localDate } from '../../../assets/functions';
+import { selectDiaryDate } from '../../store/selectors';
+import { EstimatePills } from './QuickEstimate';
 
 const TABS = [
     { id: 'items', title: 'Pantry', hint: 'Foods you keep on hand, from USDA or your own labels', modal: 'item', createText: '+ Add to Pantry' },
@@ -30,6 +33,7 @@ const EntryCard = (props) => {
     const [filterValue, setFilterValue] = useState('');
     const tab = TABS.find(el => el.id === navState);
     const mealie = useMealie();
+    const diaryDate = useSelector(selectDiaryDate);
 
     const search = filterValue.toLowerCase();
     const foodItems = props.foodItems[navState].filter(el => el.name.toLowerCase().includes(search) ||
@@ -41,6 +45,15 @@ const EntryCard = (props) => {
             message: null,
             componentName: 'log',
             data: { list: navState, entry }
+        }));
+    }
+
+    const onEstimateHandler = (preset) => {
+        dispatch(uiActions.showModal({
+            title: 'Quick estimate',
+            message: null,
+            componentName: 'quick-estimate',
+            data: { preset },
         }));
     }
 
@@ -56,6 +69,8 @@ const EntryCard = (props) => {
 
         <SegmentedControl label="Food lists" value={navState} onChange={setNavState}
             options={TABS.map(el => ({ id: el.id, label: el.title, count: props.foodItems[el.id].length }))} />
+
+        {navState === 'meals' && <EstimatePills onPick={onEstimateHandler} />}
 
         <ul className={classes.search}>
             <SearchInput onSearch={setFilterValue} label={`Search ${tab.title.toLowerCase()} by name or ingredient`} />
@@ -75,7 +90,9 @@ const EntryCard = (props) => {
         </EntryList>}
         {props.foodItems[navState].length === 0 && <EmptyState>Nothing here yet. Use &apos;{tab.createText.slice(2)}&apos; to get started.</EmptyState>}
         {props.foodItems[navState].length > 0 && foodItems.length === 0 && <EmptyState>Nothing matches &apos;{filterValue}&apos;.</EmptyState>}
-        {foodItems.length > 0 && <p className={classes.tip}>Tap a row to log it to today&apos;s diary.</p>}
+        {foodItems.length > 0 && <p className={classes.tip}>
+            Tap a row to log it to {diaryDate === localDate() ? 'today' : formatDay(diaryDate)}&apos;s diary.
+        </p>}
     </Card >
 }
 

@@ -7,6 +7,9 @@ import { localDate } from '../../assets/functions';
 import { selectDailyTargets } from '../store/selectors';
 import { dayNumber } from './weightRange';
 import { loggedCalories, periodScore, targetStreak } from './weightScore';
+import ScoreStat from '../UI/ScoreStat';
+import { toneFor } from '../UI/scoreTone';
+import { calorieScore } from '../Entry/dayScore';
 import classes from './WeightScore.module.css';
 
 const signed = (value, unit = 'lbs') => `${value > 0 ? '+' : value < 0 ? '−' : '±'}${Math.abs(value)} ${unit}`;
@@ -14,11 +17,24 @@ const signed = (value, unit = 'lbs') => `${value > 0 ? '+' : value < 0 ? '−' :
 // Grade colours run green to blue to purple to grey, never red
 const gradeClass = (grade) => classes[`grade${grade.replace('+', 'Plus')}`];
 
-const Stat = ({ label, value, hint }) => <li className={classes.stat}>
-    <span className={classes.statLabel}>{label}</span>
-    <span className={classes.statValue}>{value}</span>
-    {hint && <span className={classes.statHint}>{hint}</span>}
-</li>
+// Dots go on the tiles that each measure something different: pace, how often you
+// weighed in, how you ate and the trend. Net change, rate and deficit restate the pace,
+// so they stay plain.
+const paceTone = (ratio) => toneFor(Math.max(0, ratio) * 85);
+const weighInTone = (days, outOf) => toneFor(days / outOf / 0.7 * 85);
+// The day score's calorie curve on the period's average day
+const caloriesTone = (average, targets) => {
+    const goal = targets.dailyMacros.goalCalories;
+    const range = { low: Math.min(targets.BMR, goal), high: Math.max(targets.BMR, goal), tdee: Math.max(targets.TDEEValue, targets.BMR, goal) };
+    return toneFor(calorieScore(average, range));
+}
+// Lost as much or more than the period before is on track; still losing is close
+const trendTone = (change, before) => {
+    if (change <= before) {
+        return 'good';
+    }
+    return change < 0 ? 'close' : 'work';
+}
 
 const headline = (period) => {
     if (period.score.met) {
@@ -104,19 +120,19 @@ const WeightScore = ({ rangeId, offset }) => {
         <CardHeader Icon={AwardIcon} title="Weight score" subtitle={subtitle} />
         {summary}
         <ul className={classes.stats}>
-            {period.weighIns > 1 && <Stat label="Net change" value={signed(period.change)} hint={`${period.first} → ${period.last} lbs`} />}
-            {period.score && <Stat label="Goal pace" value={`${Math.round(period.score.ratio * 100)}%`}
+            {period.weighIns > 1 && <ScoreStat label="Net change" value={signed(period.change)} hint={`${period.first} → ${period.last} lbs`} />}
+            {period.score && <ScoreStat label="Goal pace" value={`${Math.round(period.score.ratio * 100)}%`} tone={paceTone(period.score.ratio)}
                 hint={`${lbsPerWeek} ${lbsPerWeek === 1 ? 'lb' : 'lbs'} a week is 100%`} />}
-            {period.perWeek !== undefined && <Stat label="Average rate" value={signed(period.perWeek, 'lbs/wk')} />}
-            {period.kcalPerDay !== undefined && <Stat label={period.kcalPerDay >= 0 ? 'Daily deficit' : 'Daily surplus'}
+            {period.perWeek !== undefined && <ScoreStat label="Average rate" value={signed(period.perWeek, 'lbs/wk')} />}
+            {period.kcalPerDay !== undefined && <ScoreStat label={period.kcalPerDay >= 0 ? 'Daily deficit' : 'Daily surplus'}
                 value={`≈ ${Math.abs(period.kcalPerDay)} kcal`} hint="From the scale, at 3,500 kcal a pound" />}
-            <Stat label="Lowest" value={`${period.low} lbs`} />
-            <Stat label="Weigh-in days" value={`${period.weighInDays} of ${daysSoFar}`}
+            <ScoreStat label="Lowest" value={`${period.low} lbs`} />
+            <ScoreStat label="Weigh-in days" value={`${period.weighInDays} of ${daysSoFar}`} tone={weighInTone(period.weighInDays, daysSoFar)}
                 hint={view.current ? 'so far' : null} />
-            {calories && <Stat label="Calories logged" value={`${calories.average} kcal`}
+            {calories && <ScoreStat label="Calories logged" value={`${calories.average} kcal`} tone={targets ? caloriesTone(calories.average, targets) : null}
                 hint={`a day, over ${calories.days} ${calories.days === 1 ? 'day' : 'days'}${targets ? ` · goal ${targets.dailyMacros.goalCalories}` : ''}`} />}
-            {previous.weighIns > 1 && period.weighIns > 1 && <Stat label={`vs the ${rangeId} before`}
-                value={signed(Math.round((period.change - previous.change) * 10) / 10)}
+            {previous.weighIns > 1 && period.weighIns > 1 && <ScoreStat label={`vs the ${rangeId} before`}
+                value={signed(Math.round((period.change - previous.change) * 10) / 10)} tone={trendTone(period.change, previous.change)}
                 hint={`It was ${signed(previous.change)}${previous.score ? ` · ${previous.score.grade}` : ''}`} />}
         </ul>
     </Card>

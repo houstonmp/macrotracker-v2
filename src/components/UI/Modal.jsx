@@ -10,6 +10,7 @@ import { uiActions } from '../store/ui-slice';
 import PantryForm from '../Entry/EntryCard/PantryForm';
 import BuilderForm from '../Entry/EntryCard/BuilderForm';
 import LogForm from '../Entry/EntryCard/LogForm';
+import QuickEstimate from '../Entry/EntryCard/QuickEstimate';
 import { WeightForm } from '../Weight/WeightEntry';
 import MealieImport from '../../extensions/mealie/MealieImport';
 
@@ -67,6 +68,9 @@ const ModalOverlay = () => {
             break;
         case 'workout':
             modalData = <WeightForm></WeightForm>
+            break;
+        case 'quick-estimate':
+            modalData = <QuickEstimate preset={modalObj.data && modalObj.data.preset} />;
             break;
         case 'mealie-import':
             modalData = <MealieImport />;

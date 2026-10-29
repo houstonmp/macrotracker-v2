@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
     amountLabel, amountOptions, customFood, defaultAmount, foodAmountMacros, ingredientNames, listEntryBasis, listEntryMacros,
     mealTotalMacros, migrateDiaryObj, migrateRecipeObj, nutrientBasis, recipeGramMacros, recipeRawWeight, recipeServingMacros,
-    recipeTotalMacros, recipeWeight,
+    recipeTotalMacros, recipeWeight, estimateMacros, unsplitCalories, splitEstimateCalories,
 } from './food';
 
 const GRAM = { label: 'g', amount: 1 };
@@ -163,5 +163,24 @@ describe('migrating saved data', () => {
         expect(diary[0].food[1]).toMatchObject({ name: 'Spinach', amount: '1 serving', macros: { calories: 0, protein: 5, carbs: 0, fat: 0 } });
         expect(diary[0].macros).toEqual({ calories: 200, protein: 15, carbs: 20, fat: 8 });
         expect(migrateDiaryObj(diary)).toEqual(diary);
+    });
+});
+
+describe('quick estimates', () => {
+    it('splits calories by the kind of food', () => {
+        // Pizza: 17% protein, 45% carbs, 38% fat of 1200 kcal
+        expect(estimateMacros(1200, 'pizza')).toEqual({ calories: 1200, protein: 51, carbs: 135, fat: 51 });
+        expect(estimateMacros(500, 'unknown')).toEqual({ calories: 500, protein: 0, carbs: 0, fat: 0 });
+    });
+
+    it('counts the calories the macro totals are missing', () => {
+        const day = { food: [
+            { estimate: true, macros: { calories: 800 } },
+            { estimate: true, estimateType: 'pizza', macros: { calories: 600 } },
+            { macros: { calories: 300 } },
+        ] };
+        expect(unsplitCalories(day)).toBe(800);
+        expect(splitEstimateCalories(day)).toBe(600);
+        expect(unsplitCalories(null)).toBe(0);
     });
 });

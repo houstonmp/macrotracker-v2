@@ -15,9 +15,15 @@ const uiSlice = createSlice({
             settings: {},
             user: {}
         },
+        // The day the food diary is showing; null follows today, even past midnight.
+        // Not saved: the app always opens on today.
+        diaryDate: null,
         changed: false
     },
     reducers: {
+        setDiaryDate(state, action) {
+            state.diaryDate = action.payload;
+        },
         replaceUiObj(state, action) {
             state.userPreferences.theme = action.payload.userPreferences.theme;
             state.userPreferences.settings = action.payload.userPreferences.settings || {};

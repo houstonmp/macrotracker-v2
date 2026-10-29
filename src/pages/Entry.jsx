@@ -1,6 +1,7 @@
 import PageContent from "../components/PageContent"
 import EntryCard from "../components/Entry/EntryCard/EntryCard"
 import MacroList from "../components/Entry/MacroList"
+import DayScore from "../components/Entry/DayScore";
 
 import { useDispatch, useSelector } from 'react-redux'
 import { uiActions } from "../components/store/ui-slice";
@@ -33,6 +34,7 @@ const Entry = () => {
             <EntryCard onModal={showModalHandler} foodItems={recipeObj} />
             <FoodDiary />
             <MacroList />
+            <DayScore />
         </PageContent >
     </>
 }

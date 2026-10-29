@@ -56,6 +56,8 @@ describe('loggedCalories', () => {
             { date: '2026-10-19', macros: { calories: 2000 } },
             { date: '2026-10-20', macros: { calories: 1800 } },
             { date: '2026-10-21', macros: { calories: 0 } },
+            // Marked untracked, so it doesn't pull the average either way
+            { date: '2026-10-22', untracked: true, macros: { calories: 4000 } },
             { date: '2026-10-26', macros: { calories: 2500 } },
         ];
         expect(loggedCalories(diary, 'week', today, -1)).toEqual({ average: 1900, days: 2 });

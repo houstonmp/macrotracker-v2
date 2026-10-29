@@ -1,0 +1,43 @@
+/* The small number tiles on the day and weight score cards */
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+    padding: .8rem .95rem;
+    border-radius: 10px;
+    background-color: var(--color-gamma-200);
+    min-width: 0;
+}
+
+/* Dot, then the title, kept on one line */
+.statLabel {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .85rem;
+    opacity: .8;
+}
+
+.statValue {
+    font-size: 1.35rem;
+    white-space: nowrap;
+}
+
+.statHint {
+    font-size: .72rem;
+    opacity: .7;
+}
+
+/* A solid dot by the title for how that part did. Green on track, yellow close,
+   orange the thing to work on; no red. */
+.toneDot {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: .6rem;
+    height: .6rem;
+    border-radius: 50%;
+}
+
+.toneGood { background-color: #3e9e6e; }
+.toneClose { background-color: #d4b03a; }
+.toneWork { background-color: #e07b39; }

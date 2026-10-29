@@ -68,11 +68,12 @@ export const targetStreak = (weights, rangeId, today, lbsPerWeek) => {
     return count;
 }
 
-// Average calories logged on the days of the period that have any food logged
+// Average calories logged on the days of the period that have any food logged,
+// leaving out days marked untracked
 export const loggedCalories = (diary, rangeId, today, offset) => {
     const { start, end } = periodBounds(rangeId, today, offset);
     const days = diary.filter(el => dayNumber(el.date) >= start && dayNumber(el.date) < end
-        && el.macros && el.macros.calories > 0);
+        && !el.untracked && el.macros && el.macros.calories > 0);
     if (days.length === 0) {
         return null;
     }

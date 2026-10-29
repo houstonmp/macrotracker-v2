@@ -17,8 +17,9 @@ export const StatGrid = ({ columns, children }) =>
         <ul className={classes.tiles} style={{ '--columns': columns }}>{children}</ul>
     </div>
 
-// With a goal, shows "value / goal" and a bar filling toward it
-const StatTile = ({ stat, label, value, goal, hint }) => {
+// With a goal, shows "value / goal" and a bar filling toward it. `note` flags a number
+// that isn't the whole story, e.g. calories logged without a macro split.
+const StatTile = ({ stat, label, value, goal, hint, note }) => {
     const { Icon, color, unit } = STATS[stat];
     const hasGoal = goal > 0;
     const progress = hasGoal ? Math.min(value / goal, 1) * 100 : 0;
@@ -36,6 +37,7 @@ const StatTile = ({ stat, label, value, goal, hint }) => {
                 <span className={classes.fill} style={{ width: `${progress}%`, backgroundColor: color }} />
             </span>}
             {hint && <span className={classes.hint}>{hint}</span>}
+            {note && <span className={classes.note}>{note}</span>}
         </span>
     </li>
 }

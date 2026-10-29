@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Form from '../../Form/Form'
 import AmountInput from './AmountInput';
 import MacroSummary from '../../Form/MacroSummary';
@@ -7,13 +7,16 @@ import SegmentedControl from '../../UI/SegmentedControl';
 import formClasses from '../../Form/Form.module.css';
 import { foodDiaryActions } from '../../store/food-diary-slice';
 import { recipeListActions } from '../../store/recipe-list-slice';
-import { localDate } from '../../../assets/functions';
+import { formatDay, localDate } from '../../../assets/functions';
+import { selectDiaryDate } from '../../store/selectors';
 import { amountLabel, createId, defaultAmount, foodAmountMacros, listEntryMacros, recipeGramMacros, recipeRawWeight, recipeWeight, scaleMacros } from '../../../assets/food';
 
 // Log Form - adds a pantry food, recipe or meal to today's food diary.
 // Recipes log by grams of the finished dish by default, or by servings.
 const LogForm = (props) => {
     const dispatch = useDispatch();
+    // The day the diary is showing, so past days can be filled in
+    const date = useSelector(selectDiaryDate);
     const isFood = props.list === 'items';
     const recipe = props.list === 'recipes' ? props.entry : null;
     const startWeight = recipe ? recipeWeight(recipe) : 0;
@@ -52,7 +55,7 @@ const LogForm = (props) => {
             label = isFood ? amountLabel({ ...amount, quantity }) : `${quantity} servings`;
         }
         dispatch(foodDiaryActions.addFood({
-            date: localDate(),
+            date,
             entry: {
                 id: createId(),
                 name: props.entry.name,
@@ -96,7 +99,7 @@ const LogForm = (props) => {
                 ? <AmountInput food={props.entry} value={amount} onChange={setAmount} />
                 : <AmountInput unit="servings" value={amount} onChange={setAmount} />}
         </li>}
-        <li><MacroSummary label="Adds to today" macros={macros} /></li>
+        <li><MacroSummary label={date === localDate() ? 'Adds to today' : `Adds to ${formatDay(date)}`} macros={macros} /></li>
         {isFood && props.entry.missing.length > 0 && <li><p className={formClasses.note}>USDA has no {props.entry.missing.join(', ')} data for this food, so it counts as 0.</p></li>}
     </Form>
 }

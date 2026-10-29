@@ -73,3 +73,39 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+/* Day 4 of 7 · Target … with a thin bar for how far through the period you are */
+.progress {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    margin-top: .6rem;
+}
+
+.progressText {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: .25rem .75rem;
+    font-size: .8rem;
+    opacity: .8;
+}
+
+.progressTrack {
+    display: block;
+    height: .3rem;
+    border-radius: 1rem;
+    background-color: var(--color-gamma-300);
+    overflow: hidden;
+}
+
+:global(.dark) .progressTrack {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.progressFill {
+    display: block;
+    height: 100%;
+    border-radius: 1rem;
+    background-color: var(--color-beta-500);
+}

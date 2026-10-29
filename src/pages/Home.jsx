@@ -1,4 +1,5 @@
 import MacroList from "../components/Entry/MacroList";
+import DayScore from "../components/Entry/DayScore";
 import PageContent from "../components/PageContent"
 import WeightEntry from "../components/Weight/WeightEntry";
 import { useDispatch } from "react-redux";
@@ -24,6 +25,7 @@ const Home = () => {  const dispatch = useDispatch();
   return <PageContent title="Home">
     <FoodDiary showLogLink />
     <MacroList></MacroList>
+    <DayScore />
     <WaterCard />
     <WeightEntry
       onModal={showModalHandler} ></WeightEntry>

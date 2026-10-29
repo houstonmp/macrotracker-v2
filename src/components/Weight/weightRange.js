@@ -17,16 +17,18 @@ const DAY_MS = 864e5;
 export const dayNumber = (date) => Date.parse(`${date}T00:00:00Z`) / DAY_MS;
 export const dateFromDay = (day) => new Date(day * DAY_MS).toJSON().slice(0, 10);
 
-// Average the weigh-ins in each block of `days`, placed at the middle of the block
+// Average the weigh-ins in each block of `days`, placed at their average date so the
+// newest block never lands past today
 const averageBy = (points, start, days) => {
     const buckets = new Map();
     points.forEach(point => {
         const bucket = Math.floor((point.x - start) / days);
-        buckets.set(bucket, [...(buckets.get(bucket) || []), point.y]);
+        buckets.set(bucket, [...(buckets.get(bucket) || []), point]);
     });
-    return [...buckets.entries()].map(([bucket, values]) => ({
-        x: start + bucket * days + (days - 1) / 2,
-        y: Math.round(values.reduce((sum, value) => sum + value, 0) / values.length * 10) / 10,
+    const mean = (values) => values.reduce((sum, value) => sum + value, 0) / values.length;
+    return [...buckets.values()].map(bucket => ({
+        x: mean(bucket.map(point => point.x)),
+        y: Math.round(mean(bucket.map(point => point.y)) * 10) / 10,
     }));
 }
 
@@ -104,11 +106,14 @@ export const weightView = (weights, rangeId, today, offset = 0) => {
     const change = inRange.length > 1
         ? Math.round((inRange[inRange.length - 1].lbs - inRange[0].lbs) * 10) / 10
         : null;
+    const current = today < end;
+    // The last day drawn: today for the period you're in, so it's a snapshot so far, and
+    // the whole period for past ones. At least two days, so a Sunday or the 1st isn't a dot.
+    const lastDay = Math.max(current ? today : end - 1, start + 1);
     return {
-        range, offset, start, end, inRange, points, change,
-        // The chart runs to the period's end so the target shows; the year ends today
-        chartEnd: range.calendar ? end : today,
-        current: today < end,
+        range, offset, start, end, inRange, points, change, current, today, lastDay,
+        // Half a day either side so the first and last dots aren't cut in half
+        axis: { min: start - 0.5, max: lastDay + 0.5 },
         // Nothing to page back to before the first weigh-in
         hasEarlier: Boolean(range.calendar && sorted.length > 0 && dayNumber(sorted[0].date) < start),
         title: periodTitle(rangeId, start, end),
@@ -116,10 +121,11 @@ export const weightView = (weights, rangeId, today, offset = 0) => {
     };
 }
 
-// Two lines from the first weigh-in in the period to its end: "no change" (flat) and
-// "goal pace" (dropping by the weekly goal). Between them you're losing, below the
+// Two lines from the first weigh-in in the period across the chart: "no change" (flat)
+// and "goal pace" (dropping by the weekly goal). Between them you're losing, below the
 // goal line you're on or ahead of pace. `target` is where goal pace ends the period,
-// fixed from that first weigh-in. Null when there's nothing to anchor to.
+// fixed from that first weigh-in, even when the chart stops at today.
+// Null when there's nothing to anchor to.
 export const paceLines = (view, lbsPerWeek) => {
     if (view.range.bmiZones || !(lbsPerWeek > 0) || view.inRange.length === 0) {
         return null;
@@ -127,8 +133,8 @@ export const paceLines = (view, lbsPerWeek) => {
     const start = { x: dayNumber(view.inRange[0].date), y: Number(view.inRange[0].lbs) };
     const goalAt = (x) => Math.round((start.y - lbsPerWeek * (x - start.x) / 7) * 10) / 10;
     return {
-        flat: [start, { x: view.chartEnd, y: start.y }],
-        goal: [start, { x: view.chartEnd, y: goalAt(view.chartEnd) }],
+        flat: [start, { x: view.axis.max, y: start.y }],
+        goal: [start, { x: view.axis.max, y: goalAt(view.axis.max) }],
         goalAt,
         target: goalAt(view.end),
     };

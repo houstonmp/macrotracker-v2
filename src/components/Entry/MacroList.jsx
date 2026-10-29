@@ -6,7 +6,8 @@ import StatTile, { StatGrid } from "../UI/StatTile";
 import { CalendarCheckIcon } from "../../assets/StatIcons";
 import { formatDay, localDate } from "../../assets/functions";
 import { useSelector } from "react-redux";
-import { selectDailyTargets } from "../store/selectors";
+import { selectDailyTargets, selectDiaryDate, selectDiaryDay } from "../store/selectors";
+import { splitEstimateCalories, unsplitCalories } from "../../assets/food";
 
 const MACROS = [
     { stat: 'calories', goal: 'goalCalories' },
@@ -21,30 +22,36 @@ const remaining = (value, goal) => {
 }
 
 const MacroList = () => {
-    // Worked out each render so the diary moves on to the new day after midnight
-    const date = localDate();
+    // Follows the diary's day, so paging back shows that day's totals
+    const date = useSelector(selectDiaryDate);
     const targets = useSelector(selectDailyTargets);
     const goals = targets && targets.dailyMacros;
-    const foodDiary = useSelector(state => {
-        const index = state.fDiary.diaryObj.findIndex(el => {
-            return el.date === date;
-        })
-        if (index > -1) {
-            return state.fDiary.diaryObj[index];
-        } else {
-            return false;
-        }
-    })
+    const foodDiary = useSelector(selectDiaryDay);
+    const isToday = date === localDate();
 
     const subtitle = goals ? formatDay(date) : 'Add a weigh-in to see your daily goals';
 
+    // Estimates make the totals less exact; calories with no macros behind them make
+    // protein, carbs and fat short, so each tile says how
+    const unsplit = unsplitCalories(foodDiary);
+    const estimated = unsplit + splitEstimateCalories(foodDiary);
+    const noteFor = (stat) => {
+        if (stat === 'calories') {
+            return estimated > 0 ? `Includes ≈ ${Math.round(estimated).toLocaleString()} kcal estimated` : null;
+        }
+        if (unsplit > 0) {
+            return `Missing macros for ${Math.round(unsplit).toLocaleString()} kcal`;
+        }
+        return estimated > 0 ? 'Includes estimates' : null;
+    }
+
     return <Card classes={classes.display}>
-        <CardHeader Icon={CalendarCheckIcon} title="Today" subtitle={subtitle} />
+        <CardHeader Icon={CalendarCheckIcon} title={isToday ? 'Today' : 'Day totals'} subtitle={subtitle} />
         <StatGrid columns={4}>
             {MACROS.map(({ stat, goal }) => {
                 const value = foodDiary ? foodDiary.macros[stat] : 0;
                 return <StatTile key={stat} stat={stat} value={value}
-                    goal={goals && goals[goal]} hint={goals && remaining(value, goals[goal])} />
+                    goal={goals && goals[goal]} hint={goals && remaining(value, goals[goal])} note={noteFor(stat)} />
             })}
         </StatGrid>
     </Card>

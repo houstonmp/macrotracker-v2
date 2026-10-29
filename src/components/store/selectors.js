@@ -1,8 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { BMRMifflin, TDEE, MacrosByDiceSplit, getAgeFromBirthday } from '../../assets/functions';
+import { BMRMifflin, TDEE, MacrosByDiceSplit, getAgeFromBirthday, localDate } from '../../assets/functions';
 
 const selectUser = state => state.ui.userPreferences.user;
 const selectWeights = state => state.weight.weightObj;
+
+// The day the diary, its totals and logging work on: today unless you've paged back
+export const selectDiaryDate = state => state.ui.diaryDate || localDate();
+export const selectDiaryDay = state => {
+    const date = selectDiaryDate(state);
+    return state.fDiary.diaryObj.find(el => el.date === date) || null;
+}
 
 export const selectLatestWeight = createSelector([selectWeights], weights =>
     weights.length > 0 ? weights.reduce((latest, el) => (el.date > latest.date ? el : latest)) : null
